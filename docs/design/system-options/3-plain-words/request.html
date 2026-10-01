@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<!--
+  request.html – The public van request form, direction 3 "Plain Words"
+
+  Purpose:      The one-page public form a staff member fills in on a phone to
+                request a van, shown at 360 px first. It demonstrates the
+                English / සිංහල switch, the cutoff message, the date and time
+                choices, inline errors with an error summary, the live "Check
+                your request" sentence (this direction's signature) and the
+                confirmation state.
+  Direction:    3 – Plain Words (brief.md section 6.3)
+  Requirements: FR-01, FR-02, FR-03, FR-04, FR-05, FR-06, FR-07, FR-09, FR-49,
+                FR-52, FR-54, FR-55, FR-65, NFR-01, NFR-02, NFR-03, NFR-04,
+                NFR-12, NFR-18, BRL-13, US-01, US-02, US-03, US-05, US-44,
+                US-46, US-47, US-58, BO-04, C-01, D-09
+  Depends on:   tokens.css, components.css, pages.css, script.js,
+                ../assets/crest.png, Google Fonts (Atkinson Hyperlegible Next,
+                Atkinson Hyperlegible Mono, Noto Sans Sinhala)
+  Sections:     Icon sprite; Letterhead; Language switch; Main (title, error
+                summary, form: About you, Your trip, Anything special?, the
+                sentence box, Send request, privacy notice; confirmation
+                view); Footer; Prototype controls
+  Without JavaScript: every field shows, including the return-trip fields,
+                "Another date", "Another address" and three extra-stop rows in
+                a closed "Add a stop" disclosure. The language switch becomes
+                two links; in production the server renders the chosen
+                language. The form's action is "#".
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Request a van – PolymathTransit (Plain Words)</title>
+  <link rel="icon" href="../assets/crest.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Mono:wght@400&amp;family=Atkinson+Hyperlegible+Next:wght@400;700&amp;family=Noto+Sans+Sinhala:wght@400;700&amp;display=swap">
+  <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="components.css">
+  <link rel="stylesheet" href="pages.css">
+  <script src="script.js" defer></script>
+</head>
+<body class="page-phone" data-page="request">
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <!-- === Section: Icon sprite (Plain Words icons, drawn for this direction: outline, 2 px stroke, round ends, 24 px grid) === -->
+  <svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+    <symbol id="i-phone" viewBox="0 0 24 24"><path d="M7 3h3l1.2 5-2.4 1.6c1.1 2.4 3.2 4.5 5.6 5.6L16 12.8l5 1.2v3c0 2.2-1.8 4-4 4C9.3 20.4 3.6 14.7 3 7c0-2.2 1.8-4 4-4z"/></symbol>
+    <symbol id="i-navigate" viewBox="0 0 24 24"><path d="M5 20v-7a5 5 0 0 1 5-5h9"/><path d="M15 4l4 4-4 4"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+    <symbol id="i-chevron" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></symbol>
+    <symbol id="i-sort" viewBox="0 0 24 24"><path d="M12 4v16M7 15l5 5 5-5"/></symbol>
+    <symbol id="i-wheelchair" viewBox="0 0 24 24"><circle cx="11" cy="4.5" r="1.6"/><path d="M11 8v6h5.5l2.5 5.5"/><path d="M11 11h4.5"/><path d="M8 10.8a5.6 5.6 0 1 0 7.6 7.4"/></symbol>
+    <symbol id="i-warning" viewBox="0 0 24 24"><path d="M12 3.5L22 20H2z"/><path d="M12 10v4.5M12 17.4v.1"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.6v.1"/></symbol>
+    <symbol id="i-error" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v6M12 16.4v.1"/></symbol>
+    <symbol id="i-tick" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></symbol>
+    <symbol id="i-cross" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></symbol>
+    <symbol id="i-undo" viewBox="0 0 24 24"><path d="M9 13L4 8l5-5"/><path d="M4 8h10a6 6 0 0 1 0 12h-4"/></symbol>
+    <symbol id="i-offline" viewBox="0 0 24 24"><path d="M3 3l18 18"/><path d="M5 10.5a11 11 0 0 1 4-2.2M13.5 8a11 11 0 0 1 5.5 2.5"/><path d="M8.5 14a6 6 0 0 1 4-1.6"/><path d="M12 18.4v.1"/></symbol>
+    <symbol id="i-submitted" viewBox="0 0 24 24"><path d="M4 13h4l1.5 3h5l1.5-3h4v7H4z"/><path d="M12 3v9M8.5 8.5L12 12l3.5-3.5"/></symbol>
+    <symbol id="i-proposed" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12v.1M12 12v.1M16 12v.1" stroke-width="3"/></symbol>
+    <symbol id="i-confirmed" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l3 3 5-6"/></symbol>
+    <symbol id="i-declined" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/></symbol>
+    <symbol id="i-cancelled" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M5.8 18.2L18.2 5.8"/></symbol>
+    <symbol id="i-completed" viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M8 12.5l3 3 5-6"/></symbol>
+    <symbol id="i-noshow" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.2"/><path d="M6 20a6 6 0 0 1 12 0"/><path d="M3.5 3.5l17 17"/></symbol>
+    <symbol id="i-late" viewBox="0 0 24 24"><circle cx="11" cy="13" r="8"/><path d="M11 9v4h3"/><path d="M19 2.5v4M17 4.5h4"/></symbol>
+    <symbol id="i-shared" viewBox="0 0 24 24"><circle cx="8.5" cy="8" r="3"/><circle cx="16.5" cy="9" r="2.5"/><path d="M3 20a5.5 5.5 0 0 1 11 0"/><path d="M14.5 15.2A4.5 4.5 0 0 1 21 19"/></symbol>
+    <symbol id="i-gap" viewBox="0 0 24 24"><path d="M7 5H4v14h3M17 5h3v14h-3"/><circle cx="12" cy="12" r="2.4" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="i-hours" viewBox="0 0 24 24"><path d="M14 4v16" stroke-dasharray="2.5 3"/><path d="M3 12h17M17 9l3 3-3 3"/></symbol>
+    <symbol id="i-newperson" viewBox="0 0 24 24"><circle cx="9.5" cy="8" r="3.2"/><path d="M3.5 20a6 6 0 0 1 12 0"/><path d="M19 7v6M16 10h6"/></symbol>
+    <symbol id="i-repeat" viewBox="0 0 24 24"><path d="M4 11V9.5A3.5 3.5 0 0 1 7.5 6H19"/><path d="M16 3l3 3-3 3"/><path d="M20 13v1.5a3.5 3.5 0 0 1-3.5 3.5H5"/><path d="M8 21l-3-3 3-3"/></symbol>
+    <symbol id="i-early" viewBox="0 0 24 24"><path d="M3 18h18"/><path d="M7 18a5 5 0 0 1 10 0"/><path d="M12 6.5v2.5M5.6 10.6l1.6 1.6M18.4 10.6l-1.6 1.6"/></symbol>
+    <symbol id="i-unconfirmed" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" stroke-dasharray="3 2.6"/><path d="M9.6 9.6a2.5 2.5 0 1 1 3.4 2.3c-.6.3-1 .8-1 1.4v.6M12 16.6v.1"/></symbol>
+    <symbol id="i-equipment" viewBox="0 0 24 24"><path d="M3 8h18v12H3z"/><path d="M9 8V5h6v3M3 13h18"/></symbol>
+  </svg>
+
+  <!-- === Section: Letterhead (the header landmark also holds the language switch) === -->
+  <header>
+  <div class="letterhead">
+    <div class="letterhead__inner">
+      <span class="letterhead__id">
+        <img class="letterhead__crest" src="../assets/crest.png" alt="Polymath College crest" width="37" height="40">
+        <span>
+          <span class="letterhead__name">PolymathTransit</span>
+          <span class="letterhead__from"><span data-i18n="x.office">Transport office</span> <a href="tel:+94110000100" class="ref">011 000 0100</a></span>
+        </span>
+      </span>
+    </div>
+  </div>
+
+  <!-- === Section: Language switch (FR-65) === -->
+  <div class="lang" role="group" aria-labelledby="lang-label">
+    <div class="lang__row">
+      <span class="lang__label" id="lang-label" data-i18n="lang.label">Language</span>
+      <ul class="lang__options" data-lang-buttons hidden>
+        <li><button type="button" class="lang__option" data-lang="en" lang="en" aria-pressed="true"><svg class="icon" aria-hidden="true"><use href="#i-tick"/></svg>English</button></li>
+        <li><button type="button" class="lang__option" data-lang="si" lang="si" aria-pressed="false"><svg class="icon" aria-hidden="true"><use href="#i-tick"/></svg>සිංහල</button></li>
+      </ul>
+      <!-- Without JavaScript the switch is two links to this page. In
+           production the server renders the chosen language. -->
+      <ul class="lang__options nojs-only">
+        <li><a class="lang__option" href="request.html?lang=en" lang="en" aria-current="true"><svg class="icon" aria-hidden="true"><use href="#i-tick"/></svg>English</a></li>
+        <li><a class="lang__option" href="request.html?lang=si" lang="si" hreflang="si">සිංහල</a></li>
+      </ul>
+    </div>
+    <p class="lang__note" lang="en">This Sinhala text is a draft for review by native speakers (D-09).</p>
+    <p class="lang__note" role="status" data-lang-status></p>
+  </div>
+  </header>
+
+  <!-- === Section: Main === -->
+  <main id="main" class="page-col">
+    <h1 id="page-title" tabindex="-1" data-i18n="form.title">Request a van</h1>
+
+    <!-- === Section: Form view === -->
+    <div id="form-view">
+      <p class="lead" data-i18n="form.intro">It takes about 2 minutes. We'll send you a text when a coordinator confirms your trip.</p>
+
+      <!-- Error summary: shown on "Send request" with errors; takes focus. -->
+      <div class="error-summary" id="error-summary" tabindex="-1" aria-labelledby="error-summary-title" hidden>
+        <h2 class="error-summary__title" id="error-summary-title"><svg class="icon" aria-hidden="true"><use href="#i-error"/></svg><span data-i18n="err.summary">There is a problem</span></h2>
+        <ul class="error-summary__list" id="error-summary-list"></ul>
+      </div>
+
+      <form id="request-form" action="#" method="post" novalidate>
+
+        <!-- === Section: About you === -->
+        <section class="form-section" aria-labelledby="sec-you">
+          <h2 id="sec-you" data-i18n="section.you">About you</h2>
+
+          <div class="question" id="q-name">
+            <label class="question__label" for="name" data-i18n="name.label">Your name</label>
+            <p class="field-error" id="name-error" hidden></p>
+            <input class="input input--name" id="name" name="name" type="text" autocomplete="name" spellcheck="false">
+          </div>
+
+          <div class="question" id="q-phone">
+            <label class="question__label" for="phone" data-i18n="phone.label">Your phone number</label>
+            <span class="question__hint" id="phone-hint" data-i18n="phone.hint">For example, 077 123 4567</span>
+            <p class="field-error" id="phone-error" hidden></p>
+            <input class="input input--phone" id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" aria-describedby="phone-hint">
+          </div>
+
+          <div class="question question--tight">
+            <div class="choice">
+              <span class="check">
+                <input class="choice__input" type="checkbox" id="whatsapp" name="whatsapp">
+                <svg class="icon check__tick" aria-hidden="true"><use href="#i-tick"/></svg>
+              </span>
+              <label class="choice__label" for="whatsapp" data-i18n="whatsapp.label">Send my updates on WhatsApp instead of SMS</label>
+            </div>
+          </div>
+
+          <div class="question" id="q-email">
+            <label class="question__label" for="email" data-i18n="email.label">Email (optional)</label>
+            <span class="question__hint" id="email-hint" data-i18n="email.hint">We'll send a copy of your updates here.</span>
+            <input class="input input--email" id="email" name="email" type="email" autocomplete="email" spellcheck="false" aria-describedby="email-hint">
+          </div>
+        </section>
+
+        <!-- === Section: Your trip === -->
+        <section class="form-section" aria-labelledby="sec-trip">
+          <h2 id="sec-trip" data-i18n="section.trip">Your trip</h2>
+
+          <!-- Trip purpose (FR-02): one tap, one column so Sinhala can wrap. -->
+          <fieldset class="question" id="q-purpose">
+            <legend class="question__legend" data-i18n="purpose.legend">What is the trip for?</legend>
+            <p class="field-error" id="purpose-error" hidden></p>
+            <ul class="choices">
+              <li class="choice"><input class="choice__input" type="radio" name="purpose" id="purpose-class" value="class"><label class="choice__label" for="purpose-class" data-i18n="purpose.class">Class trip</label></li>
+              <li class="choice"><input class="choice__input" type="radio" name="purpose" id="purpose-sport" value="sport"><label class="choice__label" for="purpose-sport" data-i18n="purpose.sport">Sport</label></li>
+              <li class="choice"><input class="choice__input" type="radio" name="purpose" id="purpose-errand" value="errand"><label class="choice__label" for="purpose-errand" data-i18n="purpose.errand">Staff errand</label></li>
+              <li class="choice"><input class="choice__input" type="radio" name="purpose" id="purpose-event" value="event"><label class="choice__label" for="purpose-event" data-i18n="purpose.event">Meeting or event</label></li>
+              <li class="choice"><input class="choice__input" type="radio" name="purpose" id="purpose-other" value="other"><label class="choice__label" for="purpose-other" data-i18n="purpose.other">Other</label></li>
+            </ul>
+          </fieldset>
+
+          <!-- Date of trip (FR-07, BRL-13, US-05). "Now" is Monday
+               12/10/2026, 2:40 pm: today is closed, tomorrow is open until
+               5:00 pm today. -->
+          <fieldset class="question" id="q-date">
+            <legend class="question__legend" data-i18n="date.label">Date of trip</legend>
+            <p class="note note--info" id="cutoff-note" role="status"><svg class="icon" aria-hidden="true"><use href="#i-info"/></svg><span id="cutoff-text" data-i18n="cutoff.open">Requests for tomorrow close at 5:00 pm today.</span></p>
+            <p class="field-error" id="date-error" hidden></p>
+            <ul class="choices">
+              <li class="choice choice--closed">
+                <input class="choice__input" type="radio" name="date" id="date-today" value="2026-10-12" disabled>
+                <label class="choice__label" for="date-today">
+                  <span class="date-option__day"><span data-i18n="day.today">Today</span> – <span data-i18n="date.closed">Closed</span></span>
+                  <span class="date-option__date"><span data-i18n="day.monday">Monday</span> 12/10/2026</span>
+                  <span class="date-option__closed" id="date-today-closed"><span data-i18n="cutoff.today.closed">Requests for today closed at 7:00 am. For urgent transport, call the transport office on 011 000 0100.</span></span>
+                </label>
+              </li>
+              <li class="choice"><input class="choice__input" type="radio" name="date" id="date-tue" value="2026-10-13"><label class="choice__label" for="date-tue"><span class="date-option__day" data-i18n="day.tomorrow">Tomorrow</span><span class="date-option__date"><span data-i18n="day.tuesday">Tuesday</span> 13/10/2026</span></label></li>
+              <li class="choice"><input class="choice__input" type="radio" name="date" id="date-wed" value="2026-10-14"><label class="choice__label" for="date-wed"><span class="date-option__day" data-i18n="day.wednesday">Wednesday</span><span class="date-option__date">14/10/2026</span></label></li>
+              <li class="choice"><input class="choice__input" type="radio" name="date" id="date-thu" value="2026-10-15"><label class="choice__label" for="date-thu"><span class="date-option__day" data-i18n="day.thursday">Thursday</span><span class="date-option__date">15/10/2026</span></label></li>
+              <li class="choice"><input class="choice__input" type="radio" name="date" id="date-fri" value="2026-10-16"><label class="choice__label" for="date-fri"><span class="date-option__day" data-i18n="day.friday">Friday</span><span class="date-option__date">16/10/2026</span></label></li>
+              <li class="choice"><input class="choice__input" type="radio" name="date" id="date-mon" value="2026-10-19"><label class="choice__label" for="date-mon"><span class="date-option__day" data-i18n="day.monday">Monday</span><span class="date-option__date">19/10/2026</span></label></li>
+              <li class="choice"><input class="choice__input" type="radio" name="date" id="date-other" value="other" aria-controls="date-other-field"><label class="choice__label" for="date-other"><span class="date-option__day" data-i18n="date.other">Another date</span></label></li>
+            </ul>
+            <div class="date-other js-hide" id="date-other-field">
+              <label class="question__label question__label--small" for="date-other-input"><span data-i18n="date.other">Another date</span> <span class="nojs-only">(only if you chose Another date)</span></label>
+              <span class="question__hint" id="date-other-hint" data-i18n="date.hint">For example, 13/10/2026</span>
+              <p class="field-error" id="date-other-error" hidden></p>
+              <input class="input input--date" id="date-other-input" name="date_other" type="text" inputmode="numeric" placeholder="DD/MM/YYYY" autocomplete="off" aria-describedby="date-other-hint">
+            </div>
+          </fieldset>
+
+          <!-- Pick up from (FR-05, FR-52, US-02 AC-1): branches, venues,
+               other saved places, then "Another address". -->
+          <div class="question" id="q-from">
+            <label class="question__label" for="from" data-i18n="from.label">Pick up from</label>
+            <p class="field-error" id="from-error" hidden></p>
+            <span class="select-wrap">
+              <select class="select" id="from" name="from" data-place-select>
+                <option value="" data-i18n="place.choose">Choose a place</option>
+                <optgroup label="Our branches" data-i18n-label="place.branches">
+                  <option value="branch-a" data-short="Branch A">Branch A (main branch)</option>
+                  <option value="branch-b" data-short="Branch B">Branch B</option>
+                  <option value="branch-c" data-short="Branch C">Branch C</option>
+                </optgroup>
+                <optgroup label="Venues" data-i18n-label="place.venues">
+                  <option value="aquatic" data-short="Aquatic Centre" data-article="the">Aquatic Centre</option>
+                  <option value="sports" data-short="Sports Centre" data-article="the">Sports Centre</option>
+                </optgroup>
+                <optgroup label="Other places" data-i18n-label="x.place.saved">
+                  <option value="stationery" data-short="Stationery supplier" data-article="the">Stationery supplier</option>
+                </optgroup>
+                <option value="other" data-i18n="place.other">Another address</option>
+              </select>
+              <svg class="icon" aria-hidden="true"><use href="#i-chevron"/></svg>
+            </span>
+            <div class="reveal js-hide" id="from-other" data-reveal-for="from">
+              <label class="question__label question__label--small" for="from-address"><span data-i18n="place.address">Type another address</span> <span class="nojs-only">(only if you chose Another address)</span></label>
+              <input class="input" id="from-address" name="from_address" type="text" autocomplete="off">
+              <div class="reveal__map">
+                <button type="button" class="button button--secondary js-only" data-map-button hidden><svg class="icon" aria-hidden="true"><use href="#i-pin"/></svg><span data-i18n="place.map">Choose on map</span></button>
+                <p class="text-small text-2" role="status" data-map-note></p>
+              </div>
+              <label class="question__label question__label--small" for="from-landmark" data-i18n="place.landmark">Landmark or directions (optional)</label>
+              <input class="input" id="from-landmark" name="from_landmark" type="text" autocomplete="off">
+            </div>
+          </div>
+
+          <!-- Going to (FR-05), then extra stops (FR-54, up to 3). -->
+          <div class="question" id="q-to">
+            <label class="question__label" for="to" data-i18n="to.label">Going to</label>
+            <p class="field-error" id="to-error" hidden></p>
+            <span class="select-wrap">
+              <select class="select" id="to" name="to" data-place-select>
+                <option value="" data-i18n="place.choose">Choose a place</option>
+                <optgroup label="Our branches" data-i18n-label="place.branches">
+                  <option value="branch-a" data-short="Branch A">Branch A (main branch)</option>
+                  <option value="branch-b" data-short="Branch B">Branch B</option>
+                  <option value="branch-c" data-short="Branch C">Branch C</option>
+                </optgroup>
+                <optgroup label="Venues" data-i18n-label="place.venues">
+                  <option value="aquatic" data-short="Aquatic Centre" data-article="the">Aquatic Centre</option>
+                  <option value="sports" data-short="Sports Centre" data-article="the">Sports Centre</option>
+                </optgroup>
+                <optgroup label="Other places" data-i18n-label="x.place.saved">
+                  <option value="stationery" data-short="Stationery supplier" data-article="the">Stationery supplier</option>
+                </optgroup>
+                <option value="other" data-i18n="place.other">Another address</option>
+              </select>
+              <svg class="icon" aria-hidden="true"><use href="#i-chevron"/></svg>
+            </span>
+            <div class="reveal js-hide" id="to-other" data-reveal-for="to">
+              <label class="question__label question__label--small" for="to-address"><span data-i18n="place.address">Type another address</span> <span class="nojs-only">(only if you chose Another address)</span></label>
+              <input class="input" id="to-address" name="to_address" type="text" autocomplete="off">
+              <div class="reveal__map">
+                <button type="button" class="button button--secondary js-only" data-map-button hidden><svg class="icon" aria-hidden="true"><use href="#i-pin"/></svg><span data-i18n="place.map">Choose on map</span></button>
+                <p class="text-small text-2" role="status" data-map-note></p>
+              </div>
+              <label class="question__label question__label--small" for="to-landmark" data-i18n="place.landmark">Landmark or directions (optional)</label>
+              <input class="input" id="to-landmark" name="to_landmark" type="text" autocomplete="off">
+            </div>
+
+            <!-- Extra stops. Without JavaScript: three empty rows inside a
+                 closed disclosure. With JavaScript: "+ Add a stop" reveals one
+                 row at a time. -->
+            <details class="disclosure stops-disclosure" id="stops-disclosure">
+              <summary class="disclosure__summary"><svg class="icon" aria-hidden="true"><use href="#i-chevron"/></svg><span>Add a stop</span></summary>
+              <div class="disclosure__body" id="stops">
+                <fieldset class="stop-row" id="stop-1" data-stop-row>
+                  <legend class="question__legend"><span data-i18n="stop.label">Extra stop</span> <span class="stop-num">1</span></legend>
+                  <div class="question question--nested">
+                    <label class="question__label question__label--small" for="stop-1-place" data-i18n="place.choose">Choose a place</label>
+                    <span class="select-wrap">
+                      <select class="select" id="stop-1-place" name="stop_1_place" data-place-select>
+                        <option value="" data-i18n="place.choose">Choose a place</option>
+                        <optgroup label="Our branches" data-i18n-label="place.branches">
+                          <option value="branch-a" data-short="Branch A">Branch A (main branch)</option>
+                          <option value="branch-b" data-short="Branch B">Branch B</option>
+                          <option value="branch-c" data-short="Branch C">Branch C</option>
+                        </optgroup>
+                        <optgroup label="Venues" data-i18n-label="place.venues">
+                          <option value="aquatic" data-short="Aquatic Centre" data-article="the">Aquatic Centre</option>
+                          <option value="sports" data-short="Sports Centre" data-article="the">Sports Centre</option>
+                        </optgroup>
+                        <optgroup label="Other places" data-i18n-label="x.place.saved">
+                          <option value="stationery" data-short="Stationery supplier" data-article="the">Stationery supplier</option>
+                        </optgroup>
+                      </select>
+                      <svg class="icon" aria-hidden="true"><use href="#i-chevron"/></svg>
+                    </span>
+                  </div>
+                  <fieldset class="question question--nested">
+                    <legend class="question__legend question__label--small" data-i18n="x.stop.action">Pick up or drop off?</legend>
+                    <ul class="choices choices--inline">
+                      <li class="choice"><input class="choice__input" type="radio" name="stop_1_action" id="stop-1-pickup" value="pickup"><label class="choice__label" for="stop-1-pickup" data-i18n="driver.pickup">Pick up</label></li>
+                      <li class="choice"><input class="choice__input" type="radio" name="stop_1_action" id="stop-1-dropoff" value="dropoff"><label class="choice__label" for="stop-1-dropoff" data-i18n="driver.dropoff">Drop off</label></li>
+                    </ul>
+                  </fieldset>
+                  <div class="question question--nested">
+                    <label class="question__label question__label--small" for="stop-1-pax" data-i18n="x.stop.pax">Passengers getting on or off</label>
+                    <input class="input input--number" id="stop-1-pax" name="stop_1_pax" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2" autocomplete="off">
+                  </div>
+                  <button type="button" class="button button--quiet js-only" data-remove-stop hidden data-i18n="stop.remove">Remove this stop</button>
+                </fieldset>
+                <fieldset class="stop-row" id="stop-2" data-stop-row>
+                  <legend class="question__legend"><span data-i18n="stop.label">Extra stop</span> <span class="stop-num">2</span></legend>
+                  <div class="question question--nested">
+                    <label class="question__label question__label--small" for="stop-2-place" data-i18n="place.choose">Choose a place</label>
+                    <span class="select-wrap">
+                      <select class="select" id="stop-2-place" name="stop_2_place" data-place-select>
+                        <option value="" data-i18n="place.choose">Choose a place</option>
+                        <optgroup label="Our branches" data-i18n-label="place.branches">
+                          <option value="branch-a" data-short="Branch A">Branch A (main branch)</option>
+                          <option value="branch-b" data-short="Branch B">Branch B</option>
+                          <option value="branch-c" data-short="Branch C">Branch C</option>
+                        </optgroup>
+                        <optgroup label="Venues" data-i18n-label="place.venues">
+                          <option value="aquatic" data-short="Aquatic Centre" data-article="the">Aquatic Centre</option>
+                          <option value="sports" data-short="Sports Centre" data-article="the">Sports Centre</option>
+                        </optgroup>
+                        <optgroup label="Other places" data-i18n-label="x.place.saved">
+                          <option value="stationery" data-short="Stationery supplier" data-article="the">Stationery supplier</option>
+                        </optgroup>
+                      </select>
+                      <svg class="icon" aria-hidden="true"><use href="#i-chevron"/></svg>
+                    </span>
+                  </div>
+                  <fieldset class="question question--nested">
+                    <legend class="question__legend question__label--small" data-i18n="x.stop.action">Pick up or drop off?</legend>
+                    <ul class="choices choices--inline">
+                      <li class="choice"><input class="choice__input" type="radio" name="stop_2_action" id="stop-2-pickup" value="pickup"><label class="choice__label" for="stop-2-pickup" data-i18n="driver.pickup">Pick up</label></li>
+                      <li class="choice"><input class="choice__input" type="radio" name="stop_2_action" id="stop-2-dropoff" value="dropoff"><label class="choice__label" for="stop-2-dropoff" data-i18n="driver.dropoff">Drop off</label></li>
+                    </ul>
+                  </fieldset>
+                  <div class="question question--nested">
+                    <label class="question__label question__label--small" for="stop-2-pax" data-i18n="x.stop.pax">Passengers getting on or off</label>
+                    <input class="input input--number" id="stop-2-pax" name="stop_2_pax" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2" autocomplete="off">
+                  </div>
+                  <button type="button" class="button button--quiet js-only" data-remove-stop hidden data-i18n="stop.remove">Remove this stop</button>
+                </fieldset>
+                <fieldset class="stop-row" id="stop-3" data-stop-row>
+                  <legend class="question__legend"><span data-i18n="stop.label">Extra stop</span> <span class="stop-num">3</span></legend>
+                  <div class="question question--nested">
+                    <label class="question__label question__label--small" for="stop-3-place" data-i18n="place.choose">Choose a place</label>
+                    <span class="select-wrap">
+                      <select class="select" id="stop-3-place" name="stop_3_place" data-place-select>
+                        <option value="" data-i18n="place.choose">Choose a place</option>
+                        <optgroup label="Our branches" data-i18n-label="place.branches">
+                          <option value="branch-a" data-short="Branch A">Branch A (main branch)</option>
+                          <option value="branch-b" data-short="Branch B">Branch B</option>
+                          <option value="branch-c" data-short="Branch C">Branch C</option>
+                        </optgroup>
+                        <optgroup label="Venues" data-i18n-label="place.venues">
+                          <option value="aquatic" data-short="Aquatic Centre" data-article="the">Aquatic Centre</option>
+                          <option value="sports" data-short="Sports Centre" data-article="the">Sports Centre</option>
+                        </optgroup>
+                        <optgroup label="Other places" data-i18n-label="x.place.saved">
+                          <option value="stationery" data-short="Stationery supplier" data-article="the">Stationery supplier</option>
+                        </optgroup>
+                      </select>
+                      <svg class="icon" aria-hidden="true"><use href="#i-chevron"/></svg>
+                    </span>
+                  </div>
+                  <fieldset class="question question--nested">
+                    <legend class="question__legend question__label--small" data-i18n="x.stop.action">Pick up or drop off?</legend>
+                    <ul class="choices choices--inline">
+                      <li class="choice"><input class="choice__input" type="radio" name="stop_3_action" id="stop-3-pickup" value="pickup"><label class="choice__label" for="stop-3-pickup" data-i18n="driver.pickup">Pick up</label></li>
+                      <li class="choice"><input class="choice__input" type="radio" name="stop_3_action" id="stop-3-dropoff" value="dropoff"><label class="choice__label" for="stop-3-dropoff" data-i18n="driver.dropoff">Drop off</label></li>
+                    </ul>
+                  </fieldset>
+                  <div class="question question--nested">
+                    <label class="question__label question__label--small" for="stop-3-pax" data-i18n="x.stop.pax">Passengers getting on or off</label>
+                    <input class="input input--number" id="stop-3-pax" name="stop_3_pax" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2" autocomplete="off">
+                  </div>
+                  <button type="button" class="button button--quiet js-only" data-remove-stop hidden data-i18n="stop.remove">Remove this stop</button>
+                </fieldset>
+              </div>
+            </details>
+            <div id="stops-live"></div>
+            <button type="button" class="button button--quiet" id="add-stop" hidden data-i18n="stop.add">+ Add a stop</button>
+          </div>
+
+          <!-- Pickup time: native select, every 5 minutes, 7:00 am to
+               6:00 pm (BRL-13 operating hours), labelled "8:45 am". -->
+          <div class="question" id="q-time">
+            <label class="question__label" for="time" data-i18n="time.label">Pickup time</label>
+            <p class="field-error" id="time-error" hidden></p>
+            <span class="select-wrap select-wrap--time">
+              <select class="select" id="time" name="time" data-time-select>
+                <option value="" data-i18n="time.choose">Choose a time</option>
+                <optgroup label="Morning" data-i18n-label="time.morning">
+<option value="07:00">7:00 am</option>
+<option value="07:05">7:05 am</option>
+<option value="07:10">7:10 am</option>
+<option value="07:15">7:15 am</option>
+<option value="07:20">7:20 am</option>
+<option value="07:25">7:25 am</option>
+<option value="07:30">7:30 am</option>
+<option value="07:35">7:35 am</option>
+<option value="07:40">7:40 am</option>
+<option value="07:45">7:45 am</option>
+<option value="07:50">7:50 am</option>
+<option value="07:55">7:55 am</option>
+<option value="08:00">8:00 am</option>
+<option value="08:05">8:05 am</option>
+<option value="08:10">8:10 am</option>
+<option value="08:15">8:15 am</option>
+<option value="08:20">8:20 am</option>
+<option value="08:25">8:25 am</option>
+<option value="08:30">8:30 am</option>
+<option value="08:35">8:35 am</option>
+<option value="08:40">8:40 am</option>
+<option value="08:45">8:45 am</option>
+<option value="08:50">8:50 am</option>
+<option value="08:55">8:55 am</option>
+<option value="09:00">9:00 am</option>
+<option value="09:05">9:05 am</option>
+<option value="09:10">9:10 am</option>
+<option value="09:15">9:15 am</option>
+<option value="09:20">9:20 am</option>
+<option value="09:25">9:25 am</option>
+<option value="09:30">9:30 am</option>
+<option value="09:35">9:35 am</option>
+<option value="09:40">9:40 am</option>
+<option value="09:45">9:45 am</option>
+<option value="09:50">9:50 am</option>
+<option value="09:55">9:55 am</option>
+<option value="10:00">10:00 am</option>
+<option value="10:05">10:05 am</option>
+<option value="10:10">10:10 am</option>
+<option value="10:15">10:15 am</option>
+<option value="10:20">10:20 am</option>
+<option value="10:25">10:25 am</option>
+<option value="10:30">10:30 am</option>
+<option value="10:35">10:35 am</option>
+<option value="10:40">10:40 am</option>
+<option value="10:45">10:45 am</option>
+<option value="10:50">10:50 am</option>
+<option value="10:55">10:55 am</option>
+<option value="11:00">11:00 am</option>
+<option value="11:05">11:05 am</option>
+<option value="11:10">11:10 am</option>
+<option value="11:15">11:15 am</option>
+<option value="11:20">11:20 am</option>
+<option value="11:25">11:25 am</option>
+<option value="11:30">11:30 am</option>
+<option value="11:35">11:35 am</option>
+<option value="11:40">11:40 am</option>
+<option value="11:45">11:45 am</option>
+<option value="11:50">11:50 am</option>
+<option value="11:55">11:55 am</option>
+                </optgroup>
+                <optgroup label="Afternoon" data-i18n-label="time.afternoon">
+<option value="12:00">12:00 pm</option>
+<option value="12:05">12:05 pm</option>
+<option value="12:10">12:10 pm</option>
+<option value="12:15">12:15 pm</option>
+<option value="12:20">12:20 pm</option>
+<option value="12:25">12:25 pm</option>
+<option value="12:30">12:30 pm</option>
+<option value="12:35">12:35 pm</option>
+<option value="12:40">12:40 pm</option>
+<option value="12:45">12:45 pm</option>
+<option value="12:50">12:50 pm</option>
+<option value="12:55">12:55 pm</option>
+<option value="13:00">1:00 pm</option>
+<option value="13:05">1:05 pm</option>
+<option value="13:10">1:10 pm</option>
+<option value="13:15">1:15 pm</option>
+<option value="13:20">1:20 pm</option>
+<option value="13:25">1:25 pm</option>
+<option value="13:30">1:30 pm</option>
+<option value="13:35">1:35 pm</option>
+<option value="13:40">1:40 pm</option>
+<option value="13:45">1:45 pm</option>
+<option value="13:50">1:50 pm</option>
+<option value="13:55">1:55 pm</option>
+<option value="14:00">2:00 pm</option>
+<option value="14:05">2:05 pm</option>
+<option value="14:10">2:10 pm</option>
+<option value="14:15">2:15 pm</option>
+<option value="14:20">2:20 pm</option>
+<option value="14:25">2:25 pm</option>
+<option value="14:30">2:30 pm</option>
+<option value="14:35">2:35 pm</option>
+<option value="14:40">2:40 pm</option>
+<option value="14:45">2:45 pm</option>
+<option value="14:50">2:50 pm</option>
+<option value="14:55">2:55 pm</option>
+<option value="15:00">3:00 pm</option>
+<option value="15:05">3:05 pm</option>
+<option value="15:10">3:10 pm</option>
+<option value="15:15">3:15 pm</option>
+<option value="15:20">3:20 pm</option>
+<option value="15:25">3:25 pm</option>
+<option value="15:30">3:30 pm</option>
+<option value="15:35">3:35 pm</option>
+<option value="15:40">3:40 pm</option>
+<option value="15:45">3:45 pm</option>
+<option value="15:50">3:50 pm</option>
+<option value="15:55">3:55 pm</option>
+<option value="16:00">4:00 pm</option>
+<option value="16:05">4:05 pm</option>
+<option value="16:10">4:10 pm</option>
+<option value="16:15">4:15 pm</option>
+<option value="16:20">4:20 pm</option>
+<option value="16:25">4:25 pm</option>
+<option value="16:30">4:30 pm</option>
+<option value="16:35">4:35 pm</option>
+<option value="16:40">4:40 pm</option>
+<option value="16:45">4:45 pm</option>
+<option value="16:50">4:50 pm</option>
+<option value="16:55">4:55 pm</option>
+<option value="17:00">5:00 pm</option>
+<option value="17:05">5:05 pm</option>
+<option value="17:10">5:10 pm</option>
+<option value="17:15">5:15 pm</option>
+<option value="17:20">5:20 pm</option>
+<option value="17:25">5:25 pm</option>
+<option value="17:30">5:30 pm</option>
+<option value="17:35">5:35 pm</option>
+<option value="17:40">5:40 pm</option>
+<option value="17:45">5:45 pm</option>
+<option value="17:50">5:50 pm</option>
+<option value="17:55">5:55 pm</option>
+<option value="18:00">6:00 pm</option>
+                </optgroup>
+              </select>
+              <svg class="icon" aria-hidden="true"><use href="#i-chevron"/></svg>
+            </span>
+          </div>
+
+          <!-- Flexibility (FR-55): ± 10 min is the default. -->
+          <fieldset class="question" id="q-flex">
+            <legend class="question__legend" data-i18n="flex.legend">How flexible is your pickup time?</legend>
+            <ul class="choices choices--two">
+              <li class="choice"><input class="choice__input" type="radio" name="flex" id="flex-exact" value="0"><label class="choice__label" for="flex-exact" data-i18n="flex.exact">Exact time</label></li>
+              <li class="choice"><input class="choice__input" type="radio" name="flex" id="flex-10" value="10" checked><label class="choice__label" for="flex-10" data-i18n="flex.10">± 10 min</label></li>
+              <li class="choice"><input class="choice__input" type="radio" name="flex" id="flex-20" value="20"><label class="choice__label" for="flex-20" data-i18n="flex.20">± 20 min</label></li>
+              <li class="choice"><input class="choice__input" type="radio" name="flex" id="flex-30" value="30"><label class="choice__label" for="flex-30" data-i18n="flex.30">± 30 min</label></li>
+            </ul>
+            <details class="disclosure disclosure--inline" id="arrive-disclosure">
+              <summary class="disclosure__summary"><svg class="icon" aria-hidden="true"><use href="#i-chevron"/></svg><span data-i18n="arrive.add">Add a time you must arrive by</span></summary>
+              <div class="disclosure__body">
+                <label class="question__label question__label--small" for="arrive" data-i18n="arrive.label">Must arrive by (optional)</label>
+                <span class="select-wrap select-wrap--time">
+                  <select class="select" id="arrive" name="arrive" data-time-select>
+                    <option value="" data-i18n="time.choose">Choose a time</option>
+                    <optgroup label="Morning" data-i18n-label="time.morning">
+<option value="07:00">7:00 am</option>
+<option value="07:05">7:05 am</option>
+<option value="07:10">7:10 am</option>
+<option value="07:15">7:15 am</option>
+<option value="07:20">7:20 am</option>
+<option value="07:25">7:25 am</option>
+<option value="07:30">7:30 am</option>
+<option value="07:35">7:35 am</option>
+<option value="07:40">7:40 am</option>
+<option value="07:45">7:45 am</option>
+<option value="07:50">7:50 am</option>
+<option value="07:55">7:55 am</option>
+<option value="08:00">8:00 am</option>
+<option value="08:05">8:05 am</option>
+<option value="08:10">8:10 am</option>
+<option value="08:15">8:15 am</option>
+<option value="08:20">8:20 am</option>
+<option value="08:25">8:25 am</option>
+<option value="08:30">8:30 am</option>
+<option value="08:35">8:35 am</option>
+<option value="08:40">8:40 am</option>
+<option value="08:45">8:45 am</option>
+<option value="08:50">8:50 am</option>
+<option value="08:55">8:55 am</option>
+<option value="09:00">9:00 am</option>
+<option value="09:05">9:05 am</option>
+<option value="09:10">9:10 am</option>
+<option value="09:15">9:15 am</option>
+<option value="09:20">9:20 am</option>
+<option value="09:25">9:25 am</option>
+<option value="09:30">9:30 am</option>
+<option value="09:35">9:35 am</option>
+<option value="09:40">9:40 am</option>
+<option value="09:45">9:45 am</option>
+<option value="09:50">9:50 am</option>
+<option value="09:55">9:55 am</option>
+<option value="10:00">10:00 am</option>
+<option value="10:05">10:05 am</option>
+<option value="10:10">10:10 am</option>
+<option value="10:15">10:15 am</option>
+<option value="10:20">10:20 am</option>
+<option value="10:25">10:25 am</option>
+<option value="10:30">10:30 am</option>
+<option value="10:35">10:35 am</option>
+<option value="10:40">10:40 am</option>
+<option value="10:45">10:45 am</option>
+<option value="10:50">10:50 am</option>
+<option value="10:55">10:55 am</option>
+<option value="11:00">11:00 am</option>
+<option value="11:05">11:05 am</option>
+<option value="11:10">11:10 am</option>
+<option value="11:15">11:15 am</option>
+<option value="11:20">11:20 am</option>
+<option value="11:25">11:25 am</option>
+<option value="11:30">11:30 am</option>
+<option value="11:35">11:35 am</option>
+<option value="11:40">11:40 am</option>
+<option value="11:45">11:45 am</option>
+<option value="11:50">11:50 am</option>
+<option value="11:55">11:55 am</option>
+                    </optgroup>
+                    <optgroup label="Afternoon" data-i18n-label="time.afternoon">
+<option value="12:00">12:00 pm</option>
+<option value="12:05">12:05 pm</option>
+<option value="12:10">12:10 pm</option>
+<option value="12:15">12:15 pm</option>
+<option value="12:20">12:20 pm</option>
+<option value="12:25">12:25 pm</option>
+<option value="12:30">12:30 pm</option>
+<option value="12:35">12:35 pm</option>
+<option value="12:40">12:40 pm</option>
+<option value="12:45">12:45 pm</option>
+<option value="12:50">12:50 pm</option>
+<option value="12:55">12:55 pm</option>
+<option value="13:00">1:00 pm</option>
+<option value="13:05">1:05 pm</option>
+<option value="13:10">1:10 pm</option>
+<option value="13:15">1:15 pm</option>
+<option value="13:20">1:20 pm</option>
+<option value="13:25">1:25 pm</option>
+<option value="13:30">1:30 pm</option>
+<option value="13:35">1:35 pm</option>
+<option value="13:40">1:40 pm</option>
+<option value="13:45">1:45 pm</option>
+<option value="13:50">1:50 pm</option>
+<option value="13:55">1:55 pm</option>
+<option value="14:00">2:00 pm</option>
+<option value="14:05">2:05 pm</option>
+<option value="14:10">2:10 pm</option>
+<option value="14:15">2:15 pm</option>
+<option value="14:20">2:20 pm</option>
+<option value="14:25">2:25 pm</option>
+<option value="14:30">2:30 pm</option>
+<option value="14:35">2:35 pm</option>
+<option value="14:40">2:40 pm</option>
+<option value="14:45">2:45 pm</option>
+<option value="14:50">2:50 pm</option>
+<option value="14:55">2:55 pm</option>
+<option value="15:00">3:00 pm</option>
+<option value="15:05">3:05 pm</option>
+<option value="15:10">3:10 pm</option>
+<option value="15:15">3:15 pm</option>
+<option value="15:20">3:20 pm</option>
+<option value="15:25">3:25 pm</option>
+<option value="15:30">3:30 pm</option>
+<option value="15:35">3:35 pm</option>
+<option value="15:40">3:40 pm</option>
+<option value="15:45">3:45 pm</option>
+<option value="15:50">3:50 pm</option>
+<option value="15:55">3:55 pm</option>
+<option value="16:00">4:00 pm</option>
+<option value="16:05">4:05 pm</option>
+<option value="16:10">4:10 pm</option>
+<option value="16:15">4:15 pm</option>
+<option value="16:20">4:20 pm</option>
+<option value="16:25">4:25 pm</option>
+<option value="16:30">4:30 pm</option>
+<option value="16:35">4:35 pm</option>
+<option value="16:40">4:40 pm</option>
+<option value="16:45">4:45 pm</option>
+<option value="16:50">4:50 pm</option>
+<option value="16:55">4:55 pm</option>
+<option value="17:00">5:00 pm</option>
+<option value="17:05">5:05 pm</option>
+<option value="17:10">5:10 pm</option>
+<option value="17:15">5:15 pm</option>
+<option value="17:20">5:20 pm</option>
+<option value="17:25">5:25 pm</option>
+<option value="17:30">5:30 pm</option>
+<option value="17:35">5:35 pm</option>
+<option value="17:40">5:40 pm</option>
+<option value="17:45">5:45 pm</option>
+<option value="17:50">5:50 pm</option>
+<option value="17:55">5:55 pm</option>
+<option value="18:00">6:00 pm</option>
+                    </optgroup>
+                  </select>
+                  <svg class="icon" aria-hidden="true"><use href="#i-chevron"/></svg>
+                </span>
+              </div>
+            </details>
+          </fieldset>
+
+          <!-- Passengers (US-03): 1 to 99; above 12 is information, not an
+               error (US-03 AC-3). -->
+          <div class="question" id="q-pax">
+            <label class="question__label" for="pax" data-i18n="pax.label">How many passengers (not counting the driver)?</label>
+            <p class="field-error" id="pax-error" hidden></p>
+            <div class="stepper">
+              <button type="button" class="stepper__button js-only" data-step="-1" aria-controls="pax" aria-label="One fewer passenger" data-i18n-aria="pax.decrease" hidden><svg class="icon" aria-hidden="true"><use href="#i-minus"/></svg></button>
+              <input class="input input--number" id="pax" name="pax" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2" autocomplete="off">
+              <button type="button" class="stepper__button js-only" data-step="1" aria-controls="pax" aria-label="One more passenger" data-i18n-aria="pax.increase" hidden><svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg></button>
+            </div>
+            <div role="status" id="pax-status">
+              <p class="note note--info pax-split" id="pax-split" hidden><svg class="icon" aria-hidden="true"><use href="#i-info"/></svg><span data-i18n="pax.split">This group needs more than one van – we'll arrange this.</span></p>
+            </div>
+          </div>
+
+          <!-- Return trip (FR-06): no default. "Yes" reveals the return time
+               and the "van must stay" choice. -->
+          <fieldset class="question" id="q-return">
+            <legend class="question__legend" data-i18n="return.legend">Do you need a return trip?</legend>
+            <p class="field-error" id="return-error" hidden></p>
+            <ul class="choices choices--inline">
+              <li class="choice"><input class="choice__input" type="radio" name="return" id="return-yes" value="yes" aria-controls="return-details"><label class="choice__label" for="return-yes" data-i18n="yes">Yes</label></li>
+              <li class="choice"><input class="choice__input" type="radio" name="return" id="return-no" value="no"><label class="choice__label" for="return-no" data-i18n="no">No</label></li>
+            </ul>
+            <div class="reveal js-hide" id="return-details">
+              <div class="question question--nested" id="q-rtime">
+                <label class="question__label question__label--small" for="rtime"><span data-i18n="return.time">Return pickup time</span> <span class="nojs-only">(only if you need a return trip)</span></label>
+                <p class="field-error" id="rtime-error" hidden></p>
+                <span class="select-wrap select-wrap--time">
+                  <select class="select" id="rtime" name="rtime" data-time-select>
+                    <option value="" data-i18n="time.choose">Choose a time</option>
+                    <optgroup label="Morning" data-i18n-label="time.morning">
+<option value="07:00">7:00 am</option>
+<option value="07:05">7:05 am</option>
+<option value="07:10">7:10 am</option>
+<option value="07:15">7:15 am</option>
+<option value="07:20">7:20 am</option>
+<option value="07:25">7:25 am</option>
+<option value="07:30">7:30 am</option>
+<option value="07:35">7:35 am</option>
+<option value="07:40">7:40 am</option>
+<option value="07:45">7:45 am</option>
+<option value="07:50">7:50 am</option>
+<option value="07:55">7:55 am</option>
+<option value="08:00">8:00 am</option>
+<option value="08:05">8:05 am</option>
+<option value="08:10">8:10 am</option>
+<option value="08:15">8:15 am</option>
+<option value="08:20">8:20 am</option>
+<option value="08:25">8:25 am</option>
+<option value="08:30">8:30 am</option>
+<option value="08:35">8:35 am</option>
+<option value="08:40">8:40 am</option>
+<option value="08:45">8:45 am</option>
+<option value="08:50">8:50 am</option>
+<option value="08:55">8:55 am</option>
+<option value="09:00">9:00 am</option>
+<option value="09:05">9:05 am</option>
+<option value="09:10">9:10 am</option>
+<option value="09:15">9:15 am</option>
+<option value="09:20">9:20 am</option>
+<option value="09:25">9:25 am</option>
+<option value="09:30">9:30 am</option>
+<option value="09:35">9:35 am</option>
+<option value="09:40">9:40 am</option>
+<option value="09:45">9:45 am</option>
+<option value="09:50">9:50 am</option>
+<option value="09:55">9:55 am</option>
+<option value="10:00">10:00 am</option>
+<option value="10:05">10:05 am</option>
+<option value="10:10">10:10 am</option>
+<option value="10:15">10:15 am</option>
+<option value="10:20">10:20 am</option>
+<option value="10:25">10:25 am</option>
+<option value="10:30">10:30 am</option>
+<option value="10:35">10:35 am</option>
+<option value="10:40">10:40 am</option>
+<option value="10:45">10:45 am</option>
+<option value="10:50">10:50 am</option>
+<option value="10:55">10:55 am</option>
+<option value="11:00">11:00 am</option>
+<option value="11:05">11:05 am</option>
+<option value="11:10">11:10 am</option>
+<option value="11:15">11:15 am</option>
+<option value="11:20">11:20 am</option>
+<option value="11:25">11:25 am</option>
+<option value="11:30">11:30 am</option>
+<option value="11:35">11:35 am</option>
+<option value="11:40">11:40 am</option>
+<option value="11:45">11:45 am</option>
+<option value="11:50">11:50 am</option>
+<option value="11:55">11:55 am</option>
+                    </optgroup>
+                    <optgroup label="Afternoon" data-i18n-label="time.afternoon">
+<option value="12:00">12:00 pm</option>
+<option value="12:05">12:05 pm</option>
+<option value="12:10">12:10 pm</option>
+<option value="12:15">12:15 pm</option>
+<option value="12:20">12:20 pm</option>
+<option value="12:25">12:25 pm</option>
+<option value="12:30">12:30 pm</option>
+<option value="12:35">12:35 pm</option>
+<option value="12:40">12:40 pm</option>
+<option value="12:45">12:45 pm</option>
+<option value="12:50">12:50 pm</option>
+<option value="12:55">12:55 pm</option>
+<option value="13:00">1:00 pm</option>
+<option value="13:05">1:05 pm</option>
+<option value="13:10">1:10 pm</option>
+<option value="13:15">1:15 pm</option>
+<option value="13:20">1:20 pm</option>
+<option value="13:25">1:25 pm</option>
+<option value="13:30">1:30 pm</option>
+<option value="13:35">1:35 pm</option>
+<option value="13:40">1:40 pm</option>
+<option value="13:45">1:45 pm</option>
+<option value="13:50">1:50 pm</option>
+<option value="13:55">1:55 pm</option>
+<option value="14:00">2:00 pm</option>
+<option value="14:05">2:05 pm</option>
+<option value="14:10">2:10 pm</option>
+<option value="14:15">2:15 pm</option>
+<option value="14:20">2:20 pm</option>
+<option value="14:25">2:25 pm</option>
+<option value="14:30">2:30 pm</option>
+<option value="14:35">2:35 pm</option>
+<option value="14:40">2:40 pm</option>
+<option value="14:45">2:45 pm</option>
+<option value="14:50">2:50 pm</option>
+<option value="14:55">2:55 pm</option>
+<option value="15:00">3:00 pm</option>
+<option value="15:05">3:05 pm</option>
+<option value="15:10">3:10 pm</option>
+<option value="15:15">3:15 pm</option>
+<option value="15:20">3:20 pm</option>
+<option value="15:25">3:25 pm</option>
+<option value="15:30">3:30 pm</option>
+<option value="15:35">3:35 pm</option>
+<option value="15:40">3:40 pm</option>
+<option value="15:45">3:45 pm</option>
+<option value="15:50">3:50 pm</option>
+<option value="15:55">3:55 pm</option>
+<option value="16:00">4:00 pm</option>
+<option value="16:05">4:05 pm</option>
+<option value="16:10">4:10 pm</option>
+<option value="16:15">4:15 pm</option>
+<option value="16:20">4:20 pm</option>
+<option value="16:25">4:25 pm</option>
+<option value="16:30">4:30 pm</option>
+<option value="16:35">4:35 pm</option>
+<option value="16:40">4:40 pm</option>
+<option value="16:45">4:45 pm</option>
+<option value="16:50">4:50 pm</option>
+<option value="16:55">4:55 pm</option>
+<option value="17:00">5:00 pm</option>
+<option value="17:05">5:05 pm</option>
+<option value="17:10">5:10 pm</option>
+<option value="17:15">5:15 pm</option>
+<option value="17:20">5:20 pm</option>
+<option value="17:25">5:25 pm</option>
+<option value="17:30">5:30 pm</option>
+<option value="17:35">5:35 pm</option>
+<option value="17:40">5:40 pm</option>
+<option value="17:45">5:45 pm</option>
+<option value="17:50">5:50 pm</option>
+<option value="17:55">5:55 pm</option>
+<option value="18:00">6:00 pm</option>
+                    </optgroup>
+                  </select>
+                  <svg class="icon" aria-hidden="true"><use href="#i-chevron"/></svg>
+                </span>
+              </div>
+              <div class="choice">
+                <span class="check">
+                  <input class="choice__input" type="checkbox" id="stay" name="stay">
+                  <svg class="icon check__tick" aria-hidden="true"><use href="#i-tick"/></svg>
+                </span>
+                <label class="choice__label" for="stay"><span data-i18n="return.stay">Van must stay with us (for example, for equipment or safety)</span> <span class="nojs-only">(only if you need a return trip)</span></label>
+              </div>
+            </div>
+          </fieldset>
+        </section>
+
+        <!-- === Section: Anything special? (FR-09) === -->
+        <details class="disclosure form-section" id="special">
+          <summary class="disclosure__summary disclosure__summary--heading"><svg class="icon" aria-hidden="true"><use href="#i-chevron"/></svg><span data-i18n="section.extra">Anything special?</span></summary>
+          <div class="disclosure__body">
+            <ul class="choices">
+              <li class="choice">
+                <span class="check"><input class="choice__input" type="checkbox" id="wheelchair" name="wheelchair"><svg class="icon check__tick" aria-hidden="true"><use href="#i-tick"/></svg></span>
+                <label class="choice__label" for="wheelchair"><svg class="icon choice__icon" aria-hidden="true"><use href="#i-wheelchair"/></svg> <span data-i18n="special.wheelchair">Wheelchair access needed</span></label>
+              </li>
+              <li class="choice">
+                <span class="check"><input class="choice__input" type="checkbox" id="equipment" name="equipment"><svg class="icon check__tick" aria-hidden="true"><use href="#i-tick"/></svg></span>
+                <label class="choice__label" for="equipment"><svg class="icon choice__icon" aria-hidden="true"><use href="#i-equipment"/></svg> <span data-i18n="special.equipment">Large equipment</span></label>
+              </li>
+            </ul>
+            <div class="question question--nested">
+              <label class="question__label question__label--small" for="notes" data-i18n="special.notes">Anything else we should know?</label>
+              <textarea class="textarea" id="notes" name="notes" rows="4"></textarea>
+            </div>
+          </div>
+        </details>
+
+        <!-- === Section: The plain sentence (signature; hidden without JavaScript) === -->
+        <section class="sentence-box" id="sentence-box" aria-labelledby="sentence-title" hidden>
+          <h2 class="sentence-box__title" id="sentence-title" data-i18n="summary.title">Check your request</h2>
+          <p class="sentence" id="sentence"></p>
+          <p class="sentence-box__help" id="sentence-help"></p>
+          <p class="visually-hidden" aria-live="polite" id="sentence-live"></p>
+        </section>
+
+        <button type="submit" class="button button--primary button--block button--large" id="submit" data-i18n="submit">Send request</button>
+
+        <!-- Privacy notice, below the button (FR-49, US-44 AC-1). -->
+        <p class="privacy text-small"><span data-i18n="privacy">We use your name and phone number only to plan this trip. Transport coordinators and the van driver will see them. We keep them for 24 months.</span> <a href="#privacy-page" data-i18n="privacy.link">How we use your details</a></p>
+      </form>
+    </div>
+
+    <!-- === Section: Confirmation view (FR-04, US-01 AC-5) === -->
+    <div id="done-view" hidden>
+      <p class="note note--ok done-lead"><svg class="icon icon--32" aria-hidden="true"><use href="#i-confirmed"/></svg><span><span data-i18n="done.ref">Your reference is</span><br><strong class="ref ref--large" id="done-ref">PT-2026-0142</strong></span></p>
+      <section class="sentence-box" aria-labelledby="done-trip-title">
+        <h2 class="sentence-box__title" id="done-trip-title" data-i18n="section.trip">Your trip</h2>
+        <p class="sentence" id="done-sentence"></p>
+      </section>
+      <dl class="summary-list" id="done-summary"></dl>
+      <h2 class="done-next-title" data-i18n="done.what">What happens next</h2>
+      <p data-i18n="done.next">We'll send you a text when a coordinator confirms your trip. Final pickup details come on the morning of the trip.</p>
+      <p class="done-another"><a href="request.html" id="request-another" data-i18n="done.another">Request another trip</a></p>
+    </div>
+  </main>
+
+  <!-- === Section: Footer === -->
+  <footer class="page-footer page-col">
+    <p class="text-small" id="privacy-page" lang="en">The full privacy page ("How we use your details") is not part of this design sample.</p>
+    <nav aria-label="Plain Words pages" lang="en">
+      <ul class="footer-links text-small">
+        <li><a href="index.html">Foundations</a></li>
+        <li><a href="request.html" aria-current="page">Request form</a></li>
+        <li><a href="dashboard.html">Coordinator dashboard</a></li>
+        <li><a href="driver.html">Driver's route</a></li>
+        <li><a href="../index.html">All five directions</a></li>
+      </ul>
+    </nav>
+  </footer>
+
+  <!-- === Section: Prototype controls (not part of the design) === -->
+  <aside class="proto" aria-label="Prototype controls" lang="en">
+    <p class="proto__title">Prototype controls</p>
+    <div class="proto__row">
+      <button type="button" data-proto="fill">Fill with sample answers</button>
+      <button type="button" data-proto="errors">Show errors</button>
+      <button type="button" data-proto="confirm">Show confirmation</button>
+      <button type="button" data-proto="reset">Reset</button>
+    </div>
+  </aside>
+</body>
+</html>

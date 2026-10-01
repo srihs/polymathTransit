@@ -1,0 +1,203 @@
+/*
+ * tokens.css – Design tokens for direction 3, "Plain Words"
+ *
+ * What it is for:
+ *   Every raw value the direction uses (colour, type, space, borders, focus,
+ *   layout widths) lives here once, as a CSS custom property. Components and
+ *   pages use only the semantic aliases in sections 2 and 4, never the raw
+ *   values, so a later theme change touches this file alone (CLAUDE.md, "Less
+ *   code, and DRY").
+ *
+ * Source of every colour: brief.md section 6.3 (verified table) and the
+ * purple and neutral scales in research.md 1.4 and 1.5. Contrast ratios are
+ * written beside each alias; they were calculated with the WCAG 2.2 relative
+ * luminance formula and are repeated on index.html.
+ *
+ * Sections:
+ *   1. Global colour palette (raw values)
+ *   2. Semantic colour aliases
+ *   3. Typography (families, sizes, line heights, Sinhala factor)
+ *   4. Space, borders, focus and layout
+ *   5. Breakpoint overrides (desktop sizes)
+ *   6. Sinhala overrides (:lang(si))
+ */
+
+/* === Section: 1. Global colour palette (raw values) === */
+:root {
+  /* Brand, sampled from the college logo (research.md 1.2). */
+  --purple-50: #FCF4FD;
+  --purple-100: #F7E6FB;
+  --purple-700: #722A82;   /* crest purple, the brand colour */
+  --purple-800: #581D65;
+  --purple-900: #3F1448;
+
+  /* Neutrals on the wordmark grey's hue (research.md 1.5). */
+  --black: #000000;        /* tagline black */
+  --white: #FFFFFF;
+  --grey-panel: #F3F2F4;   /* the sentence box (brief 6.3) */
+  --grey-200: #DCDEE1;     /* decorative rules only */
+  --grey-400: #8F9298;     /* lightest grey allowed to draw an edge on white */
+  --grey-500: #63666B;     /* wordmark grey */
+  --grey-700: #3D4044;
+
+  /* Signal colours: each has one job (brief 3.2, 6.3). */
+  --green-700: #197037;
+  --green-50: #E7F7E9;
+  --amber-300: #FFBD59;
+  --red-700: #B32228;
+  --red-50: #FFEDEB;
+  --red-800: #8B1A20;      /* destructive hover only: white on it 9.27:1 */
+  --blue-700: #1A609E;
+  --blue-50: #E9F3FF;
+}
+
+/* === Section: 2. Semantic colour aliases === */
+:root {
+  /* Text */
+  --c-text: var(--black);              /* 21:1 on white; 18.82:1 on panel */
+  --c-text-2: var(--grey-500);         /* hints: 5.76:1 on white; 5.17:1 on panel */
+  --c-text-strong-2: var(--grey-700);  /* disabled text: 10.42:1 on white; 7.73:1 on grey-200 */
+  --c-text-on-brand: var(--white);     /* 8.86:1 on brand */
+
+  /* Brand */
+  --c-brand: var(--purple-700);        /* links, primary buttons, the sentence rule: 8.86:1 */
+  --c-brand-visited: var(--purple-800);/* visited links, button hover: 11.81:1 */
+  --c-brand-pressed: var(--purple-900);/* pressed primary button: 14.95:1 */
+
+  /* Surfaces */
+  --c-ground: var(--white);
+  --c-panel: var(--grey-panel);        /* the sentence box, inset text */
+  --c-disabled-fill: var(--grey-200);  /* disabled button fill */
+  --c-rule: var(--black);              /* structural rules and input borders */
+  --c-rule-quiet: var(--grey-400);     /* timeline hour lines, table row rules: 3.12:1 */
+  --c-rule-decor: var(--grey-200);     /* decoration only, never an edge */
+
+  /* Status and signals (word + icon + colour, never colour alone) */
+  --c-ok: var(--green-700);            /* 6.15:1 on white; 5.53:1 on tint */
+  --c-ok-tint: var(--green-50);
+  --c-attention: var(--amber-300);     /* fill only, always with black text (12.68:1) and a 2 px black border */
+  --c-attention-edge: var(--black);
+  --c-danger: var(--red-700);          /* 6.61:1 on white; 5.85:1 on tint */
+  --c-danger-tint: var(--red-50);
+  --c-danger-hover: var(--red-800);    /* white text on it 9.27:1 */
+  --c-info: var(--blue-700);           /* 6.54:1 on white; 5.83:1 on tint */
+  --c-info-tint: var(--blue-50);
+  --c-neutral-edge: var(--grey-500);   /* Submitted, Cancelled edges: 5.76:1 */
+
+  /* Focus: 4 px brand outline with a 2 px white gap (brief 6.3). */
+  --c-focus: var(--purple-700);        /* 8.86:1 on white; 7.94:1 on panel */
+  --c-focus-gap: var(--white);
+
+  /* Prototype controls bar: deliberately plain and outside the design. */
+  --proto-ground: var(--white);
+  --proto-text: var(--grey-700);
+  --proto-edge: var(--grey-400);
+  --proto-button: #F5F7F9;          /* neutral-50, research.md 1.5 */
+  --proto-button-edge: var(--grey-500);
+}
+
+/* === Section: 3. Typography === */
+:root {
+  /* Latin face first, then the Sinhala face, then system fallbacks (brief 3.6). */
+  --font-text: "Atkinson Hyperlegible Next", "Noto Sans Sinhala", system-ui, -apple-system, "Segoe UI", Roboto, "Nirmala UI", "Iskoola Pota", "Sinhala Sangam MN", sans-serif;
+  --font-proto: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "Atkinson Hyperlegible Mono", ui-monospace, "Cascadia Mono", Consolas, "Noto Sans Sinhala", "Nirmala UI", "Iskoola Pota", "Sinhala Sangam MN", monospace;
+
+  --weight-regular: 400;
+  --weight-bold: 700;
+
+  /* Sinhala size factor: 1 for English, 0.92 under :lang(si) (section 6). */
+  --si: 1;
+
+  /* Type scale, phone sizes (brief 6.3). Desktop overrides in section 5. */
+  --size-title: 32px;      /* <h1> */
+  --size-section: 26px;    /* <h2> section headings (added: between title and question) */
+  --size-question: 21px;   /* field labels and legends: the question is the label */
+  --size-body: 19px;       /* text, inputs, the sentence */
+  --size-small: 16px;      /* hints, metadata: never smaller */
+  --size-ref: 24px;        /* references and phone numbers, mono */
+
+  --leading-title: 1.15;
+  --leading-section: 1.25;
+  --leading-question: 1.3;
+  --leading-body: 1.5;
+  --leading-small: 1.45;
+  --leading-ref: 1.2;
+
+  /* Text measure (brief 6.3: at most 34 em on dashboard text). */
+  --measure: 34em;
+}
+
+/* === Section: 4. Space, borders, focus and layout === */
+:root {
+  /* 4 px base; scale 4, 8, 16, 24, 32, 48, 64 (brief 6.3). */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 16px;
+  --space-4: 24px;
+  --space-5: 32px;
+  --space-6: 48px;
+  --space-7: 64px;
+
+  /* Semantic spacing */
+  --gap-question: var(--space-5);   /* between questions on the form */
+  --gap-section: var(--space-6);    /* between form sections */
+  --page-margin: var(--space-3);    /* phone margins */
+
+  /* Borders: corners are square everywhere; no shadows for elevation. */
+  --radius: 0;
+  --border-field: 2px;        /* input borders, black */
+  --border-field-focus: 3px;  /* fields thicken to 3 px on focus */
+  --border-status: 2px;       /* badge and alert borders */
+  --rule-sentence: 6px;       /* the sentence box's brand rule */
+  --rule-header: 2px;         /* the letterhead rule under the header */
+
+  /* Focus ring */
+  --focus-width: 4px;
+  --focus-gap: 2px;
+
+  /* Targets */
+  --target-phone: 48px;       /* 44 px minimum; 48 px chosen for outdoor use */
+  --target-desktop: 32px;     /* 24 px minimum on the dashboard */
+  --control-height: 52px;     /* text inputs and selects */
+
+  /* Layout widths */
+  --width-phone-column: 480px;  /* phone pages on wider screens */
+  --width-text: 640px;          /* text column on desktop */
+  --width-dashboard: 1200px;    /* dashboard content */
+}
+
+/* === Section: 5. Breakpoint overrides (desktop sizes) === */
+@media (min-width: 768px) {
+  :root {
+    --size-title: 40px;
+    --size-section: 28px;
+    --page-margin: var(--space-5);
+  }
+}
+
+/* === Section: 6. Sinhala overrides (:lang(si)) === */
+/* Noto Sans Sinhala draws its letters larger than Atkinson's x-height, so the
+   same font-size looks bigger in Sinhala. 0.92 brings the two into line
+   (brief 6.3). Vowel signs reach far above and below the letter body, so
+   Sinhala needs more line height (research.md 3.2). */
+:lang(si) {
+  --si: 0.92;
+  --leading-body: 1.7;
+  --leading-question: 1.55;
+  --leading-title: 1.4;
+  --leading-section: 1.45;
+  --leading-small: 1.65;
+}
+
+/* An English element inside a Sinhala page (for example the D-09 note)
+   returns to the English factor and line heights. Inline spans of English
+   data inside Sinhala sentences are handled in components.css, "Base". */
+:lang(en) {
+  --si: 1;
+  --leading-body: 1.5;
+  --leading-question: 1.3;
+  --leading-title: 1.15;
+  --leading-section: 1.25;
+  --leading-small: 1.45;
+}

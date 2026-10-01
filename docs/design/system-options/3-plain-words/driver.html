@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<!--
+  driver.html – The driver's route link, direction 3 "Plain Words"
+
+  Purpose:      What Sunil Rathnayake sees on his phone at 9:40 am on Tuesday
+                13/10/2026 when he opens the route link for Van 1. The next
+                stop is one large sentence ("Next: pick up 1 passenger at
+                Branch B at 10:00 am.") with Navigate, Call, Done and No-show;
+                done stops are folded away; later stops follow in order.
+  Direction:    3 – Plain Words (brief.md section 6.3)
+  Requirements: FR-61, FR-65, FR-67, NFR-03, NFR-04, NFR-12, NFR-18, US-52,
+                US-60, D-09, Q-17
+  Depends on:   tokens.css, components.css, pages.css, script.js,
+                ../assets/crest.png, Google Fonts (Atkinson Hyperlegible Next,
+                Atkinson Hyperlegible Mono, Noto Sans Sinhala)
+  Sections:     Icon sprite; Letterhead; Language switch; Main: title and
+                route facts, offline banner, done stops (folded), next stop,
+                later stops, end of day; Footer; Prototype controls
+  Without JavaScript: the whole route is readable; Done, No-show and Navigate
+                do nothing, the Call links work. The stops are rendered by the
+                same functions in script.js that rebuild them after an action.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Today's route, Van 1 – PolymathTransit (Plain Words)</title>
+  <link rel="icon" href="../assets/crest.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Mono:wght@400&amp;family=Atkinson+Hyperlegible+Next:wght@400;700&amp;family=Noto+Sans+Sinhala:wght@400;700&amp;display=swap">
+  <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="components.css">
+  <link rel="stylesheet" href="pages.css">
+  <script src="script.js" defer></script>
+</head>
+<body class="page-phone" data-page="driver">
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <!-- === Section: Icon sprite (Plain Words icons, drawn for this direction: outline, 2 px stroke, round ends, 24 px grid) === -->
+  <svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+    <symbol id="i-phone" viewBox="0 0 24 24"><path d="M7 3h3l1.2 5-2.4 1.6c1.1 2.4 3.2 4.5 5.6 5.6L16 12.8l5 1.2v3c0 2.2-1.8 4-4 4C9.3 20.4 3.6 14.7 3 7c0-2.2 1.8-4 4-4z"/></symbol>
+    <symbol id="i-navigate" viewBox="0 0 24 24"><path d="M5 20v-7a5 5 0 0 1 5-5h9"/><path d="M15 4l4 4-4 4"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+    <symbol id="i-chevron" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></symbol>
+    <symbol id="i-sort" viewBox="0 0 24 24"><path d="M12 4v16M7 15l5 5 5-5"/></symbol>
+    <symbol id="i-wheelchair" viewBox="0 0 24 24"><circle cx="11" cy="4.5" r="1.6"/><path d="M11 8v6h5.5l2.5 5.5"/><path d="M11 11h4.5"/><path d="M8 10.8a5.6 5.6 0 1 0 7.6 7.4"/></symbol>
+    <symbol id="i-warning" viewBox="0 0 24 24"><path d="M12 3.5L22 20H2z"/><path d="M12 10v4.5M12 17.4v.1"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.6v.1"/></symbol>
+    <symbol id="i-error" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v6M12 16.4v.1"/></symbol>
+    <symbol id="i-tick" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></symbol>
+    <symbol id="i-cross" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></symbol>
+    <symbol id="i-undo" viewBox="0 0 24 24"><path d="M9 13L4 8l5-5"/><path d="M4 8h10a6 6 0 0 1 0 12h-4"/></symbol>
+    <symbol id="i-offline" viewBox="0 0 24 24"><path d="M3 3l18 18"/><path d="M5 10.5a11 11 0 0 1 4-2.2M13.5 8a11 11 0 0 1 5.5 2.5"/><path d="M8.5 14a6 6 0 0 1 4-1.6"/><path d="M12 18.4v.1"/></symbol>
+    <symbol id="i-submitted" viewBox="0 0 24 24"><path d="M4 13h4l1.5 3h5l1.5-3h4v7H4z"/><path d="M12 3v9M8.5 8.5L12 12l3.5-3.5"/></symbol>
+    <symbol id="i-proposed" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12v.1M12 12v.1M16 12v.1" stroke-width="3"/></symbol>
+    <symbol id="i-confirmed" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l3 3 5-6"/></symbol>
+    <symbol id="i-declined" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/></symbol>
+    <symbol id="i-cancelled" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M5.8 18.2L18.2 5.8"/></symbol>
+    <symbol id="i-completed" viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M8 12.5l3 3 5-6"/></symbol>
+    <symbol id="i-noshow" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.2"/><path d="M6 20a6 6 0 0 1 12 0"/><path d="M3.5 3.5l17 17"/></symbol>
+    <symbol id="i-late" viewBox="0 0 24 24"><circle cx="11" cy="13" r="8"/><path d="M11 9v4h3"/><path d="M19 2.5v4M17 4.5h4"/></symbol>
+    <symbol id="i-shared" viewBox="0 0 24 24"><circle cx="8.5" cy="8" r="3"/><circle cx="16.5" cy="9" r="2.5"/><path d="M3 20a5.5 5.5 0 0 1 11 0"/><path d="M14.5 15.2A4.5 4.5 0 0 1 21 19"/></symbol>
+    <symbol id="i-gap" viewBox="0 0 24 24"><path d="M7 5H4v14h3M17 5h3v14h-3"/><circle cx="12" cy="12" r="2.4" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="i-hours" viewBox="0 0 24 24"><path d="M14 4v16" stroke-dasharray="2.5 3"/><path d="M3 12h17M17 9l3 3-3 3"/></symbol>
+    <symbol id="i-newperson" viewBox="0 0 24 24"><circle cx="9.5" cy="8" r="3.2"/><path d="M3.5 20a6 6 0 0 1 12 0"/><path d="M19 7v6M16 10h6"/></symbol>
+    <symbol id="i-repeat" viewBox="0 0 24 24"><path d="M4 11V9.5A3.5 3.5 0 0 1 7.5 6H19"/><path d="M16 3l3 3-3 3"/><path d="M20 13v1.5a3.5 3.5 0 0 1-3.5 3.5H5"/><path d="M8 21l-3-3 3-3"/></symbol>
+    <symbol id="i-early" viewBox="0 0 24 24"><path d="M3 18h18"/><path d="M7 18a5 5 0 0 1 10 0"/><path d="M12 6.5v2.5M5.6 10.6l1.6 1.6M18.4 10.6l-1.6 1.6"/></symbol>
+    <symbol id="i-unconfirmed" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" stroke-dasharray="3 2.6"/><path d="M9.6 9.6a2.5 2.5 0 1 1 3.4 2.3c-.6.3-1 .8-1 1.4v.6M12 16.6v.1"/></symbol>
+    <symbol id="i-equipment" viewBox="0 0 24 24"><path d="M3 8h18v12H3z"/><path d="M9 8V5h6v3M3 13h18"/></symbol>
+  </svg>
+
+  <!-- === Section: Letterhead (the header landmark also holds the language switch) === -->
+  <header>
+  <div class="letterhead">
+    <div class="letterhead__inner">
+      <span class="letterhead__id">
+        <img class="letterhead__crest" src="../assets/crest.png" alt="Polymath College crest" width="37" height="40">
+        <span>
+          <span class="letterhead__name">PolymathTransit</span>
+          <span class="letterhead__from"><span data-i18n="x.office">Transport office</span> <a href="tel:+94110000100" class="ref">011 000 0100</a></span>
+        </span>
+      </span>
+    </div>
+  </div>
+
+  <!-- === Section: Language switch (FR-65) === -->
+  <div class="lang" role="group" aria-labelledby="lang-label">
+    <div class="lang__row">
+      <span class="lang__label" id="lang-label" data-i18n="lang.label">Language</span>
+      <ul class="lang__options" data-lang-buttons hidden>
+        <li><button type="button" class="lang__option" data-lang="en" lang="en" aria-pressed="true"><svg class="icon" aria-hidden="true"><use href="#i-tick"/></svg>English</button></li>
+        <li><button type="button" class="lang__option" data-lang="si" lang="si" aria-pressed="false"><svg class="icon" aria-hidden="true"><use href="#i-tick"/></svg>සිංහල</button></li>
+      </ul>
+      <!-- Without JavaScript the switch is two links to this page. In
+           production the server renders the chosen language. -->
+      <ul class="lang__options nojs-only">
+        <li><a class="lang__option" href="driver.html?lang=en" lang="en" aria-current="true"><svg class="icon" aria-hidden="true"><use href="#i-tick"/></svg>English</a></li>
+        <li><a class="lang__option" href="driver.html?lang=si" lang="si" hreflang="si">සිංහල</a></li>
+      </ul>
+    </div>
+    <p class="lang__note" lang="en">This Sinhala text is a draft for review by native speakers (D-09).</p>
+    <p class="lang__note" role="status" data-lang-status></p>
+  </div>
+  </header>
+
+  <!-- === Section: Main === -->
+  <main id="main" class="page-col route">
+    <h1 data-i18n="driver.title">Today's route</h1>
+    <p class="route__facts" id="route-facts">
+      Van 1 · Tuesday 13/10/2026 · Driver: Sunil Rathnayake
+    </p>
+    <p class="route__updated text-small text-2" id="route-updated">
+      Route updated at 7:06 am
+    </p>
+
+    <!-- Offline banner (NFR-18): shown by the prototype control. -->
+    <div role="status" id="offline-status"></div>
+
+    <!-- Done stops, folded; the summary is the progress sentence. -->
+    <details class="disclosure route__done" id="done-stops">
+      <summary class="disclosure__summary"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-chevron"/></svg><h2 class="route__progress" id="progress">4 of 14 stops done</h2></summary>
+      <ol class="stops stops--done"><li class="stop is-done" id="stop-1"><h3 class="stop__head"><span class="stop__time">7:30 am</span> <span class="stop__num">Stop 1</span></h3><p class="stop__sentence">Pick up 2 passengers at Branch A (main branch).</p><p class="stop__result"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-confirmed"/></svg><span>Done at 7:31 am</span></p></li><li class="stop is-done" id="stop-2"><h3 class="stop__head"><span class="stop__time">7:55 am</span> <span class="stop__num">Stop 2</span></h3><p class="stop__sentence">Drop off 2 passengers at Branch C.</p><p class="stop__result"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-confirmed"/></svg><span>Done at 7:56 am</span></p></li><li class="stop is-done" id="stop-3"><h3 class="stop__head"><span class="stop__time">9:05 am</span> <span class="stop__num">Stop 3</span></h3><p class="stop__sentence">Pick up 11 passengers at Branch A (main branch).</p><p class="stop__result"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-confirmed"/></svg><span>Done at 9:06 am</span></p></li><li class="stop is-done" id="stop-4"><h3 class="stop__head"><span class="stop__time">9:30 am</span> <span class="stop__num">Stop 4</span></h3><p class="stop__sentence">Drop off 11 passengers at the Aquatic Centre.</p><p class="stop__result"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-confirmed"/></svg><span>Done at 9:29 am</span></p></li></ol>
+    </details>
+
+    <!-- === Section: Next stop === -->
+    <section class="next-stop" aria-labelledby="next-title">
+      <h2 class="visually-hidden" id="next-title" data-i18n="driver.next">Next stop</h2>
+      <div role="status" id="stop-status"></div>
+      <ol class="stops" id="next-list">
+        <li class="stop" id="stop-5"><h3 class="stop__head"><span class="stop__time">10:00 am</span> <span class="stop__num">Stop 5</span> <span class="stop__in">in 20 min</span></h3><p class="stop__sentence">Next: pick up 1 passenger at Branch B at 10:00 am.</p><dl class="stop__facts"><div><dt>Booking</dt><dd><span class="ref">PT-2026-0145</span></dd></div><div><dt>Contact</dt><dd>Shamila Rodrigo <span class="stop__phone">077 000 0145</span></dd></div></dl><p class="stop__note"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-gap"/></svg> <strong>Gap job</strong></p><div class="stop__tools"><button type="button" class="button button--secondary" data-navigate="5"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-navigate"/></svg><span>Navigate</span><span class="visually-hidden"> Stop 5</span></button><a class="button button--secondary" href="tel:+94770000145"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-phone"/></svg><span>Call</span><span class="visually-hidden"> Shamila Rodrigo</span></a></div><p class="stop__navnote" role="status"></p><div class="stop__actions"><button type="button" class="button button--primary button--large" data-done="5"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-tick"/></svg><span>Done</span><span class="visually-hidden">, Stop 5</span></button><button type="button" class="button button--secondary" data-noshow="5" id="noshow-5"><span>No-show</span><span class="visually-hidden">, Stop 5</span></button></div></li>
+      </ol>
+    </section>
+
+    <!-- === Section: Later stops === -->
+    <section aria-labelledby="later-title">
+      <h2 class="route__subtitle" id="later-title" data-i18n="x.later">Later stops</h2>
+      <ol class="stops" id="later-list">
+        <li class="stop" id="stop-6"><h3 class="stop__head"><span class="stop__time">10:20 am</span> <span class="stop__num">Stop 6</span></h3><p class="stop__sentence">Drop off 1 passenger at the Stationery supplier.</p><dl class="stop__facts"><div><dt>Booking</dt><dd><span class="ref">PT-2026-0145</span></dd></div></dl><p class="stop__note"><strong>Note:</strong> Wait about 15 minutes.</p><div class="stop__tools"><button type="button" class="button button--secondary" data-navigate="6"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-navigate"/></svg><span>Navigate</span><span class="visually-hidden"> Stop 6</span></button></div><p class="stop__navnote" role="status"></p><div class="stop__actions"><button type="button" class="button button--secondary" data-done="6"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-tick"/></svg><span>Done</span><span class="visually-hidden">, Stop 6</span></button><button type="button" class="button button--quiet button--noshow" data-noshow="6" id="noshow-6"><span>No-show</span><span class="visually-hidden">, Stop 6</span></button></div></li>
+        <li class="stop" id="stop-7"><h3 class="stop__head"><span class="stop__time">10:35 am</span> <span class="stop__num">Stop 7</span></h3><p class="stop__sentence">Pick up 1 passenger at the Stationery supplier.</p><dl class="stop__facts"><div><dt>Booking</dt><dd><span class="ref">PT-2026-0145</span></dd></div><div><dt>Contact</dt><dd>Shamila Rodrigo <span class="stop__phone">077 000 0145</span></dd></div></dl><p class="stop__note"><strong>Note:</strong> She returns with boxes.</p><div class="stop__tools"><button type="button" class="button button--secondary" data-navigate="7"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-navigate"/></svg><span>Navigate</span><span class="visually-hidden"> Stop 7</span></button><a class="button button--secondary" href="tel:+94770000145"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-phone"/></svg><span>Call</span><span class="visually-hidden"> Shamila Rodrigo</span></a></div><p class="stop__navnote" role="status"></p><div class="stop__actions"><button type="button" class="button button--secondary" data-done="7"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-tick"/></svg><span>Done</span><span class="visually-hidden">, Stop 7</span></button><button type="button" class="button button--quiet button--noshow" data-noshow="7" id="noshow-7"><span>No-show</span><span class="visually-hidden">, Stop 7</span></button></div></li>
+        <li class="stop" id="stop-8"><h3 class="stop__head"><span class="stop__time">10:50 am</span> <span class="stop__num">Stop 8</span></h3><p class="stop__sentence">Drop off 1 passenger at Branch B.</p><dl class="stop__facts"><div><dt>Booking</dt><dd><span class="ref">PT-2026-0145</span></dd></div></dl><p class="stop__note"><strong>Note:</strong> Then go to the Aquatic Centre (arrive by 11:10 am).</p><div class="stop__tools"><button type="button" class="button button--secondary" data-navigate="8"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-navigate"/></svg><span>Navigate</span><span class="visually-hidden"> Stop 8</span></button></div><p class="stop__navnote" role="status"></p><div class="stop__actions"><button type="button" class="button button--secondary" data-done="8"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-tick"/></svg><span>Done</span><span class="visually-hidden">, Stop 8</span></button><button type="button" class="button button--quiet button--noshow" data-noshow="8" id="noshow-8"><span>No-show</span><span class="visually-hidden">, Stop 8</span></button></div></li>
+        <li class="stop" id="stop-9"><h3 class="stop__head"><span class="stop__time">11:30 am</span> <span class="stop__num">Stop 9</span></h3><p class="stop__sentence">Pick up 11 passengers at the Aquatic Centre.</p><dl class="stop__facts"><div><dt>Booking</dt><dd><span class="ref">PT-2026-0119</span></dd></div><div><dt>Contact</dt><dd>Ruwan Silva <span class="stop__phone">077 000 0119</span></dd></div></dl><div class="stop__tools"><button type="button" class="button button--secondary" data-navigate="9"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-navigate"/></svg><span>Navigate</span><span class="visually-hidden"> Stop 9</span></button><a class="button button--secondary" href="tel:+94770000119"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-phone"/></svg><span>Call</span><span class="visually-hidden"> Ruwan Silva</span></a></div><p class="stop__navnote" role="status"></p><div class="stop__actions"><button type="button" class="button button--secondary" data-done="9"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-tick"/></svg><span>Done</span><span class="visually-hidden">, Stop 9</span></button><button type="button" class="button button--quiet button--noshow" data-noshow="9" id="noshow-9"><span>No-show</span><span class="visually-hidden">, Stop 9</span></button></div></li>
+        <li class="stop" id="stop-10"><h3 class="stop__head"><span class="stop__time">11:55 am</span> <span class="stop__num">Stop 10</span></h3><p class="stop__sentence">Drop off 11 passengers at Branch A (main branch).</p><dl class="stop__facts"><div><dt>Booking</dt><dd><span class="ref">PT-2026-0119</span></dd></div></dl><div class="stop__tools"><button type="button" class="button button--secondary" data-navigate="10"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-navigate"/></svg><span>Navigate</span><span class="visually-hidden"> Stop 10</span></button></div><p class="stop__navnote" role="status"></p><div class="stop__actions"><button type="button" class="button button--secondary" data-done="10"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-tick"/></svg><span>Done</span><span class="visually-hidden">, Stop 10</span></button><button type="button" class="button button--quiet button--noshow" data-noshow="10" id="noshow-10"><span>No-show</span><span class="visually-hidden">, Stop 10</span></button></div></li>
+        <li class="stop" id="stop-11"><h3 class="stop__head"><span class="stop__time">1:30 pm</span> <span class="stop__num">Stop 11</span></h3><p class="stop__sentence">Pick up 6 passengers at Branch A (main branch).</p><dl class="stop__facts"><div><dt>Booking</dt><dd><span class="ref">PT-2026-0150</span></dd></div><div><dt>Contact</dt><dd>Priyanka Wijesekara <span class="stop__phone">077 000 0150</span></dd></div></dl><div class="stop__tools"><button type="button" class="button button--secondary" data-navigate="11"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-navigate"/></svg><span>Navigate</span><span class="visually-hidden"> Stop 11</span></button><a class="button button--secondary" href="tel:+94770000150"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-phone"/></svg><span>Call</span><span class="visually-hidden"> Priyanka Wijesekara</span></a></div><p class="stop__navnote" role="status"></p><div class="stop__actions"><button type="button" class="button button--secondary" data-done="11"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-tick"/></svg><span>Done</span><span class="visually-hidden">, Stop 11</span></button><button type="button" class="button button--quiet button--noshow" data-noshow="11" id="noshow-11"><span>No-show</span><span class="visually-hidden">, Stop 11</span></button></div></li>
+        <li class="stop" id="stop-12"><h3 class="stop__head"><span class="stop__time">1:45 pm</span> <span class="stop__num">Stop 12</span></h3><p class="stop__sentence">Drop off 6 passengers at Branch B.</p><dl class="stop__facts"><div><dt>Booking</dt><dd><span class="ref">PT-2026-0150</span></dd></div></dl><div class="stop__tools"><button type="button" class="button button--secondary" data-navigate="12"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-navigate"/></svg><span>Navigate</span><span class="visually-hidden"> Stop 12</span></button></div><p class="stop__navnote" role="status"></p><div class="stop__actions"><button type="button" class="button button--secondary" data-done="12"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-tick"/></svg><span>Done</span><span class="visually-hidden">, Stop 12</span></button><button type="button" class="button button--quiet button--noshow" data-noshow="12" id="noshow-12"><span>No-show</span><span class="visually-hidden">, Stop 12</span></button></div></li>
+        <li class="stop" id="stop-13"><h3 class="stop__head"><span class="stop__time">3:30 pm</span> <span class="stop__num">Stop 13</span></h3><p class="stop__sentence">Pick up 6 passengers at Branch B.</p><dl class="stop__facts"><div><dt>Booking</dt><dd><span class="ref">PT-2026-0150</span></dd></div><div><dt>Contact</dt><dd>Priyanka Wijesekara <span class="stop__phone">077 000 0150</span></dd></div></dl><div class="stop__tools"><button type="button" class="button button--secondary" data-navigate="13"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-navigate"/></svg><span>Navigate</span><span class="visually-hidden"> Stop 13</span></button><a class="button button--secondary" href="tel:+94770000150"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-phone"/></svg><span>Call</span><span class="visually-hidden"> Priyanka Wijesekara</span></a></div><p class="stop__navnote" role="status"></p><div class="stop__actions"><button type="button" class="button button--secondary" data-done="13"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-tick"/></svg><span>Done</span><span class="visually-hidden">, Stop 13</span></button><button type="button" class="button button--quiet button--noshow" data-noshow="13" id="noshow-13"><span>No-show</span><span class="visually-hidden">, Stop 13</span></button></div></li>
+        <li class="stop" id="stop-14"><h3 class="stop__head"><span class="stop__time">3:45 pm</span> <span class="stop__num">Stop 14</span></h3><p class="stop__sentence">Drop off 6 passengers at Branch A (main branch).</p><dl class="stop__facts"><div><dt>Booking</dt><dd><span class="ref">PT-2026-0150</span></dd></div></dl><p class="stop__note"><strong>Note:</strong> End of day at Branch A.</p><div class="stop__tools"><button type="button" class="button button--secondary" data-navigate="14"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-navigate"/></svg><span>Navigate</span><span class="visually-hidden"> Stop 14</span></button></div><p class="stop__navnote" role="status"></p><div class="stop__actions"><button type="button" class="button button--secondary" data-done="14"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-tick"/></svg><span>Done</span><span class="visually-hidden">, Stop 14</span></button><button type="button" class="button button--quiet button--noshow" data-noshow="14" id="noshow-14"><span>No-show</span><span class="visually-hidden">, Stop 14</span></button></div></li>
+      </ol>
+    </section>
+
+    <p class="route__end"><svg class="icon" aria-hidden="true"><use href="#i-tick"/></svg><strong data-i18n="driver.end">End of day at Branch A</strong></p>
+  </main>
+
+  <!-- === Section: Footer === -->
+  <footer class="page-footer page-col">
+    <nav aria-label="Plain Words pages" lang="en">
+      <ul class="footer-links text-small">
+        <li><a href="index.html">Foundations</a></li>
+        <li><a href="request.html">Request form</a></li>
+        <li><a href="dashboard.html">Coordinator dashboard</a></li>
+        <li><a href="driver.html" aria-current="page">Driver's route</a></li>
+        <li><a href="../index.html">All five directions</a></li>
+      </ul>
+    </nav>
+  </footer>
+
+  <!-- === Section: Prototype controls (not part of the design) === -->
+  <aside class="proto" aria-label="Prototype controls" lang="en">
+    <p class="proto__title">Prototype controls</p>
+    <div class="proto__row">
+      <button type="button" data-proto="offline">Simulate offline</button>
+      <button type="button" data-proto="done-next">Mark next stop done</button>
+      <button type="button" data-proto="reset">Reset</button>
+    </div>
+  </aside>
+</body>
+</html>

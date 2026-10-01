@@ -1,0 +1,1711 @@
+/*
+ * components.css – Components and their states for direction 3, "Plain Words"
+ *
+ * What it is for:
+ *   Every reusable part of the direction, built only from the aliases in
+ *   tokens.css. The look is a clear note from the transport office: black
+ *   type on white, black field borders, square corners, no shadows, and the
+ *   brand purple kept for actions, links, focus and the sentence's rule.
+ *   Only four things are allowed a container (brief 6.3): the sentence box,
+ *   the error summary, the selected-booking panel and the status badges.
+ *
+ * State classes such as .is-hover, .is-focus and .is-pressed exist only so
+ * index.html can show a state without the pointer; real pages use the
+ * pseudo-classes.
+ *
+ * Sections:
+ *   1. Base (box model, body text, Sinhala size factor, links, headings)
+ *   2. Focus
+ *   3. Utilities (visually hidden, skip link, no-JS helpers)
+ *   4. Icons
+ *   5. Letterhead (page header) and language switch
+ *   6. Coordinator navigation
+ *   7. Buttons
+ *   8. Questions: labels, hints, errors, text fields, selects
+ *   9. Choices: radios and checkboxes
+ *  10. Date choice
+ *  11. Passenger stepper
+ *  12. Disclosure (details and summary)
+ *  13. Extra stops
+ *  14. Notes (information, success, warning)
+ *  15. Error summary
+ *  16. The plain sentence (signature)
+ *  17. Status badges and flags
+ *  18. Summary list
+ *  19. Data table
+ *  20. Selected-booking panel
+ *  21. Day timeline
+ *  22. Driver stops
+ *  23. Dialog and status messages with Undo
+ *  24. Prototype controls
+ *  25. Forced colours and reduced motion
+ */
+
+/* === Section: 1. Base === */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--c-ground);
+  color: var(--c-text);
+  font-family: var(--font-text);
+  font-size: calc(var(--size-body) * var(--si));
+  line-height: var(--leading-body);
+  font-weight: var(--weight-regular);
+  /* Never let the browser fake bold or italic Sinhala (research.md 3.2). */
+  font-synthesis: none;
+}
+.table,
+.stop__time,
+.run__time,
+.timeline {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Every block that sets its own size recalculates with the language's factor,
+   so an element switched to Sinhala is resized as well as re-worded. */
+p, li, dd, dt, td, th, label, legend, summary, button, input, select, textarea, caption, figcaption {
+  font-size: calc(var(--size-body) * var(--si));
+}
+
+/* English data (place and people's names) inside Sinhala text, and Sinhala
+   words inside English text, keep the same visual size (brief 3.5). */
+:lang(si) span[lang="en"] {
+  font-size: calc(1em / 0.92);
+}
+:lang(en) span[lang="si"] {
+  font-size: 0.92em;
+}
+
+h1, h2, h3, h4 {
+  margin: 0;
+  font-weight: var(--weight-bold);
+}
+
+h1 {
+  font-size: calc(var(--size-title) * var(--si));
+  line-height: var(--leading-title);
+}
+
+h2 {
+  font-size: calc(var(--size-section) * var(--si));
+  line-height: var(--leading-section);
+}
+
+h3 {
+  font-size: calc(var(--size-question) * var(--si));
+  line-height: var(--leading-question);
+}
+
+p {
+  margin: 0;
+  max-width: var(--measure);
+}
+
+/* Links are always underlined: colour is never the only signal (brief 3.2). */
+a {
+  color: var(--c-brand);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.18em;
+}
+a:visited {
+  color: var(--c-brand-visited);
+}
+/* Sinhala vowel signs reach below the line: drop the underline clear of
+   them (research.md 3.2). */
+:lang(si) a,
+:lang(si) .button--quiet,
+:lang(si) .disclosure__summary {
+  text-underline-offset: 0.42em;
+}
+a:hover {
+  text-decoration-thickness: 3px;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+.text-small {
+  font-size: calc(var(--size-small) * var(--si));
+  line-height: var(--leading-small);
+}
+.text-2 {
+  color: var(--c-text-2);
+}
+.text-ref,
+.ref {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+.ref--large {
+  font-size: var(--size-ref);
+  line-height: var(--leading-ref);
+}
+
+/* === Section: 2. Focus === */
+/* 4 px brand outline with a 2 px white gap (brief 6.3). The white box-shadow
+   fills the gap so the ring reads on panels and on purple buttons too. */
+:focus-visible,
+.is-focus {
+  outline: var(--focus-width) solid var(--c-focus);
+  outline-offset: var(--focus-gap);
+  box-shadow: 0 0 0 var(--focus-gap) var(--c-focus-gap);
+}
+
+/* Headings and regions that receive focus from script (error summary,
+   confirmation heading) show the same ring. */
+[tabindex="-1"]:focus {
+  outline: var(--focus-width) solid var(--c-focus);
+  outline-offset: var(--focus-gap);
+}
+[tabindex="-1"]:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* === Section: 3. Utilities === */
+.visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  margin: -1px !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  clip: rect(0 0 0 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+.skip-link {
+  position: absolute;
+  left: var(--space-3);
+  top: -200px;
+  z-index: 10;
+  padding: var(--space-2) var(--space-3);
+  background: var(--c-ground);
+  color: var(--c-brand);
+  font-weight: var(--weight-bold);
+}
+.skip-link:focus {
+  top: var(--space-2);
+}
+
+/* Shown only when script is off. The scripting media query hides them before
+   script.js runs (no flash of the no-JS version); the .js class that
+   script.js adds to <html> covers older browsers. */
+.js .nojs-only {
+  display: none !important;
+}
+@media (scripting: enabled) {
+  .nojs-only {
+    display: none !important;
+  }
+  /* Answer-dependent blocks start hidden when script will manage them. */
+  .js-hide {
+    display: none;
+  }
+}
+/* Controls that only work with script carry the hidden attribute in the
+   HTML; script.js removes it. .js-only marks them for readers of the code. */
+
+[hidden] {
+  display: none !important;
+}
+
+/* === Section: 4. Icons === */
+/* Outline icons, 2 px stroke, round ends, on a 24 px grid. They always sit
+   beside a word and are hidden from screen readers. */
+.icon {
+  display: inline-block;
+  flex: none;
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vertical-align: middle;
+}
+.icon--16 {
+  width: 18px;
+  height: 18px;
+}
+.icon--32 {
+  width: 32px;
+  height: 32px;
+}
+
+/* === Section: 5. Letterhead (page header) and language switch === */
+/* The header reads like the top of a note: who it is from, then a rule. */
+.letterhead {
+  border-bottom: var(--rule-header) solid var(--c-rule);
+}
+.letterhead__inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--page-margin);
+}
+.letterhead__id {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--c-text);
+  text-decoration: none;
+}
+.letterhead__crest {
+  width: 37px;   /* 40 px tall: the crest image is 234 × 256 */
+  height: 40px;
+}
+.letterhead__name {
+  display: block;
+  font-size: var(--size-question);
+  line-height: 1.2;
+  font-weight: var(--weight-bold);
+}
+.letterhead__from {
+  display: block;
+  font-size: calc(var(--size-small) * var(--si));
+  line-height: var(--leading-small);
+  color: var(--c-text-2);
+}
+.letterhead__end {
+  margin-left: auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+/* Language switch: two buttons, each named in its own language and script.
+   The current one is filled black and carries a tick (more than colour). */
+.lang {
+  padding: var(--space-3) var(--page-margin) 0;
+}
+.lang__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+}
+.lang__label {
+  font-size: calc(var(--size-small) * var(--si));
+  font-weight: var(--weight-bold);
+}
+.lang__options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.lang__option {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--target-phone);
+  min-width: var(--target-phone);
+  padding: var(--space-1) var(--space-3);
+  border: var(--border-field) solid var(--c-rule);
+  border-radius: var(--radius);
+  background: var(--c-ground);
+  color: var(--c-text);
+  font-family: var(--font-text);
+  font-weight: var(--weight-bold);
+  text-decoration: none;
+  cursor: pointer;
+}
+.lang__option:visited {
+  color: var(--c-text);
+}
+.lang__option .icon {
+  display: none;
+}
+.lang__option[aria-pressed="true"],
+.lang__option[aria-current="true"] {
+  background: var(--c-text);
+  color: var(--c-ground);
+}
+.lang__option[aria-pressed="true"] .icon,
+.lang__option[aria-current="true"] .icon {
+  display: inline-block;
+}
+.lang__option:hover {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+}
+.lang__note {
+  margin-top: var(--space-2);
+  font-size: calc(var(--size-small) * var(--si));
+  line-height: var(--leading-small);
+  color: var(--c-text-2);
+}
+
+/* === Section: 6. Coordinator navigation === */
+/* The current page is bold, carries a 4 px bar under it and says
+   "(current page)" to screen readers: three cues, not colour alone. */
+.nav {
+  border-bottom: 1px solid var(--c-rule-quiet);
+}
+.nav__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--space-4);
+  margin: 0 auto;
+  padding: 0 var(--page-margin);
+  max-width: var(--width-dashboard);
+  list-style: none;
+}
+.nav__link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: var(--space-2) 0;
+  border-bottom: 4px solid transparent;
+  color: var(--c-text);
+  font-size: calc(var(--size-small) * var(--si));
+  text-decoration: none;
+}
+.nav__link:visited {
+  color: var(--c-text);
+}
+.nav__link:hover {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+}
+.nav__link[aria-current="page"] {
+  border-bottom-color: var(--c-brand);
+  font-weight: var(--weight-bold);
+}
+
+/* === Section: 7. Buttons === */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: var(--target-phone);
+  padding: var(--space-2) var(--space-4);
+  border: var(--border-field) solid transparent;
+  border-radius: var(--radius);
+  font-family: var(--font-text);
+  font-size: calc(var(--size-body) * var(--si));
+  font-weight: var(--weight-bold);
+  line-height: 1.3;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  /* Let long Sinhala labels wrap between words instead of clipping
+     (brief 3.5). */
+  white-space: normal;
+  overflow-wrap: break-word;
+}
+.button--block {
+  display: flex;
+  width: 100%;
+}
+.button--large {
+  min-height: 56px;
+  font-size: calc(var(--size-question) * var(--si));
+}
+.button--small {
+  min-height: var(--target-desktop);
+  padding: var(--space-1) var(--space-3);
+  font-size: calc(var(--size-small) * var(--si));
+}
+
+/* Primary: the brand's one call to action per view. */
+.button--primary {
+  background: var(--c-brand);
+  border-color: var(--c-brand);
+  color: var(--c-text-on-brand);
+}
+.button--primary:visited {
+  color: var(--c-text-on-brand);
+}
+.button--primary:hover,
+.button--primary.is-hover {
+  background: var(--c-brand-visited);
+  border-color: var(--c-brand-visited);
+}
+.button--primary:active,
+.button--primary.is-pressed {
+  background: var(--c-brand-pressed);
+  border-color: var(--c-brand-pressed);
+}
+
+/* Secondary: black outline, like a field. */
+.button--secondary {
+  background: var(--c-ground);
+  border-color: var(--c-rule);
+  color: var(--c-text);
+}
+.button--secondary:visited {
+  color: var(--c-text);
+}
+.button--secondary:hover,
+.button--secondary.is-hover {
+  background: var(--c-panel);
+}
+.button--secondary:active,
+.button--secondary.is-pressed {
+  background: var(--c-rule-decor);
+}
+
+/* Quiet: reads as a link, keeps a full-size target. */
+.button--quiet {
+  padding-left: 0;
+  padding-right: 0;
+  background: transparent;
+  color: var(--c-brand);
+  font-weight: var(--weight-regular);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.18em;
+}
+.button--quiet:hover,
+.button--quiet.is-hover {
+  text-decoration-thickness: 3px;
+}
+.button--quiet:active,
+.button--quiet.is-pressed {
+  color: var(--c-brand-pressed);
+}
+
+/* Destructive: red fill and a cross icon; always set apart from the others. */
+.button--danger {
+  background: var(--c-danger);
+  border-color: var(--c-danger);
+  color: var(--white);
+}
+.button--danger:hover,
+.button--danger.is-hover {
+  background: var(--c-danger-hover);
+  border-color: var(--c-danger-hover);
+}
+.button--danger:active,
+.button--danger.is-pressed {
+  background: var(--c-text);
+  border-color: var(--c-text);
+}
+
+/* Disabled and busy: grey fill, dark grey words, no pointer. Busy keeps the
+   label in words ("Sending…"); there is no spinner (no motion, brief 6.3). */
+.button:disabled,
+.button[aria-disabled="true"],
+.button.is-busy {
+  background: var(--c-disabled-fill);
+  border-color: var(--c-disabled-fill);
+  color: var(--c-text-strong-2);
+  cursor: not-allowed;
+  text-decoration: none;
+}
+.button.is-busy {
+  cursor: progress;
+}
+
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+/* === Section: 8. Questions: labels, hints, errors, text fields, selects === */
+.question {
+  margin: 0 0 var(--gap-question);
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+.question__label,
+.question__legend {
+  display: block;
+  margin: 0 0 var(--space-2);
+  padding: 0;
+  font-size: calc(var(--size-question) * var(--si));
+  line-height: var(--leading-question);
+  font-weight: var(--weight-bold);
+}
+/* A legend with no fieldset border sits in the normal flow like a label. */
+.question__legend {
+  width: 100%;
+}
+.question__label--small {
+  font-size: calc(var(--size-body) * var(--si));
+}
+.question__hint {
+  display: block;
+  margin: 0 0 var(--space-2);
+  font-size: calc(var(--size-small) * var(--si));
+  line-height: var(--leading-small);
+  color: var(--c-text-2);
+}
+
+/* Error message: an icon, the hidden word "Error:", and what to fix, above
+   the field so it is read before the field. */
+.field-error {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-2);
+  color: var(--c-danger);
+  font-weight: var(--weight-bold);
+  font-size: calc(var(--size-body) * var(--si));
+  line-height: var(--leading-question);
+}
+.field-error .icon {
+  margin-top: 1px;
+}
+
+.input,
+.select,
+.textarea {
+  display: block;
+  width: 100%;
+  min-height: var(--control-height);
+  margin: 0;
+  padding: var(--space-2) var(--space-3);
+  border: var(--border-field) solid var(--c-rule);
+  border-radius: var(--radius);
+  background: var(--c-ground);
+  color: var(--c-text);
+  font-family: var(--font-text);
+  font-size: calc(var(--size-body) * var(--si));
+  line-height: 1.4;
+}
+.textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+/* Widths say how long the answer is (form-design: width is an affordance). */
+.input--name { max-width: 22em; }
+.input--phone { max-width: 11em; }
+.input--email { max-width: 22em; }
+.input--date { max-width: 8em; }
+.input--number { max-width: 4.5em; text-align: center; }
+.select--time { max-width: 11em; }
+
+/* Focus: the ring, plus the border thickens to 3 px (brief 6.3). */
+.input:focus,
+.select:focus,
+.textarea:focus,
+.input.is-focus {
+  outline: var(--focus-width) solid var(--c-focus);
+  outline-offset: var(--focus-gap);
+  box-shadow: inset 0 0 0 1px var(--c-rule), 0 0 0 var(--focus-gap) var(--c-focus-gap);
+}
+
+/* Error: red border thickened to 3 px; the message carries the meaning. */
+.input[aria-invalid="true"],
+.select[aria-invalid="true"],
+.textarea[aria-invalid="true"],
+.input.is-error {
+  border-color: var(--c-danger);
+  box-shadow: inset 0 0 0 1px var(--c-danger);
+}
+.input[aria-invalid="true"]:focus,
+.select[aria-invalid="true"]:focus {
+  box-shadow: inset 0 0 0 1px var(--c-danger), 0 0 0 var(--focus-gap) var(--c-focus-gap);
+}
+
+.input:disabled,
+.select:disabled,
+.textarea:disabled {
+  border-color: var(--c-rule-quiet);
+  background: var(--c-panel);
+  color: var(--c-text-strong-2);
+  cursor: not-allowed;
+}
+
+/* Native select with a drawn chevron; phones show their own wheel picker. */
+.select-wrap {
+  position: relative;
+  display: block;
+  max-width: 22em;
+}
+.select-wrap--time {
+  max-width: 12em;
+}
+/* "වේලාවක් තෝරන්න" is wider than "Choose a time": give Sinhala the room. */
+:lang(si) .select-wrap--time {
+  max-width: 22em;
+}
+.select {
+  padding-right: 48px;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+}
+.select-wrap .icon {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+/* === Section: 9. Choices: radios and checkboxes === */
+.choices {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.choices--inline {
+  grid-template-columns: repeat(auto-fit, minmax(7em, max-content));
+  gap: var(--space-2) var(--space-5);
+}
+.choice {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  min-height: var(--target-phone);
+  padding: var(--space-2) 0;
+}
+.choice__input {
+  flex: none;
+  width: 32px;
+  height: 32px;
+  margin: 0;
+  border: var(--border-field) solid var(--c-rule);
+  background: var(--c-ground);
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+}
+.choice__input[type="radio"] {
+  border-radius: 50%;
+}
+/* Selected radio: a purple dot inside the black ring (the white inset ring
+   makes the dot; no gradient). */
+.choice__input[type="radio"]:checked,
+.choice__input.is-checked {
+  background: var(--c-brand);
+  box-shadow: inset 0 0 0 6px var(--c-ground);
+}
+.choice__input[type="radio"]:checked:focus-visible {
+  box-shadow: inset 0 0 0 6px var(--c-ground), 0 0 0 var(--focus-gap) var(--c-focus-gap);
+}
+.choice__input:disabled {
+  border-color: var(--c-rule-quiet);
+  background: var(--c-panel);
+  cursor: not-allowed;
+}
+.choice__label {
+  flex: 1;
+  min-width: 0;
+  padding-top: 2px;
+  cursor: pointer;
+}
+.choice__input:disabled + .choice__label {
+  color: var(--c-text-strong-2);
+  cursor: not-allowed;
+}
+/* Hover: the label underlines, so the whole row reads as one target. */
+.choice:hover .choice__label,
+.choice.is-hover .choice__label {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+}
+.choice__input:disabled ~ .choice__label {
+  text-decoration: none;
+}
+
+/* Checkbox: a square box; the tick is an inline SVG laid over it. */
+.check {
+  position: relative;
+  flex: none;
+  width: 32px;
+  height: 32px;
+}
+.check .choice__input {
+  position: absolute;
+  inset: 0;
+}
+.check__tick {
+  position: absolute;
+  inset: 4px;
+  width: 24px;
+  height: 24px;
+  visibility: hidden;
+  pointer-events: none;
+  stroke: var(--c-ground);
+  stroke-width: 3;
+}
+.check .choice__input:checked,
+.check .choice__input.is-checked {
+  background: var(--c-brand);
+  border-color: var(--c-brand);
+}
+.check .choice__input:checked + .check__tick,
+.check .choice__input.is-checked + .check__tick {
+  visibility: visible;
+}
+.check .choice__input:disabled:checked {
+  background: var(--c-text-2);
+  border-color: var(--c-text-2);
+}
+
+/* The error state of a group: the message above, red text; the inputs keep
+   their black ring so the selection is still clear. */
+.question.is-error .choice__input {
+  border-color: var(--c-danger);
+}
+
+/* === Section: 10. Date choice === */
+.date-option__day {
+  display: block;
+  font-weight: var(--weight-bold);
+}
+.date-option__date {
+  display: block;
+}
+.date-option__closed {
+  display: flex;
+  gap: var(--space-2);
+  align-items: flex-start;
+  margin-top: var(--space-1);
+  font-size: calc(var(--size-small) * var(--si));
+  line-height: var(--leading-small);
+  color: var(--c-text-strong-2);
+}
+.date-option__closed strong {
+  color: var(--c-text);
+}
+.date-other {
+  margin: var(--space-2) 0 0 calc(32px + var(--space-3));
+}
+
+/* === Section: 11. Passenger stepper === */
+.stepper {
+  display: flex;
+  align-items: stretch;
+  gap: var(--space-2);
+}
+.stepper__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--control-height);
+  min-height: var(--control-height);
+  padding: 0;
+  border: var(--border-field) solid var(--c-rule);
+  border-radius: var(--radius);
+  background: var(--c-ground);
+  color: var(--c-text);
+  cursor: pointer;
+}
+.stepper__button:hover {
+  background: var(--c-panel);
+}
+.stepper__button:disabled,
+.stepper__button[aria-disabled="true"] {
+  border-color: var(--c-rule-quiet);
+  color: var(--c-text-2);
+  background: var(--c-panel);
+  cursor: not-allowed;
+}
+.stepper .input--number {
+  width: 4.5em;
+}
+
+/* === Section: 12. Disclosure === */
+.disclosure {
+  margin: 0 0 var(--gap-question);
+}
+.disclosure__summary {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--target-phone);
+  color: var(--c-brand);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.18em;
+  cursor: pointer;
+  list-style: none;
+}
+.disclosure__summary::-webkit-details-marker {
+  display: none;
+}
+.disclosure__summary .icon {
+  transform: rotate(-90deg);
+}
+.disclosure[open] > .disclosure__summary .icon {
+  transform: none;
+}
+.disclosure__summary--heading {
+  color: var(--c-text);
+  font-size: calc(var(--size-section) * var(--si));
+  line-height: var(--leading-section);
+  font-weight: var(--weight-bold);
+  text-decoration: none;
+}
+.disclosure__summary--heading:hover {
+  text-decoration: underline;
+}
+.disclosure__body {
+  padding: var(--space-3) 0 0;
+}
+
+/* === Section: 13. Extra stops === */
+.stop-row {
+  margin: 0 0 var(--space-4);
+  padding: 0 0 0 var(--space-3);
+  border: 0;
+  border-left: var(--border-field) solid var(--c-rule);
+  min-width: 0;
+}
+.stop-row .question {
+  margin-bottom: var(--space-4);
+}
+
+/* === Section: 14. Notes (information, success, warning) === */
+/* Words first: a note is a sentence with an icon hung in front of it, not a
+   coloured box (brief 6.3 allows no other containers). */
+.note {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-3);
+  max-width: var(--measure);
+}
+.note .icon {
+  margin-top: 2px;
+}
+.note--info .icon { color: var(--c-info); }
+.note--ok .icon { color: var(--c-ok); }
+.note--danger .icon { color: var(--c-danger); }
+/* Warning: the amber triangle needs its black edge (amber on white is
+   1.66:1, so the black stroke carries the shape). */
+.note--warning .icon {
+  fill: var(--c-attention);
+  stroke: var(--c-attention-edge);
+}
+.note__lead {
+  font-weight: var(--weight-bold);
+}
+
+/* === Section: 15. Error summary === */
+.error-summary {
+  margin: 0 0 var(--space-5);
+  padding: var(--space-3) var(--space-4) var(--space-4);
+  border: var(--border-status) solid var(--c-danger);
+  background: var(--c-danger-tint);
+}
+.error-summary__title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-2);
+  font-size: calc(var(--size-question) * var(--si));
+  line-height: var(--leading-question);
+  color: var(--c-text);
+}
+.error-summary__title .icon {
+  color: var(--c-danger);
+}
+.error-summary__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.error-summary__list li {
+  margin: var(--space-2) 0 0;
+}
+.error-summary__list a,
+.error-summary__list a:visited {
+  color: var(--c-danger);
+  font-weight: var(--weight-bold);
+}
+
+/* === Section: 16. The plain sentence (signature) === */
+/* One panel with a 6 px brand rule: the request written back as one sentence.
+   The same box carries the dashboard's plan sentence and the driver's next
+   stop, so a sentence always looks like a sentence. */
+.sentence-box {
+  margin: 0 0 var(--space-5);
+  padding: var(--space-4) var(--space-4) var(--space-4) calc(var(--space-4) - var(--rule-sentence) + var(--space-3));
+  border-left: var(--rule-sentence) solid var(--c-brand);
+  background: var(--c-panel);
+}
+.sentence-box__title {
+  margin: 0 0 var(--space-2);
+  font-size: calc(var(--size-question) * var(--si));
+  line-height: var(--leading-question);
+}
+.sentence {
+  margin: 0;
+  max-width: var(--measure);
+  font-size: calc(var(--size-question) * var(--si));
+  line-height: var(--leading-body);
+  font-weight: var(--weight-regular);
+}
+/* Answered parts in bold: the words you gave us. */
+.sentence__part {
+  font-weight: var(--weight-bold);
+}
+/* Missing parts: in [brackets] and underlined, as a link to the question.
+   The brackets show the gap without colour. */
+.sentence__gap,
+.sentence__gap:visited {
+  color: var(--c-brand);
+  font-weight: var(--weight-regular);
+}
+.sentence-box__help {
+  margin-top: var(--space-3);
+  font-size: calc(var(--size-small) * var(--si));
+  line-height: var(--leading-small);
+  color: var(--c-text-2);
+}
+
+/* === Section: 17. Status badges and flags === */
+/* Words in a box: the status word in bold, a 2 px border in the status
+   colour, an icon before the word and the tint behind (brief 6.3). */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 1px var(--space-2) 1px 6px;
+  border: var(--border-status) solid var(--c-neutral-edge);
+  border-radius: var(--radius);
+  background: var(--c-ground);
+  color: var(--c-text);
+  font-size: calc(var(--size-small) * var(--si));
+  line-height: 1.5;
+  font-weight: var(--weight-bold);
+  white-space: nowrap;
+  vertical-align: middle;
+}
+.badge .icon {
+  width: 18px;
+  height: 18px;
+}
+.badge--submitted { border-color: var(--c-neutral-edge); background: var(--c-panel); }
+.badge--submitted .icon { color: var(--c-text-2); }
+.badge--proposed { border-color: var(--c-info); background: var(--c-info-tint); }
+.badge--proposed .icon { color: var(--c-info); }
+.badge--attention { border-color: var(--c-attention-edge); background: var(--c-attention); }
+.badge--confirmed { border-color: var(--c-ok); background: var(--c-ok-tint); }
+.badge--confirmed .icon { color: var(--c-ok); }
+.badge--declined { border-color: var(--c-danger); background: var(--c-danger-tint); }
+.badge--declined .icon { color: var(--c-danger); }
+.badge--cancelled { border-color: var(--c-neutral-edge); background: var(--c-ground); }
+.badge--cancelled .icon { color: var(--c-text-2); }
+.badge--completed { border-color: var(--c-rule); background: var(--c-ground); }
+.badge--noshow { border-color: var(--c-danger); background: var(--c-ground); }
+.badge--noshow .icon { color: var(--c-danger); }
+
+/* Flags: plain words in ink with an icon, no box, separated by " · ". */
+.flags {
+  display: inline;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.flags li {
+  display: inline;
+  font-size: calc(var(--size-small) * var(--si));
+  line-height: var(--leading-small);
+}
+.flags li + li::before {
+  content: " · ";
+  padding: 0 2px;
+}
+.flag {
+  white-space: nowrap;
+}
+.flag .icon {
+  width: 18px;
+  height: 18px;
+  margin-right: 4px;
+  vertical-align: -3px;
+}
+
+/* === Section: 18. Summary list === */
+.summary-list {
+  margin: 0;
+  max-width: var(--width-text);
+}
+.summary-list__row {
+  display: grid;
+  grid-template-columns: minmax(7em, 32%) 1fr;
+  gap: var(--space-1) var(--space-3);
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--c-rule-quiet);
+}
+.summary-list dt {
+  font-weight: var(--weight-bold);
+}
+.summary-list dd {
+  margin: 0;
+}
+@media (max-width: 400px) {
+  .summary-list__row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* === Section: 19. Data table === */
+.table-wrap {
+  overflow-x: auto;
+}
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.table caption {
+  margin: 0 0 var(--space-3);
+  font-size: calc(var(--size-question) * var(--si));
+  line-height: var(--leading-question);
+  font-weight: var(--weight-bold);
+  text-align: left;
+}
+.table th,
+.table td {
+  padding: var(--space-2) var(--space-3) var(--space-2) 0;
+  border-bottom: 1px solid var(--c-rule-quiet);
+  font-size: calc(var(--size-small) * var(--si));
+  line-height: var(--leading-small);
+  text-align: left;
+  vertical-align: top;
+}
+.table thead th {
+  border-bottom: var(--border-field) solid var(--c-rule);
+  font-weight: var(--weight-bold);
+  white-space: nowrap;
+}
+.table td:first-child {
+  white-space: nowrap;
+}
+.table td.num,
+.table th.num {
+  text-align: right;
+}
+/* The "sortable look": a real button in the header with words and an arrow. */
+.table__sort {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: var(--target-desktop);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--c-brand);
+  font: inherit;
+  font-weight: var(--weight-bold);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.18em;
+  cursor: pointer;
+}
+.table__sort .icon {
+  width: 18px;
+  height: 18px;
+}
+.table tbody tr.is-muted td {
+  color: var(--c-text-strong-2);
+}
+
+/* === Section: 20. Selected-booking panel === */
+.panel {
+  padding: var(--space-4);
+  border: var(--border-field) solid var(--c-rule);
+  background: var(--c-ground);
+}
+.panel__eyebrow {
+  margin: 0 0 var(--space-1);
+  font-size: calc(var(--size-small) * var(--si));
+  color: var(--c-text-2);
+}
+.panel__title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+  margin: 0 0 var(--space-3);
+}
+.panel__title .ref {
+  font-size: var(--size-ref);
+  font-weight: var(--weight-regular);
+}
+.panel__lead {
+  margin: 0 0 var(--space-4);
+  padding-left: var(--space-3);
+  border-left: var(--rule-sentence) solid var(--c-brand);
+  font-size: calc(var(--size-body) * var(--si));
+}
+.panel__section {
+  margin: var(--space-4) 0 0;
+}
+.panel__section h3 {
+  margin: 0 0 var(--space-2);
+  font-size: calc(var(--size-body) * var(--si));
+}
+.panel__section p + p {
+  margin-top: var(--space-2);
+}
+.panel__section ol {
+  margin: var(--space-2) 0 0;
+  padding-left: 1.4em;
+}
+.panel__actions {
+  margin-top: var(--space-4);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--c-rule-quiet);
+}
+/* Decline sits on its own line after a gap, so it is not hit by mistake. */
+.panel__decline {
+  margin-top: var(--space-4);
+}
+/* The run, one sentence per stop, the time hung in its own column. */
+.run {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.run li {
+  display: grid;
+  grid-template-columns: 4.6em 1fr;
+  gap: var(--space-2);
+  padding: var(--space-1) 0;
+  border-bottom: 1px solid var(--c-rule-decor);
+  font-size: calc(var(--size-small) * var(--si));
+  line-height: var(--leading-small);
+}
+.run__time {
+  font-weight: var(--weight-bold);
+  white-space: nowrap;
+}
+.panel__audit {
+  margin-top: var(--space-3);
+  font-size: calc(var(--size-small) * var(--si));
+  color: var(--c-text-2);
+}
+.panel .table caption {
+  font-size: calc(var(--size-body) * var(--si));
+}
+
+/* === Section: 21. Day timeline === */
+/* Time runs left to right from 7:00 am to 6:30 pm; one row per van. Every
+   block is a button with its reference above, its status in the edge style
+   and icon, and a full accessible name. */
+.timeline {
+  --tl-label: 168px;
+  position: relative;
+  margin: var(--space-3) 0 0;
+}
+.timeline__axis,
+.timeline__row {
+  display: grid;
+  grid-template-columns: var(--tl-label) 1fr;
+}
+.timeline__scale {
+  position: relative;
+  height: 60px;
+  border-bottom: var(--border-field) solid var(--c-rule);
+}
+.timeline__tick {
+  position: absolute;
+  bottom: 6px;
+  transform: translateX(-50%);
+  font-size: calc(var(--size-small) * var(--si));
+  line-height: 1;
+  white-space: nowrap;
+}
+/* "Now 7:05 am" and "6:00 pm: end of hours" sit on the top line of the axis,
+   in words, so the two vertical lines are never read by colour alone. */
+.timeline__mark {
+  position: absolute;
+  top: 2px;
+  padding-left: 6px;
+  border-left: 3px solid var(--c-brand);
+  font-size: calc(var(--size-small) * var(--si));
+  font-weight: var(--weight-bold);
+  line-height: 1.2;
+  white-space: nowrap;
+}
+.timeline__mark--end {
+  padding: 0 6px 0 0;
+  border-left: 0;
+  border-right: var(--border-field) dashed var(--c-rule);
+}
+.timeline__row {
+  border-bottom: 1px solid var(--c-rule-quiet);
+}
+.timeline__van {
+  padding: var(--space-2) var(--space-3) var(--space-2) 0;
+}
+.timeline__van strong {
+  display: block;
+  font-size: calc(var(--size-body) * var(--si));
+}
+.timeline__van span {
+  display: block;
+  font-size: calc(var(--size-small) * var(--si));
+  line-height: var(--leading-small);
+  color: var(--c-text-2);
+}
+.timeline__track {
+  position: relative;
+  min-height: 112px;
+}
+.timeline__track--tall {
+  min-height: 160px;
+}
+.timeline__hour {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 0;
+  border-left: 1px solid var(--c-rule-decor);
+}
+/* After 6:00 pm: outside normal hours, in the panel grey and named on the
+   axis. */
+.timeline__after {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  background: var(--c-panel);
+}
+.timeline__edge {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 0;
+  border-left: var(--border-field) dashed var(--c-rule);
+  z-index: 0;
+  pointer-events: none;
+}
+.timeline__now {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 0;
+  margin-left: -1px;
+  border-left: 3px solid var(--c-brand);
+  z-index: 3;
+  pointer-events: none;
+}
+/* The wait at the Aquatic Centre: a dotted outline, named in words. */
+.timeline__wait {
+  position: absolute;
+  top: 26px;
+  bottom: 4px;
+  border: var(--border-field) dotted var(--c-text-2);
+}
+.timeline__wait-label {
+  position: absolute;
+  left: 6px;
+  bottom: 2px;
+  font-size: calc(var(--size-small) * var(--si));
+  line-height: 1.2;
+  white-space: nowrap;
+  color: var(--c-text-strong-2);
+}
+.timeline__run {
+  position: absolute;
+  top: 0;
+  display: grid;
+  gap: 4px;
+}
+/* The shared run: one black frame around the bookings that ride together. */
+.timeline__run-body {
+  display: grid;
+  gap: 4px;
+  padding: 4px;
+  border: var(--border-field) solid var(--c-rule);
+  background: var(--c-ground);
+}
+.timeline__run-label {
+  height: 24px;
+  font-size: calc(var(--size-small) * var(--si));
+  line-height: 24px;
+  font-weight: var(--weight-bold);
+  white-space: nowrap;
+}
+
+.block {
+  position: absolute;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  min-width: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--c-text);
+  font-family: var(--font-text);
+  text-align: left;
+  cursor: pointer;
+  z-index: 1;
+}
+.timeline__run .block {
+  position: relative;
+  width: 100%;
+}
+.block__ref {
+  display: block;
+  align-self: flex-start;
+  height: 24px;
+  padding-right: 2px;
+  background: var(--c-ground);
+  font-family: var(--font-mono);
+  font-size: calc(var(--size-small) * var(--si));
+  line-height: 24px;
+  white-space: nowrap;
+}
+.block__bar {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  height: 44px;
+  padding: 0 4px;
+  border: var(--border-status) solid var(--c-neutral-edge);
+  background: var(--c-ground);
+  overflow: hidden;
+}
+.timeline__run .block__bar {
+  height: 36px;
+}
+.timeline__run .block__ref {
+  display: none;
+}
+.block__bar .icon {
+  width: 18px;
+  height: 18px;
+}
+.block__bar .ref {
+  font-size: calc(var(--size-small) * var(--si));
+}
+/* Status edge styles: dashed for proposals, solid for confirmed, amber with
+   black for needs attention; dashed black on amber when not yet in the plan. */
+.block--proposed .block__bar { border-style: dashed; border-color: var(--c-info); background: var(--c-info-tint); }
+.block--proposed .block__bar .icon-status { color: var(--c-info); }
+.block--confirmed .block__bar { border-style: solid; border-color: var(--c-ok); background: var(--c-ok-tint); }
+.block--confirmed .block__bar .icon-status { color: var(--c-ok); }
+.block--attention .block__bar { border-style: solid; border-color: var(--c-attention-edge); background: var(--c-attention); }
+.block--tentative .block__bar { border-style: dashed; }
+.block:hover .block__bar {
+  border-width: 3px;
+}
+.block:hover .block__ref {
+  text-decoration: underline;
+}
+/* The block shown in the panel: a brand bar beneath it (a shape, not only a
+   colour) and bold reference. */
+.block[aria-current="true"] .block__bar {
+  box-shadow: 0 6px 0 0 var(--c-brand);
+}
+.block[aria-current="true"] .block__ref {
+  font-weight: var(--weight-bold);
+}
+.block:focus-visible {
+  outline-offset: 4px;
+}
+
+.legend {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--space-2) var(--space-4);
+  margin: var(--space-4) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.legend li {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  font-size: calc(var(--size-small) * var(--si));
+  line-height: var(--leading-small);
+}
+.legend__sample {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 26px;
+  border: var(--border-status) solid var(--c-neutral-edge);
+}
+.legend__sample .icon {
+  width: 18px;
+  height: 18px;
+}
+.legend__sample--line {
+  border: 0;
+  height: 26px;
+}
+.legend__sample--line::before {
+  content: "";
+  display: block;
+  height: 100%;
+  border-left: 3px solid var(--c-brand);
+}
+.legend__sample--edge::before {
+  border-left: var(--border-field) dashed var(--c-rule);
+}
+.legend__sample--wait {
+  border: var(--border-field) dotted var(--c-text-2);
+}
+
+/* === Section: 22. Driver stops === */
+.stops {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.stop {
+  padding: var(--space-4) 0;
+  border-bottom: 1px solid var(--c-rule-quiet);
+}
+.stop__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 var(--space-3);
+  margin: 0 0 var(--space-1);
+  font-size: calc(var(--size-body) * var(--si));
+}
+.stop__time {
+  font-size: calc(var(--size-question) * var(--si));
+}
+.stop__num {
+  font-weight: var(--weight-regular);
+  color: var(--c-text-2);
+  font-size: calc(var(--size-small) * var(--si));
+}
+.stop__sentence {
+  font-size: calc(var(--size-body) * var(--si));
+}
+.stop__facts {
+  margin: var(--space-2) 0 0;
+}
+.stop__facts div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--space-2);
+}
+.stop__facts dt {
+  color: var(--c-text-2);
+  font-size: calc(var(--size-small) * var(--si));
+  line-height: 1.9;
+}
+.stop__facts dt::after {
+  content: ":";
+}
+.stop__facts dd {
+  margin: 0;
+  font-size: calc(var(--size-body) * var(--si));
+}
+.stop__note {
+  margin-top: var(--space-2);
+  font-style: normal;
+}
+.stop__tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-3);
+  margin-top: var(--space-3);
+}
+.stop__actions {
+  display: grid;
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+}
+.stop__navnote {
+  margin-top: var(--space-2);
+  font-size: calc(var(--size-small) * var(--si));
+  color: var(--c-text-2);
+}
+.stop__confirm {
+  margin-top: var(--space-3);
+  padding: var(--space-3);
+  border: var(--border-status) solid var(--c-danger);
+  background: var(--c-danger-tint);
+}
+.stop__confirm p {
+  margin-bottom: var(--space-3);
+  font-weight: var(--weight-bold);
+}
+.stop__result {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+  margin-top: var(--space-2);
+  font-weight: var(--weight-bold);
+}
+.button--noshow {
+  justify-self: start;
+  width: auto !important;
+}
+.stop__phone {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: var(--size-ref);
+  line-height: var(--leading-ref);
+  white-space: nowrap;
+}
+
+/* The next stop: the sentence box, set large. */
+.next-stop {
+  margin: 0 0 var(--space-4);
+}
+.next-stop .stop {
+  padding: var(--space-4) var(--space-3) var(--space-4) calc(var(--space-3) + 2px);
+  border-bottom: 0;
+  border-left: var(--rule-sentence) solid var(--c-brand);
+  background: var(--c-panel);
+}
+.next-stop .stop__sentence {
+  font-size: calc(var(--size-title) * 0.875 * var(--si));
+  line-height: var(--leading-title);
+  font-weight: var(--weight-bold);
+}
+.next-stop .stop__head {
+  font-size: calc(var(--size-small) * var(--si));
+}
+.next-stop .stop__time {
+  font-size: calc(var(--size-body) * var(--si));
+}
+/* Done stops are compact: time, place and the result only. */
+.stops--done .stop {
+  padding: var(--space-2) 0;
+}
+.stops--done .stop__facts,
+.stops--done .stop__tools,
+.stops--done .stop__actions,
+.stops--done .stop__note,
+.stops--done .stop__in {
+  display: none;
+}
+
+/* === Section: 23. Dialog and status messages with Undo === */
+.dialog {
+  width: min(560px, calc(100vw - 32px));
+  max-width: none;
+  padding: var(--space-5);
+  border: var(--border-field) solid var(--c-rule);
+  border-radius: var(--radius);
+  background: var(--c-ground);
+  color: var(--c-text);
+}
+.dialog::backdrop {
+  /* Solid, not see-through: no transparency over content (brief 3.2). The
+     dialog becomes the only thing on screen. */
+  background: var(--c-panel);
+}
+.dialog h2 {
+  margin-bottom: var(--space-3);
+}
+.dialog p {
+  margin-bottom: var(--space-4);
+}
+.toast {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+  margin: 0 0 var(--space-4);
+  padding: var(--space-3) var(--space-3) var(--space-3) var(--space-3);
+  border: var(--border-status) solid var(--c-ok);
+  background: var(--c-ok-tint);
+  font-weight: var(--weight-bold);
+}
+.toast .icon {
+  color: var(--c-ok);
+}
+.toast--offline {
+  border-color: var(--c-rule);
+  background: var(--c-attention);
+}
+.toast--offline .icon {
+  color: var(--c-text);
+}
+
+/* === Section: 24. Prototype controls === */
+/* Deliberately not the design: system font, dashed grey border (brief 2). */
+.proto {
+  margin: var(--space-7) 0 0;
+  padding: 12px 16px 16px;
+  border-top: 2px dashed var(--proto-edge);
+  background: var(--proto-ground);
+  font-family: var(--font-proto);
+  font-size: 14px;
+  color: var(--proto-text);
+}
+.proto * {
+  font-family: inherit;
+}
+.proto__title {
+  margin: 0 0 8px;
+  font-size: 14px;
+  font-weight: 700;
+}
+.proto__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.proto button {
+  min-height: 44px;
+  padding: 6px 12px;
+  border: 1px dashed var(--proto-button-edge);
+  background: var(--proto-button);
+  color: var(--c-text);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+/* === Section: 25. Forced colours and reduced motion === */
+@media (forced-colors: active) {
+  .choice__input {
+    appearance: auto;
+    -webkit-appearance: auto;
+  }
+  .check__tick {
+    display: none;
+  }
+  .block__bar,
+  .badge,
+  .sentence-box {
+    border: 2px solid CanvasText;
+  }
+}
+
+/* Plain Words has no motion at all (brief 6.3); this rule makes sure nothing
+   from the browser or a later change moves either. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
