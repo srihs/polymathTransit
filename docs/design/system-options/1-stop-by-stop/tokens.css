@@ -1,0 +1,207 @@
+/* =========================================================================
+   PolymathTransit – Direction 1 "Stop by Stop" – design tokens
+   -------------------------------------------------------------------------
+   What this file is for:
+     Every raw value the direction uses, as CSS custom properties. Global
+     tokens hold raw values (the purple and neutral scales from research.md
+     1.4 and 1.5, and the status hues verified in brief.md 6.1). Semantic
+     aliases give each value a job. components.css and pages.css use only
+     the semantic aliases, never raw values.
+   Requirements: NFR-03 (contrast, focus), NFR-04 (phone and desktop
+     scales), NFR-12 (tabular figures for times), FR-65 (Sinhala factor).
+   Sections:
+     1. Global colour
+     2. Semantic colour
+     3. Type
+     4. Sinhala adjustments
+     5. Space, size and shape
+     6. Motion
+     7. Desktop scale (applied by the .scale-desk class on <body>)
+   Contrast of every pair used is listed in index.html section 3 and in
+   README.md ("Colour pairs").
+   ========================================================================= */
+
+/* === Section: 1. Global colour === */
+:root {
+  /* Purple scale (research.md 1.4), hue 320, brand at step 700. */
+  --purple-50: #FCF4FD;
+  --purple-100: #F7E6FB;
+  --purple-200: #EDCEF4;
+  --purple-700: #722A82;   /* Crest purple, sampled from the logo. */
+  --purple-800: #581D65;
+  --purple-900: #3F1448;
+
+  /* Neutral scale (research.md 1.5) plus the logo's own black and grey. */
+  --black: #000000;        /* Tagline black. */
+  --white: #FFFFFF;
+  --grey-100: #F2F2F3;     /* Panel value verified for this direction (brief 6.1). */
+  --grey-200: #DCDEE1;     /* Decoration and pressed fills only. */
+  --grey-400: #8F9298;     /* Lightest grey allowed to draw a UI part on white (3.12:1). */
+  --grey-500: #63666B;     /* Wordmark grey, sampled from the logo. */
+
+  /* Status hues (brief 6.1, verified). Each one has a job; none is decoration. */
+  --green-700: #006E30;
+  --green-50: #E7F7E9;
+  --amber-400: #F3B01D;    /* Fill only, always with black text and a 2 px black edge. */
+  --red-700: #B7191C;
+  --red-50: #FFEDEB;
+  --blue-700: #015F98;
+  --blue-50: #E8F4FE;
+}
+
+/* === Section: 2. Semantic colour === */
+:root {
+  --c-brand: var(--purple-700);          /* Route line, primary buttons, selected, links. 8.86:1 on white. */
+  --c-brand-strong: var(--purple-800);   /* Hover on primary, visited. 11.81:1 on white. */
+  --c-brand-deep: var(--purple-900);     /* Pressed primary. White on it 14.95:1. */
+  --c-brand-tint: var(--purple-100);     /* Selected option ground. Brand on it 7.46:1. */
+  --c-ink: var(--black);                 /* Text, signage bands, plates. */
+  --c-ink-2: var(--grey-500);            /* Secondary text. 5.76:1 on white, 5.15:1 on panel. */
+  --c-on-ink: var(--white);              /* Text on the black band. 21:1. */
+  --c-on-brand: var(--white);            /* Text on purple. 8.86:1. */
+  --c-ground: var(--white);              /* Page. */
+  --c-panel: var(--grey-100);            /* Quiet panels. Black on it 18.77:1. */
+  --c-pressed: var(--grey-200);          /* Pressed secondary. Black on it 15.58:1. */
+  --c-line-inactive: var(--grey-400);    /* Not-yet-confirmed sections, rules on white only (2.79:1 on panel, so never on panel). */
+  --c-edge: var(--black);                /* Input and control edges. */
+
+  --c-ok: var(--green-700);              /* Confirmed, Completed accents. 6.42:1 on white. */
+  --c-ok-tint: var(--green-50);          /* Success alert ground. Ok on it 5.77:1. */
+  --c-attention: var(--amber-400);       /* Needs attention fill. Black on it 11.04:1. */
+  --c-danger: var(--red-700);            /* Errors, Declined, No-show. 6.63:1 on white. */
+  --c-danger-tint: var(--red-50);        /* Error ground. Danger on it 5.86:1. */
+  --c-info: var(--blue-700);             /* Proposed, information. 6.79:1 on white. */
+  --c-info-tint: var(--blue-50);         /* Information ground. Info on it 6.08:1. */
+
+  --c-focus: var(--purple-700);          /* 3 px outline, 2 px offset. 8.86:1 on white. */
+  --c-focus-on-ink: var(--white);        /* Focus on the black band. 21:1. */
+
+  /* Prototype controls only: neutral, outside the design (brief 2). */
+  --proto-ink: #3D4044;                  /* Grey 700, 10.42:1 on white. */
+  --proto-edge: var(--grey-400);
+  --proto-ground: #F5F7F9;               /* Grey 50. */
+}
+
+/* === Section: 3. Type === */
+:root {
+  /* One typeface (principle 3). Overpass first; its Latin has no Sinhala,
+     so the browser takes Sinhala characters from Noto Sans Sinhala. */
+  --font-sans: "Overpass", "Noto Sans Sinhala", system-ui, -apple-system,
+    "Segoe UI", Roboto, "Nirmala UI", "Iskoola Pota", "Sinhala Sangam MN", sans-serif;
+  --font-proto: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; /* Prototype controls only. */
+
+  /* Five sizes, two weights (principle 3). Phone values; desktop in section 7. */
+  --fs-display: 32px;
+  --fs-heading: 24px;
+  --fs-subhead: 20px;
+  --fs-body: 17px;
+  --fs-small: 14px;
+
+  --lh-display: 1.1;
+  --lh-heading: 1.2;
+  --lh-subhead: 1.3;
+  --lh-body: 1.45;
+  --lh-small: 1.4;
+
+  --fw-regular: 400;
+  --fw-bold: 700;
+
+  /* Language factor: 1 for English, 0.95 for Sinhala (section 4). Every
+     font-size in components is calc(token * var(--lf)). */
+  --lf: 1;
+}
+
+/* === Section: 4. Sinhala adjustments === */
+/* Noto Sans Sinhala draws Sinhala larger than Overpass's x-height, so a
+   0.95 factor makes both scripts look the same size (brief 6.1). Sinhala
+   vowel signs reach far above and below the letter body, so body text gets
+   1.65 line height and every heading at least 1.4 (research.md 3.2). */
+:lang(si) {
+  --lf: 0.95;
+  --lh-body: 1.65;
+  --lh-small: 1.6;
+  --lh-subhead: 1.45;
+  --lh-heading: 1.4;
+  --lh-display: 1.35;
+}
+
+/* Data entered in English (place and people's names) keeps the English
+   size inside a Sinhala page (research.md question 6.2). */
+:lang(en) {
+  --lf: 1;
+}
+
+/* === Section: 5. Space, size and shape === */
+:root {
+  /* 8 px base unit; scale 4, 8, 16, 24, 32, 48, 64. */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 16px;
+  --s-4: 24px;
+  --s-5: 32px;
+  --s-6: 48px;
+  --s-7: 64px;
+
+  /* Grid. */
+  --grid-phone-cols: 4;
+  --grid-phone-margin: 16px;
+  --grid-phone-gutter: 16px;
+  --grid-desk-cols: 12;
+  --grid-desk-gutter: 24px;
+  --grid-desk-max: 1280px;
+  --phone-column-max: 480px;
+
+  /* Bands and targets. */
+  --band-phone: 56px;        /* Black header band on phones. */
+  --band-desk: 64px;
+  --target-phone: 48px;      /* 44 px is the floor; 48 px is the default. */
+  --target-phone-min: 44px;
+  --target-desk: 32px;       /* 24 px is the floor on the desktop dashboard. */
+  --target-gap: 8px;
+
+  /* Shape: square plates and panels, 4 px on inputs and buttons, no shadows. */
+  --radius-plate: 0;
+  --radius-control: 4px;
+
+  /* Rules and lines. */
+  --rule-hair: 1px;
+  --rule: 2px;
+  --rule-strong: 3px;
+  --spine: 6px;              /* The route spine (signature element). */
+  --spine-section: 8px;      /* Booking sections on the timeline. */
+  --focus-width: 3px;
+  --focus-offset: 2px;
+
+  /* Markers. */
+  --marker: 16px;
+  --tick-w: 22px;            /* Stop crossbar on the spine. */
+  --tick-h: 6px;
+  --terminal-w: 34px;        /* Terminal bar: the route ends here. */
+  --terminal-h: 10px;
+  --icon: 24px;
+  --icon-small: 18px;
+}
+
+/* === Section: 6. Motion === */
+:root {
+  --dur-explain: 150ms;      /* Spine extends, done section fills. */
+  --dur-quick: 100ms;        /* Hover and pressed colour changes. */
+  --ease-out: cubic-bezier(0.2, 0, 0, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-explain: 0ms;
+    --dur-quick: 0ms;
+  }
+}
+
+/* === Section: 7. Desktop scale === */
+/* Used on index.html and dashboard.html (brief 6.1 type table, desktop column). */
+.scale-desk {
+  --fs-display: 40px;
+  --fs-heading: 28px;
+  --fs-subhead: 20px;
+  --fs-body: 16px;
+  --fs-small: 14px;
+}

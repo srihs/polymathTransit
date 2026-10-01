@@ -1,0 +1,2654 @@
+/* =========================================================================
+   PolymathTransit – Direction 1 "Stop by Stop" – components
+   -------------------------------------------------------------------------
+   What this file is for:
+     Every component of the direction and all of its states. Uses only the
+     semantic tokens in tokens.css. State classes (.is-hover, .is-focus,
+     .is-pressed, .is-error, .is-busy) mirror the real pseudo-classes so
+     index.html can show every state side by side.
+   Grammar of the direction (README.md, "Principles"):
+     - A line is a journey. A crossbar on a line is a stop. A wide bar ends
+       a route. These shapes are never used for anything else.
+     - Status shapes (ring, disc, diamond, square …) only ever mean a status.
+     - Black bands and plates carry structure. No cards, no shadows.
+   Requirements: NFR-03 (focus, contrast, targets, colour not alone),
+     NFR-04 (360 px), FR-65 (Sinhala wrapping), FR-29 (timeline), FR-54
+     (stops in order), FR-61 and US-60 (driver route).
+   Sections:
+     1. Base
+     2. Utilities
+     3. Icons and status markers
+     4. Bands (header and footer)
+     5. Language switch
+     6. Plates
+     7. Buttons
+     8. Fields: labels, hints, inputs, selects, errors
+     9. Choice rows (radio cards, date and time choice)
+    10. Checkboxes
+    11. Passenger stepper
+    12. Disclosures
+    13. Route spine (signature element)
+    14. Status badges and flag plates
+    15. Alerts and error summary
+    16. Data table
+    17. Coordinator navigation
+    18. Dashboard tiles
+    19. Day timeline
+    20. Detail panel and run summary
+    21. Driver stops
+    22. Undo bar
+    23. Dialog
+    24. Prototype controls
+    25. Reduced motion
+   ========================================================================= */
+
+/* === Section: 1. Base === */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: var(--font-sans);
+  color: var(--c-ink);
+  background: var(--c-ground);
+  /* Never fake bold or italic, above all in Sinhala (research.md 3.2). */
+  font-synthesis: none;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  font-size: calc(var(--fs-body) * var(--lf));
+  line-height: var(--lh-body);
+  font-weight: var(--fw-regular);
+  /* Times line up in columns (NFR-12, brief 6.1). */
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+p,
+ul,
+ol,
+dl,
+dd,
+figure {
+  margin: 0;
+}
+
+h1 {
+  font-size: calc(var(--fs-display) * var(--lf));
+  line-height: var(--lh-display);
+  font-weight: var(--fw-bold);
+}
+
+h2 {
+  font-size: calc(var(--fs-heading) * var(--lf));
+  line-height: var(--lh-heading);
+  font-weight: var(--fw-bold);
+}
+
+h3 {
+  font-size: calc(var(--fs-subhead) * var(--lf));
+  line-height: var(--lh-subhead);
+  font-weight: var(--fw-bold);
+}
+
+/* An English word inside an English page that switches to Sinhala, and the
+   other way round: keep each script at its own visual size. */
+:lang(en) [lang="si"] {
+  font-size: 0.95em;
+}
+
+a {
+  color: var(--c-brand);
+  /* Links in text are always underlined (brief 3.2). */
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+}
+
+a:visited {
+  color: var(--c-brand-strong);
+}
+
+a:hover {
+  text-decoration-thickness: 3px;
+}
+
+/* One focus style everywhere: 3 px purple, 2 px clear of the element. */
+:focus-visible,
+.is-focus {
+  outline: var(--focus-width) solid var(--c-focus);
+  outline-offset: var(--focus-offset);
+}
+
+/* On black bands the ring turns white (21:1). */
+.on-ink :focus-visible,
+.on-ink .is-focus {
+  outline-color: var(--c-focus-on-ink);
+}
+
+[hidden] {
+  display: none !important;
+}
+
+/* Headings and regions that receive focus from the script (tabindex="-1")
+   are not controls, so they show no ring; the error summary keeps its ring
+   because it is where the person must act next. */
+[tabindex="-1"]:focus:not(.error-summary) {
+  outline: none;
+}
+
+img {
+  max-width: 100%;
+}
+
+/* === Section: 2. Utilities === */
+.vh {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  inset-inline-start: var(--s-2);
+  top: -100px;
+  z-index: 50;
+  padding: var(--s-2) var(--s-3);
+  background: var(--c-ground);
+  color: var(--c-brand);
+  font-weight: var(--fw-bold);
+  border: var(--rule) solid var(--c-ink);
+}
+
+.skip-link:focus {
+  top: var(--s-2);
+}
+
+.t-small {
+  font-size: calc(var(--fs-small) * var(--lf));
+  line-height: var(--lh-small);
+}
+
+.t-subhead {
+  font-size: calc(var(--fs-subhead) * var(--lf));
+  line-height: var(--lh-subhead);
+  font-weight: var(--fw-bold);
+}
+
+.t-muted {
+  color: var(--c-ink-2);
+}
+
+.t-ref {
+  /* Reference codes are the only capitals in the system (brief 6.1). */
+  font-weight: var(--fw-bold);
+  white-space: nowrap;
+}
+
+/* === Section: 3. Icons and status markers === */
+/* Icons: filled pictograms on a 24 px grid, drawn for this direction. */
+.icon {
+  width: var(--icon);
+  height: var(--icon);
+  flex: none;
+  fill: currentColor;
+  vertical-align: middle;
+}
+
+.icon--s {
+  width: var(--icon-small);
+  height: var(--icon-small);
+}
+
+/* Status markers: a shape per status, used on badges, the timeline and the
+   spine, always followed by the word (Kinneir and Calvert's shape coding). */
+.marker {
+  width: var(--marker);
+  height: var(--marker);
+  flex: none;
+  vertical-align: middle;
+  overflow: visible;
+}
+
+.marker--submitted { color: var(--c-ink-2); }
+.marker--proposed { color: var(--c-info); }
+.marker--attention { color: var(--c-attention); }
+.marker--confirmed { color: var(--c-ok); }
+.marker--declined { color: var(--c-danger); }
+.marker--cancelled { color: var(--c-ink-2); }
+.marker--completed { color: var(--c-ink); }
+.marker--noshow { color: var(--c-danger); }
+
+/* === Section: 4. Bands (header and footer) === */
+.band {
+  background: var(--c-ink);
+  color: var(--c-on-ink);
+}
+
+.band__inner {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  min-height: var(--band-phone);
+  padding: var(--s-2) var(--grid-phone-margin);
+  margin: 0 auto;
+}
+
+.band__crest {
+  display: block;
+  width: auto;
+  height: 32px;
+  flex: none;
+}
+
+.band__name {
+  font-size: calc(var(--fs-subhead) * var(--lf));
+  line-height: var(--lh-subhead);
+  font-weight: var(--fw-bold);
+  color: var(--c-on-ink);
+  text-decoration: none;
+}
+
+a.band__name:visited {
+  color: var(--c-on-ink);
+}
+
+.band__aside {
+  margin-inline-start: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  font-size: calc(var(--fs-small) * var(--lf));
+}
+
+.band a {
+  color: var(--c-on-ink);
+}
+
+.band--foot .band__inner {
+  min-height: var(--s-6);
+}
+
+/* === Section: 5. Language switch === */
+/* Two buttons, each named in its own language and script (brief 3.5). The
+   current one is a black plate with a tick and aria-pressed="true", so it is
+   marked by fill, shape and state, not by colour alone. */
+.lang-bar {
+  background: var(--c-panel);
+  border-bottom: var(--rule) solid var(--c-ink);
+  padding: var(--s-2) var(--grid-phone-margin) var(--s-2);
+}
+
+.lang-switch {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2);
+}
+
+.lang-switch__label {
+  font-size: calc(var(--fs-small) * var(--lf));
+  line-height: var(--lh-small);
+  font-weight: var(--fw-bold);
+  margin-inline-end: auto;
+}
+
+.lang-switch__options {
+  display: flex;
+  gap: var(--s-2);
+}
+
+.lang-switch__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-1);
+  min-height: var(--target-phone-min);
+  min-width: var(--target-phone-min);
+  padding: 6px var(--s-3);
+  border: var(--rule) solid var(--c-edge);
+  border-radius: var(--radius-control);
+  background: var(--c-ground);
+  color: var(--c-ink);
+  font: inherit;
+  font-size: calc(var(--fs-body) * var(--lf));
+  line-height: 1.3;
+  font-weight: var(--fw-bold);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.lang-switch__btn:visited {
+  color: var(--c-ink);
+}
+
+.lang-switch__btn .icon {
+  display: none;
+}
+
+.lang-switch__btn:hover {
+  background: var(--c-pressed);
+}
+
+.lang-switch__btn[aria-pressed="true"],
+.lang-switch__btn[aria-current="true"] {
+  background: var(--c-ink);
+  color: var(--c-on-ink);
+}
+
+.lang-switch__btn[aria-pressed="true"] .icon,
+.lang-switch__btn[aria-current="true"] .icon {
+  display: inline-block;
+}
+
+.lang-note {
+  margin-top: var(--s-1);
+  font-size: calc(var(--fs-small) * var(--lf));
+  line-height: var(--lh-small);
+  color: var(--c-ink-2);
+}
+
+/* === Section: 6. Plates === */
+/* A plate is a black band carrying a section number and title, like a sign
+   panel. It opens each form section (brief 6.1). Square corners. */
+.plate {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  margin: 0;
+  background: var(--c-ink);
+  color: var(--c-on-ink);
+  font-size: calc(var(--fs-heading) * var(--lf));
+  line-height: var(--lh-heading);
+  font-weight: var(--fw-bold);
+  border-radius: var(--radius-plate);
+}
+
+.plate__num {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--s-6);
+  padding: var(--s-2) 0;
+  border-inline-end: var(--rule) solid var(--c-on-ink);
+}
+
+.plate__title {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  padding: var(--s-2) var(--s-3);
+}
+
+.plate--sub {
+  font-size: calc(var(--fs-subhead) * var(--lf));
+  line-height: var(--lh-subhead);
+}
+
+/* === Section: 7. Buttons === */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-2);
+  min-height: var(--target-phone);
+  padding: 10px var(--s-3);
+  border: var(--rule) solid transparent;
+  border-radius: var(--radius-control);
+  background: none;
+  font: inherit;
+  font-size: calc(var(--fs-body) * var(--lf));
+  line-height: 1.3;
+  font-weight: var(--fw-bold);
+  text-align: center;
+  text-decoration: none;
+  /* Sinhala labels can be three times wider: let them wrap, never clip. */
+  white-space: normal;
+  cursor: pointer;
+  transition: background-color var(--dur-quick) var(--ease-out),
+    color var(--dur-quick) var(--ease-out);
+}
+
+.btn--block {
+  display: flex;
+  width: 100%;
+}
+
+.btn--large {
+  min-height: 56px;
+  font-size: calc(var(--fs-subhead) * var(--lf));
+}
+
+.scale-desk .btn {
+  min-height: 40px;
+  padding: 6px var(--s-3);
+}
+
+/* Primary: purple. One per view. */
+.btn--primary {
+  background: var(--c-brand);
+  border-color: var(--c-brand);
+  color: var(--c-on-brand);
+}
+
+.btn--primary:visited {
+  color: var(--c-on-brand);
+}
+
+.btn--primary:hover,
+.btn--primary.is-hover {
+  background: var(--c-brand-strong);
+  border-color: var(--c-brand-strong);
+}
+
+.btn--primary:active,
+.btn--primary.is-pressed {
+  background: var(--c-brand-deep);
+  border-color: var(--c-brand-deep);
+}
+
+/* Secondary: black edge on white. */
+.btn--secondary {
+  background: var(--c-ground);
+  border-color: var(--c-edge);
+  color: var(--c-ink);
+}
+
+.btn--secondary:visited {
+  color: var(--c-ink);
+}
+
+.btn--secondary:hover,
+.btn--secondary.is-hover {
+  background: var(--c-panel);
+}
+
+.btn--secondary:active,
+.btn--secondary.is-pressed {
+  background: var(--c-pressed);
+}
+
+/* Quiet: an underlined purple word with a full-size target. */
+.btn--quiet {
+  border-color: transparent;
+  color: var(--c-brand);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+  padding-inline: var(--s-2);
+}
+
+.btn--quiet:hover,
+.btn--quiet.is-hover {
+  text-decoration-thickness: 3px;
+}
+
+.btn--quiet:active,
+.btn--quiet.is-pressed {
+  color: var(--c-brand-deep);
+  background: var(--c-brand-tint);
+}
+
+/* Destructive: red edge and word; fills red only when pressed. */
+.btn--danger {
+  background: var(--c-ground);
+  border-color: var(--c-danger);
+  color: var(--c-danger);
+}
+
+.btn--danger:hover,
+.btn--danger.is-hover {
+  background: var(--c-danger-tint);
+}
+
+.btn--danger:active,
+.btn--danger.is-pressed {
+  background: var(--c-danger);
+  color: var(--c-on-brand);
+}
+
+/* Disabled: dashed edge as well as grey, so it reads in greyscale. */
+.btn:disabled,
+.btn.is-disabled {
+  background: var(--c-panel);
+  border: var(--rule) dashed var(--c-ink-2);
+  color: var(--c-ink-2);
+  text-decoration: none;
+  cursor: not-allowed;
+}
+
+/* Busy: the label changes to "Sending…" and three stop ticks show work in
+   progress. The ticks do not move (brief 3.7). */
+.btn.is-busy {
+  cursor: progress;
+}
+
+.btn__ticks {
+  display: inline-flex;
+  gap: 3px;
+}
+
+.btn__ticks span {
+  display: block;
+  width: 3px;
+  height: 14px;
+  background: currentColor;
+}
+
+.btn__ticks span:last-child {
+  /* Tick not reached yet: an outline, not a faded fill. */
+  background: none;
+  border: 1px solid currentColor;
+}
+
+.btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+}
+
+/* === Section: 8. Fields === */
+.field {
+  position: relative;
+  margin-top: var(--s-4);
+}
+
+.field__label,
+.fieldset__legend {
+  display: block;
+  font-size: calc(var(--fs-subhead) * var(--lf));
+  line-height: var(--lh-subhead);
+  font-weight: var(--fw-bold);
+  padding: 0;
+}
+
+.field__label--body {
+  font-size: calc(var(--fs-body) * var(--lf));
+  line-height: var(--lh-body);
+}
+
+.field__hint {
+  margin-top: var(--s-1);
+  font-size: calc(var(--fs-small) * var(--lf));
+  line-height: var(--lh-small);
+  color: var(--c-ink-2);
+}
+
+.field__error {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s-2);
+  margin-top: var(--s-1);
+  color: var(--c-danger);
+  font-weight: var(--fw-bold);
+}
+
+.field__error .icon {
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+}
+
+/* A field in error carries a thick red bar on its start edge, a red border,
+   an icon and a message: four signals, so greyscale still shows it. */
+.field.is-error,
+.fieldset.is-error {
+  padding-inline-start: var(--s-3);
+  border-inline-start: var(--spine) solid var(--c-danger);
+}
+
+.input,
+.select,
+.textarea {
+  display: block;
+  width: 100%;
+  min-height: var(--target-phone);
+  margin-top: var(--s-2);
+  padding: 10px var(--s-3);
+  border: var(--rule) solid var(--c-edge);
+  border-radius: var(--radius-control);
+  background: var(--c-ground);
+  color: var(--c-ink);
+  font: inherit;
+  font-size: calc(var(--fs-body) * var(--lf));
+  line-height: 1.4;
+}
+
+.input--short {
+  max-width: 12ch;
+}
+
+.input--date {
+  max-width: 16ch;
+}
+
+.textarea {
+  min-height: 112px;
+  resize: vertical;
+}
+
+.input:hover,
+.select:hover,
+.textarea:hover,
+.input.is-hover {
+  background: var(--c-panel);
+}
+
+.input[aria-invalid="true"],
+.select[aria-invalid="true"],
+.textarea[aria-invalid="true"],
+.input.is-error {
+  border: var(--rule-strong) solid var(--c-danger);
+}
+
+.input:disabled,
+.select:disabled,
+.input.is-disabled {
+  background: var(--c-panel);
+  border-style: dashed;
+  border-color: var(--c-ink-2);
+  color: var(--c-ink-2);
+  cursor: not-allowed;
+}
+
+/* Native select with our own chevron (inline SVG laid over it). */
+.select-wrap {
+  position: relative;
+}
+
+.select {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-inline-end: var(--s-6);
+  cursor: pointer;
+}
+
+.select-wrap .icon {
+  position: absolute;
+  inset-inline-end: var(--s-3);
+  bottom: 12px;
+  width: 20px;
+  height: 20px;
+  pointer-events: none;
+}
+
+.scale-desk .input,
+.scale-desk .select {
+  min-height: 40px;
+  padding-block: 6px;
+}
+
+.scale-desk .select-wrap .icon {
+  bottom: 10px;
+}
+
+/* === Section: 9. Choice rows (radio cards, date and time choice) === */
+/* Ruled rows, not cards: square-cornered bars with a 2 px black edge and no
+   shadow, 8 px apart so neighbouring targets are never touching (brief 3.3). */
+.fieldset {
+  margin: var(--s-4) 0 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+.fieldset__legend {
+  margin-bottom: var(--s-1);
+}
+
+.choices {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--target-gap);
+  margin-top: var(--s-2);
+}
+
+/* Two columns while each is at least 140 px; one column below that, so long
+   Sinhala options never overflow at 320 px. */
+.choices--2 {
+  grid-template-columns: repeat(auto-fit, minmax(min(140px, 100%), 1fr));
+}
+
+/* No plates in two-column groups: the words wrap beside the radio. */
+.choices--2 .choice {
+  flex-wrap: nowrap;
+}
+
+.choices--2 .choice__text {
+  flex-basis: 0;
+}
+
+.choice {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap; /* A plate such as "Closed" drops below long Sinhala text. */
+  align-items: center;
+  gap: var(--s-3);
+  min-height: 56px;
+  margin: 0;
+  padding: 10px var(--s-3);
+  border: var(--rule) solid var(--c-edge);
+  border-radius: var(--radius-control);
+  background: var(--c-ground);
+  cursor: pointer;
+}
+
+.choice__input {
+  /* Our radio: a 24 px ring; a purple centre when chosen. */
+  appearance: none;
+  -webkit-appearance: none;
+  flex: none;
+  width: 24px;
+  height: 24px;
+  margin: 0;
+  border: var(--rule) solid var(--c-edge);
+  border-radius: 50%;
+  background: var(--c-ground);
+  cursor: pointer;
+}
+
+.choice__input:checked {
+  border-color: var(--c-brand);
+  box-shadow: inset 0 0 0 4px var(--c-ground), inset 0 0 0 12px var(--c-brand);
+}
+
+/* Where :has() works, the ring moves from the small radio to the whole
+   row (below); elsewhere the radio keeps its own ring. */
+@supports selector(:has(*)) {
+  .choice__input:focus-visible {
+    outline: none;
+  }
+}
+
+.choice__text {
+  display: flex;
+  flex-direction: column;
+  /* Shrinks and wraps its own words first; only at the narrowest widths
+     does a plate such as "Closed" drop to the next line. */
+  flex: 1 1 8ch;
+  min-width: 0;
+}
+
+.choice__main {
+  font-weight: var(--fw-bold);
+}
+
+.choice__sub {
+  font-size: calc(var(--fs-small) * var(--lf));
+  line-height: var(--lh-small);
+  color: var(--c-ink-2);
+}
+
+.choice:hover,
+.choice.is-hover {
+  background: var(--c-panel);
+}
+
+/* Focus: the ring goes round the whole row, so it is easy to see. */
+.choice:has(.choice__input:focus-visible),
+.choice.is-focus {
+  z-index: 2;
+  outline: var(--focus-width) solid var(--c-focus);
+  outline-offset: var(--focus-offset);
+}
+
+/* Selected: purple edge, tint ground and the filled radio centre. */
+.choice:has(.choice__input:checked),
+.choice.is-selected {
+  z-index: 1;
+  border-color: var(--c-brand);
+  background: var(--c-brand-tint);
+}
+
+.choice.is-selected .choice__input {
+  border-color: var(--c-brand);
+  box-shadow: inset 0 0 0 4px var(--c-ground), inset 0 0 0 12px var(--c-brand);
+}
+
+/* Closed date: dashed edge, grey words and the "Closed" plate. */
+.choice--closed,
+.choice:has(.choice__input[aria-disabled="true"]),
+.choice:has(.choice__input:disabled) {
+  background: var(--c-panel);
+  border-style: dashed;
+  border-color: var(--c-ink-2);
+  color: var(--c-ink-2);
+  cursor: not-allowed;
+}
+
+/* The closed date's radio ring is hidden: a dashed ring would read as the
+   "Submitted" status shape (principle 2). The "Closed" plate carries the
+   meaning; the input stays focusable so the reason can be heard. */
+.choice--closed .choice__input,
+.choice__input[aria-disabled="true"],
+.choice__input:disabled {
+  border-color: transparent;
+  background: transparent;
+  cursor: not-allowed;
+}
+
+.choice__tag {
+  margin-inline-start: auto;
+}
+
+.fieldset.is-error .choice {
+  border-color: var(--c-danger);
+}
+
+.fieldset__status {
+  margin-top: var(--s-2);
+}
+
+/* === Section: 10. Checkboxes === */
+.check {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s-3);
+  min-height: var(--target-phone);
+  padding-block: 10px;
+  cursor: pointer;
+}
+
+.check__input {
+  appearance: none;
+  -webkit-appearance: none;
+  flex: none;
+  width: 28px;
+  height: 28px;
+  margin: 0;
+  border: var(--rule) solid var(--c-edge);
+  border-radius: var(--radius-control);
+  background: var(--c-ground);
+  cursor: pointer;
+}
+
+.check__mark {
+  position: absolute;
+  inset-inline-start: 4px;
+  top: 14px;
+  width: 20px;
+  height: 20px;
+  fill: var(--c-on-brand);
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.check__input:checked,
+.check.is-checked .check__input {
+  background: var(--c-brand);
+  border-color: var(--c-brand);
+}
+
+.check__input:checked ~ .check__mark,
+.check.is-checked .check__mark {
+  visibility: visible;
+}
+
+.check__input:focus-visible {
+  outline: var(--focus-width) solid var(--c-focus);
+  outline-offset: var(--focus-offset);
+}
+
+.check.is-focus {
+  outline: none;
+}
+
+.check.is-focus .check__input {
+  outline: var(--focus-width) solid var(--c-focus);
+  outline-offset: var(--focus-offset);
+}
+
+.check:hover .check__input {
+  background: var(--c-panel);
+}
+
+.check:hover .check__input:checked {
+  background: var(--c-brand-strong);
+}
+
+.check__input:disabled,
+.check.is-disabled .check__input {
+  border-style: dashed;
+  border-color: var(--c-ink-2);
+  background: var(--c-panel);
+  cursor: not-allowed;
+}
+
+.check.is-disabled,
+.check:has(.check__input:disabled) {
+  color: var(--c-ink-2);
+  cursor: not-allowed;
+}
+
+.check__text {
+  padding-top: 2px;
+}
+
+.check__text .icon {
+  margin-inline-end: var(--s-1);
+}
+
+/* === Section: 11. Passenger stepper === */
+.stepper {
+  display: flex;
+  align-items: stretch;
+  gap: var(--s-2);
+  margin-top: var(--s-2);
+}
+
+.stepper__btn {
+  width: 52px;
+  min-height: 52px;
+  padding: 0;
+}
+
+.stepper__btn .icon {
+  width: 24px;
+  height: 24px;
+}
+
+.stepper .input {
+  width: 88px;
+  margin: 0;
+  text-align: center;
+  font-size: calc(var(--fs-subhead) * var(--lf));
+  font-weight: var(--fw-bold);
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.stepper .input::-webkit-outer-spin-button,
+.stepper .input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* === Section: 12. Disclosures === */
+.disclosure {
+  margin-top: var(--s-4);
+}
+
+.disclosure > summary {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  min-height: var(--target-phone);
+  padding: var(--s-1) 0;
+  color: var(--c-brand);
+  font-weight: var(--fw-bold);
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+  cursor: pointer;
+  list-style: none;
+}
+
+.disclosure > summary::-webkit-details-marker {
+  display: none;
+}
+
+.disclosure > summary .icon {
+  transform: rotate(-90deg);
+}
+
+.disclosure[open] > summary .icon {
+  transform: none;
+}
+
+.disclosure > summary:hover {
+  text-decoration-thickness: 3px;
+}
+
+.disclosure__body {
+  padding: var(--s-2) 0 0;
+}
+
+/* A plate that opens: section 3 of the form. */
+.disclosure--plate > summary {
+  min-height: 52px;
+  padding: 0;
+  background: var(--c-ink);
+  color: var(--c-on-ink);
+  text-decoration: none;
+  font-size: calc(var(--fs-heading) * var(--lf));
+  line-height: var(--lh-heading);
+}
+
+.disclosure--plate > summary .plate__title {
+  padding-inline-end: var(--s-2);
+}
+
+.disclosure--plate > summary .icon {
+  margin-inline-end: var(--s-3);
+}
+
+.disclosure--plate > summary:hover .plate__title {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.18em;
+}
+
+/* === Section: 13. Route spine (signature element) === */
+/* A 6 px purple line down the start edge. Each stop is a crossbar on the
+   line; the destination is a wide terminal bar. "+ Add a stop" sits on the
+   line between the last stop and the destination, so the order of stops is
+   visible before anything is sent (FR-54, BRL-18). The spine is drawn with
+   pseudo-elements, so it follows wrapping Sinhala labels. */
+.route {
+  --spine-x: 13px;           /* Start of the 6 px line inside the gutter. */
+  --stop-y: 13px;            /* Centre of the first line of the stop label. */
+  --gutter: 44px;
+  position: relative;
+  margin-top: var(--s-4);
+  padding: 0;
+  list-style: none;
+}
+
+.route__stop {
+  position: relative;
+  margin: 0;
+  padding: 0 0 var(--s-4) var(--gutter);
+  border: 0;
+  min-width: 0;
+}
+
+/* The line from this stop to the next one. */
+.route__stop::after {
+  content: "";
+  position: absolute;
+  inset-inline-start: var(--spine-x);
+  top: var(--stop-y);
+  bottom: calc(-1 * var(--stop-y));
+  width: var(--spine);
+  background: var(--c-brand);
+  transform-origin: top;
+}
+
+/* The crossbar: a stop. */
+.route__stop::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  inset-inline-start: calc(var(--spine-x) + var(--spine) / 2 - var(--tick-w) / 2);
+  top: calc(var(--stop-y) - var(--tick-h) / 2);
+  width: var(--tick-w);
+  height: var(--tick-h);
+  background: var(--c-brand);
+}
+
+/* The terminal: the route ends here. */
+.route__stop--end {
+  padding-bottom: 0;
+}
+
+.route__stop--end::after {
+  display: none;
+}
+
+.route__stop--end::before {
+  inset-inline-start: calc(var(--spine-x) + var(--spine) / 2 - var(--terminal-w) / 2);
+  top: calc(var(--stop-y) - var(--terminal-h) / 2);
+  width: var(--terminal-w);
+  height: var(--terminal-h);
+}
+
+/* The insertion point for a new stop: on the line, with no crossbar. */
+.route__add {
+  position: relative;
+  padding: 0 0 var(--s-4) var(--gutter);
+}
+
+.route__add::after {
+  content: "";
+  position: absolute;
+  inset-inline-start: var(--spine-x);
+  top: calc(-1 * var(--stop-y));
+  bottom: 0;
+  width: var(--spine);
+  background: var(--c-brand);
+}
+
+.route__add .btn {
+  min-height: var(--target-phone);
+}
+
+/* An extra stop that has just been added: the line grows down to it
+   (150 ms, brief 6.1 motion). */
+.route__stop.is-new::after {
+  animation: spine-grow var(--dur-explain) var(--ease-out);
+}
+
+.route__stop.is-new::before {
+  animation: tick-in var(--dur-explain) var(--ease-out);
+}
+
+@keyframes spine-grow {
+  from { transform: scaleY(0); }
+  to { transform: scaleY(1); }
+}
+
+@keyframes tick-in {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+.route__stop .fieldset__legend {
+  float: left; /* Lets the legend sit inside the fieldset's flow for the spine. */
+  width: 100%;
+}
+
+.route__stop .fieldset__legend + * {
+  clear: both;
+}
+
+.stop__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--s-2) var(--s-3);
+  margin-top: var(--s-2);
+}
+
+.stop__row .field {
+  margin-top: 0;
+}
+
+/* The spine used to read back a trip (confirmation, run summary). */
+.route--read {
+  --stop-y: 11px;
+  margin-top: var(--s-3);
+}
+
+.route--read .route__stop {
+  padding-bottom: var(--s-3);
+}
+
+.route--read .route__stop--end {
+  padding-bottom: 0;
+}
+
+/* === Section: 14. Status badges and flag plates === */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: calc(var(--fs-small) * var(--lf));
+  line-height: var(--lh-small);
+  font-weight: var(--fw-bold);
+  color: var(--c-ink);
+  white-space: nowrap;
+}
+
+/* Flags are rectangular plates with an icon and a word, in black outline. */
+.flag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-1);
+  min-height: 28px;
+  padding: 2px var(--s-2) 2px 6px;
+  border: var(--rule) solid var(--c-ink);
+  border-radius: var(--radius-plate);
+  background: var(--c-ground);
+  color: var(--c-ink);
+  font-size: calc(var(--fs-small) * var(--lf));
+  line-height: var(--lh-small);
+  font-weight: var(--fw-bold);
+  white-space: nowrap;
+}
+
+.flag .icon {
+  width: 18px;
+  height: 18px;
+}
+
+.flag--closed {
+  border-style: dashed;
+  border-color: var(--c-ink-2);
+  color: var(--c-ink-2);
+  background: var(--c-ground);
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2) var(--s-3);
+}
+
+/* === Section: 15. Alerts and error summary === */
+/* An alert is a ruled line, an icon and words. The 6 px bar repeats the
+   spine's weight; the icon shape and the words carry the meaning. */
+.alert {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s-2);
+  padding: var(--s-2) var(--s-3) var(--s-2) var(--s-2);
+  border-inline-start: var(--spine) solid var(--c-ink);
+  font-size: calc(var(--fs-body) * var(--lf));
+}
+
+.alert .icon {
+  margin-top: 1px;
+}
+
+.alert__body > * + * {
+  margin-top: var(--s-1);
+}
+
+.alert__title {
+  font-weight: var(--fw-bold);
+}
+
+.alert--info {
+  background: var(--c-info-tint);
+  border-color: var(--c-info);
+}
+
+.alert--info > .icon {
+  color: var(--c-info);
+}
+
+.alert--success {
+  background: var(--c-ok-tint);
+  border-color: var(--c-ok);
+}
+
+.alert--success > .icon {
+  color: var(--c-ok);
+}
+
+/* Warning: the amber fill is only ever used under black (11.04:1) and
+   inside a black edge (brief 6.1). */
+.alert--warning {
+  padding: 0;
+  border: var(--rule) solid var(--c-ink);
+  background: var(--c-ground);
+}
+
+.alert--warning > .icon {
+  box-sizing: content-box;
+  align-self: stretch;
+  margin: 0;
+  padding: var(--s-2);
+  background: var(--c-attention);
+  color: var(--c-ink);
+}
+
+.alert--warning .alert__body {
+  padding: var(--s-2) var(--s-3) var(--s-2) 0;
+}
+
+.alert--error {
+  background: var(--c-danger-tint);
+  border-color: var(--c-danger);
+}
+
+.alert--error > .icon {
+  color: var(--c-danger);
+}
+
+.alert--small {
+  font-size: calc(var(--fs-small) * var(--lf));
+  line-height: var(--lh-small);
+}
+
+.alert--small .icon {
+  width: 20px;
+  height: 20px;
+}
+
+.error-summary {
+  margin-top: var(--s-4);
+  padding: var(--s-3);
+  border: var(--rule-strong) solid var(--c-danger);
+  border-inline-start-width: var(--spine);
+  background: var(--c-danger-tint);
+}
+
+.error-summary:focus {
+  outline: var(--focus-width) solid var(--c-focus);
+  outline-offset: var(--focus-offset);
+}
+
+.error-summary__title {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  font-size: calc(var(--fs-heading) * var(--lf));
+  line-height: var(--lh-heading);
+  color: var(--c-ink);
+}
+
+.error-summary__title .icon {
+  color: var(--c-danger);
+}
+
+.error-summary__list {
+  margin-top: var(--s-2);
+  padding-inline-start: 0;
+  list-style: none;
+}
+
+.error-summary__list li + li {
+  margin-top: var(--s-1);
+}
+
+.error-summary__list a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--target-phone-min);
+  color: var(--c-danger);
+  font-weight: var(--fw-bold);
+}
+
+/* === Section: 16. Data table === */
+.table-wrap {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: calc(var(--fs-body) * var(--lf));
+}
+
+.table caption {
+  padding-bottom: var(--s-2);
+  text-align: start;
+  font-size: calc(var(--fs-subhead) * var(--lf));
+  line-height: var(--lh-subhead);
+  font-weight: var(--fw-bold);
+}
+
+.table th,
+.table td {
+  padding: var(--s-2) var(--s-3) var(--s-2) 0;
+  text-align: start;
+  vertical-align: top;
+  border-bottom: var(--rule-hair) solid var(--c-line-inactive);
+}
+
+.table thead th {
+  border-bottom: var(--rule-strong) solid var(--c-ink);
+  font-size: calc(var(--fs-small) * var(--lf));
+  line-height: var(--lh-small);
+  white-space: nowrap;
+}
+
+.table tbody th {
+  font-weight: var(--fw-bold);
+}
+
+.table .num {
+  text-align: end;
+}
+
+/* Times never break between the figures and "am" or "pm". */
+.table td:first-child {
+  white-space: nowrap;
+}
+
+.table__sort {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-1);
+  min-height: 32px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-weight: var(--fw-bold);
+  color: var(--c-ink);
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+  cursor: pointer;
+}
+
+.table__sort .icon {
+  width: 16px;
+  height: 16px;
+}
+
+.table tr.is-muted td,
+.table tr.is-muted th {
+  color: var(--c-ink-2);
+}
+
+/* === Section: 17. Coordinator navigation === */
+/* A white strip under the black band. The current page is bold, carries a
+   6 px black bar under it and aria-current="page": weight, shape and state. */
+.nav {
+  border-bottom: var(--rule) solid var(--c-ink);
+  background: var(--c-ground);
+}
+
+.nav__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--s-1);
+  margin: 0 auto;
+  padding: 0 var(--s-4);
+  list-style: none;
+}
+
+.nav__link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: var(--s-6);
+  padding: 0 var(--s-3);
+  color: var(--c-ink);
+  text-decoration: none;
+  font-weight: var(--fw-regular);
+}
+
+.nav__link:visited {
+  color: var(--c-ink);
+}
+
+.nav__link:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+
+.nav__link[aria-current="page"] {
+  font-weight: var(--fw-bold);
+}
+
+.nav__link[aria-current="page"]::after {
+  content: "";
+  position: absolute;
+  inset-inline: var(--s-3);
+  bottom: 0;
+  height: var(--spine);
+  background: var(--c-ink);
+}
+
+.nav__link:focus-visible {
+  outline-offset: -3px;
+}
+
+/* === Section: 18. Dashboard tiles === */
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: var(--grid-desk-gutter);
+}
+
+.tile-plan {
+  grid-column: span 4;
+  display: flex;
+  flex-direction: column;
+  border: var(--rule) solid var(--c-ink);
+}
+
+.tile-plan__head {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  padding: var(--s-2) var(--s-3);
+  background: var(--c-ink);
+  color: var(--c-on-ink);
+  font-size: calc(var(--fs-subhead) * var(--lf));
+  line-height: var(--lh-subhead);
+}
+
+.tile-plan__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  flex: 1;
+  padding: var(--s-3);
+}
+
+.tile-plan__deadline {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  font-size: calc(var(--fs-heading) * var(--lf));
+  line-height: var(--lh-heading);
+  font-weight: var(--fw-bold);
+}
+
+.tile-plan__facts {
+  padding-inline-start: 0;
+  list-style: none;
+  font-size: calc(var(--fs-small) * var(--lf));
+  line-height: var(--lh-small);
+}
+
+.tile-plan__facts li {
+  display: flex;
+  gap: var(--s-2);
+  align-items: baseline;
+}
+
+.tile-plan__facts li::before {
+  /* A small crossbar: each fact is a stop on the morning's line. */
+  content: "";
+  flex: none;
+  width: 10px;
+  height: 3px;
+  background: var(--c-ink);
+  transform: translateY(-4px);
+}
+
+.tile-plan__action {
+  margin-top: auto;
+}
+
+.tile {
+  grid-column: span 2;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-1);
+  min-height: 100%;
+  padding: var(--s-3) var(--s-3) var(--s-3);
+  border-top: var(--spine) solid var(--c-ink);
+  background: var(--c-panel);
+  color: var(--c-ink);
+  text-decoration: none;
+}
+
+.tile:visited {
+  color: var(--c-ink);
+}
+
+.tile:hover {
+  background: var(--c-pressed);
+}
+
+.tile:hover .tile__label {
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+
+.tile__count {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  font-size: calc(var(--fs-display) * var(--lf));
+  line-height: var(--lh-display);
+  font-weight: var(--fw-bold);
+}
+
+.tile__count .marker {
+  width: 24px;
+  height: 24px;
+}
+
+.tile__label {
+  font-size: calc(var(--fs-subhead) * var(--lf));
+  line-height: var(--lh-subhead);
+  font-weight: var(--fw-bold);
+}
+
+.tile__refs {
+  margin-top: auto;
+  font-size: calc(var(--fs-small) * var(--lf));
+  line-height: var(--lh-small);
+  color: var(--c-ink-2);
+}
+
+/* === Section: 19. Day timeline === */
+/* Marey's principle: time runs across, vans run down, so waits and shared
+   runs show as shapes. Each van's day is a thin grey line; bookings are
+   thick sections of the route line: solid when confirmed, dashed when
+   proposed, grey dashes when they still need a coordinator. Status shapes
+   sit at the start of each section, always with the reference. */
+.timeline {
+  --t0: 0;                   /* 7:00 am */
+  --t-span: 690;             /* 7:00 am to 6:30 pm, in minutes */
+  --label-w: 120px;
+  --row-h: 96px;
+  --line-y: 48px;
+  position: relative;
+  margin-top: var(--s-3);
+  padding-bottom: 40px; /* Room for the now and 6:00 pm labels. */
+}
+
+.tl-axis,
+.tl-row {
+  display: grid;
+  grid-template-columns: var(--label-w) minmax(0, 1fr);
+}
+
+.tl-axis {
+  height: 32px;
+  font-size: calc(var(--fs-small) * var(--lf));
+  line-height: var(--lh-small);
+  color: var(--c-ink-2);
+}
+
+.tl-axis__track,
+.tl-row__track {
+  position: relative;
+}
+
+.tl-hour {
+  position: absolute;
+  bottom: 0;
+  left: calc(var(--m) / var(--t-span) * 100%);
+  height: 8px;
+  border-inline-start: var(--rule-hair) solid var(--c-line-inactive);
+}
+
+.tl-hour span {
+  position: absolute;
+  bottom: 8px;
+  left: 0;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+
+.tl-hour--first span {
+  transform: none;
+}
+
+.tl-row {
+  min-height: var(--row-h);
+  border-top: var(--rule-hair) solid var(--c-line-inactive);
+}
+
+.tl-row:last-of-type {
+  border-bottom: var(--rule-hair) solid var(--c-line-inactive);
+}
+
+.tl-row__label {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-inline-end: var(--s-2);
+  font-size: calc(var(--fs-small) * var(--lf));
+  line-height: var(--lh-small);
+}
+
+.tl-row__label strong {
+  font-size: calc(var(--fs-body) * var(--lf));
+}
+
+/* Van hours: a thin line from start to end of the van's working day. */
+.tl-hours {
+  position: absolute;
+  top: calc(var(--line-y) - 1px);
+  left: calc(var(--s) / var(--t-span) * 100%);
+  width: calc((var(--e) - var(--s)) / var(--t-span) * 100%);
+  height: var(--rule);
+  background: var(--c-line-inactive);
+}
+
+/* Out of hours: the panel tone beyond the 6:00 pm edge marker. */
+.tl-beyond {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--m) / var(--t-span) * 100%);
+  right: 0;
+  background: var(--c-panel);
+}
+
+/* Now and the 6:00 pm edge run through every row; their labels sit under
+   the last row, so they never cover a booking. */
+.tl-overlay {
+  position: absolute;
+  inset: 0 0 0 0;
+  display: grid;
+  grid-template-columns: var(--label-w) minmax(0, 1fr);
+  pointer-events: none;
+}
+
+.tl-overlay__track {
+  position: relative;
+}
+
+.tl-now,
+.tl-edge {
+  position: absolute;
+  z-index: 4;
+  top: 32px; /* Below the hour labels. */
+  bottom: 0;
+  left: calc(var(--m) / var(--t-span) * 100%);
+}
+
+.tl-now {
+  width: var(--rule);
+  margin-left: -1px;
+  background: var(--c-ink);
+}
+
+.tl-edge {
+  z-index: 3;
+  border-inline-start: var(--rule-strong) dashed var(--c-ink);
+}
+
+.tl-now span,
+.tl-edge span {
+  position: absolute;
+  bottom: 0;
+  padding: 2px 6px;
+  font-size: calc(var(--fs-small) * var(--lf));
+  line-height: var(--lh-small);
+  font-weight: var(--fw-bold);
+  white-space: nowrap;
+}
+
+.tl-now span {
+  left: 0;
+  background: var(--c-ink);
+  color: var(--c-on-ink);
+}
+
+.tl-edge span {
+  right: 3px;
+  background: var(--c-ground);
+  border: var(--rule) solid var(--c-ink);
+}
+
+/* A wait between two parts of one booking; a gap job fits inside it. */
+.tl-wait {
+  position: absolute;
+  top: calc(var(--line-y) - 22px);
+  height: 44px;
+  left: calc(var(--s) / var(--t-span) * 100%);
+  width: calc((var(--e) - var(--s)) / var(--t-span) * 100%);
+  border: var(--rule) dashed var(--c-ink-2);
+  border-radius: var(--radius-plate);
+  pointer-events: none;
+}
+
+/* A booking section. The button covers the section and its tag. */
+.tl-block {
+  position: absolute;
+  z-index: 5;
+  top: 0;
+  height: var(--line-y);
+  left: calc(var(--s) / var(--t-span) * 100%);
+  width: max(24px, calc((var(--e) - var(--s)) / var(--t-span) * 100%));
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--c-ink);
+  font: inherit;
+  cursor: pointer;
+}
+
+.tl-block--below {
+  top: var(--line-y);
+  height: calc(var(--row-h) - var(--line-y));
+}
+
+.tl-block__tag {
+  position: absolute;
+  top: 6px;
+  left: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 4px 2px 2px;
+  font-size: calc(var(--fs-small) * var(--lf));
+  line-height: 1.2;
+  font-weight: var(--fw-bold);
+  white-space: nowrap;
+  background: var(--c-ground);
+}
+
+.tl-block--below .tl-block__tag {
+  top: auto;
+  bottom: 8px;
+}
+
+.tl-block--end .tl-block__tag {
+  left: auto;
+  right: 0;
+}
+
+.tl-block__tag .icon {
+  width: 16px;
+  height: 16px;
+}
+
+/* The span of the chosen booking, drawn as a bracket from its tag to the
+   line, so its start and end are clear. Hidden for the others to keep the
+   diagram quiet. */
+.tl-block__span {
+  display: none;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 8px;
+  height: 6px;
+  border: var(--rule) solid var(--c-ink);
+  border-top: 0;
+}
+
+.tl-block--below .tl-block__span {
+  top: 8px;
+  bottom: auto;
+  border-top: var(--rule) solid var(--c-ink);
+  border-bottom: 0;
+}
+
+.tl-block:hover .tl-block__tag,
+.tl-block.is-hover .tl-block__tag {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.18em;
+}
+
+/* Selected: the block's tag becomes a black plate (fill and shape). */
+.tl-block[aria-current="true"] .tl-block__span {
+  display: block;
+}
+
+.tl-block[aria-current="true"] .tl-block__tag {
+  background: var(--c-ink);
+  color: var(--c-on-ink);
+  outline: var(--rule) solid var(--c-ink);
+}
+
+.tl-block[aria-current="true"] .tl-block__tag .marker--completed {
+  color: var(--c-on-ink);
+}
+
+.tl-block:focus-visible {
+  outline: var(--focus-width) solid var(--c-focus);
+  outline-offset: 0;
+}
+
+/* The section of route line. */
+.tl-line {
+  position: absolute;
+  z-index: 1;
+  top: calc(var(--line-y) - var(--spine-section) / 2);
+  height: var(--spine-section);
+  left: calc(var(--s) / var(--t-span) * 100%);
+  width: max(6px, calc((var(--e) - var(--s)) / var(--t-span) * 100%));
+  pointer-events: none;
+}
+
+.tl-line--confirmed {
+  background: var(--c-brand);
+}
+
+/* Dashes for "proposed". A hard-stop pattern draws dashes; it is not a
+   colour gradient (brief 3.2 forbids colour blends, not patterns). */
+.tl-line--proposed {
+  background: repeating-linear-gradient(90deg, var(--c-brand) 0 8px, transparent 8px 12px);
+}
+
+/* Needs attention: short grey dots, a different pattern from "proposed"
+   so the two differ by shape as well as tone. */
+.tl-line--attention {
+  background: repeating-linear-gradient(90deg, var(--c-line-inactive) 0 3px, transparent 3px 7px);
+}
+
+/* A stop on a section: a black crossbar. */
+.tl-tick {
+  position: absolute;
+  z-index: 2;
+  top: calc(var(--line-y) - 9px);
+  left: calc(var(--m) / var(--t-span) * 100%);
+  width: 3px;
+  height: 18px;
+  margin-left: -1px;
+  background: var(--c-ink);
+  pointer-events: none;
+}
+
+/* Not placed: no van and no line, only an open frame and the diamond. */
+.tl-unplaced {
+  position: absolute;
+  top: calc(var(--line-y) - 14px);
+  height: 28px;
+  left: calc(var(--s) / var(--t-span) * 100%);
+  width: calc((var(--e) - var(--s)) / var(--t-span) * 100%);
+  border: var(--rule) dashed var(--c-ink);
+  pointer-events: none;
+}
+
+.tl-legend {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--s-2) var(--s-4);
+  margin-top: var(--s-3);
+  padding: 0;
+  list-style: none;
+  font-size: calc(var(--fs-small) * var(--lf));
+  line-height: var(--lh-small);
+}
+
+.tl-legend li {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+}
+
+.tl-legend__sample {
+  position: relative;
+  flex: none;
+  width: 40px;
+  height: 20px;
+}
+
+.tl-legend__sample .tl-line {
+  --line-y: 10px;
+  left: 0;
+  width: 100%;
+}
+
+.tl-legend__sample .tl-tick {
+  --line-y: 10px;
+  left: 50%;
+}
+
+.tl-legend__sample .tl-wait,
+.tl-legend__sample .tl-unplaced {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 20px;
+}
+
+.tl-legend__sample--now::before,
+.tl-legend__sample--edge::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  border-inline-start: var(--rule) solid var(--c-ink);
+}
+
+.tl-legend__sample--edge::before {
+  border-inline-start: var(--rule-strong) dashed var(--c-ink);
+}
+
+/* === Section: 20. Detail panel and run summary === */
+.detail {
+  border: var(--rule) solid var(--c-ink);
+  background: var(--c-ground);
+}
+
+.detail__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-2);
+  padding: var(--s-2) var(--s-3);
+  background: var(--c-ink);
+  color: var(--c-on-ink);
+}
+
+.detail__head h2 {
+  font-size: calc(var(--fs-heading) * var(--lf));
+}
+
+.detail__body {
+  padding: var(--s-3);
+}
+
+.detail__body > * + * {
+  margin-top: var(--s-3);
+}
+
+.detail__body h3 {
+  font-size: calc(var(--fs-body) * var(--lf));
+  line-height: var(--lh-body);
+  padding-bottom: var(--s-1);
+  border-bottom: var(--rule) solid var(--c-ink);
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: var(--s-1) var(--s-3);
+  font-size: calc(var(--fs-small) * var(--lf));
+  line-height: var(--lh-small);
+}
+
+.facts dt {
+  color: var(--c-ink-2);
+}
+
+.facts dd {
+  font-weight: var(--fw-bold);
+}
+
+.explain {
+  padding-inline-start: 0;
+  list-style: none;
+  font-size: calc(var(--fs-small) * var(--lf));
+  line-height: var(--lh-small);
+}
+
+.explain li {
+  padding: var(--s-1) 0;
+  border-bottom: var(--rule-hair) solid var(--c-line-inactive);
+}
+
+.explain li:last-child {
+  border-bottom: 0;
+}
+
+/* Seats on board beside each stop: one bar per seat, filled when taken. */
+.seats {
+  display: inline-flex;
+  gap: 2px;
+  vertical-align: middle;
+  margin-inline-end: var(--s-1);
+}
+
+.seats span {
+  display: block;
+  width: 5px;
+  height: 14px;
+  border: 1px solid var(--c-ink);
+}
+
+.seats span.is-taken {
+  background: var(--c-ink);
+}
+
+.run {
+  font-size: calc(var(--fs-small) * var(--lf));
+  line-height: var(--lh-small);
+}
+
+.run .route__stop {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0 var(--s-2);
+}
+
+.run__place {
+  font-weight: var(--fw-bold);
+}
+
+.run__seat {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  text-align: end;
+  white-space: nowrap;
+}
+
+.detail__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2);
+}
+
+/* Decline sits apart from Approve and Change (touch-target-design). */
+.detail__actions .btn--danger {
+  margin-inline-start: auto;
+}
+
+.detail__audit {
+  padding-top: var(--s-2);
+  border-top: var(--rule-hair) solid var(--c-line-inactive);
+  font-size: calc(var(--fs-small) * var(--lf));
+  line-height: var(--lh-small);
+  color: var(--c-ink-2);
+}
+
+.status-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2) var(--s-3);
+}
+
+/* === Section: 21. Driver stops === */
+/* The driver's route is the spine at full size. Done sections turn solid
+   black; the next stop's marker is a purple arrow plate with the stop
+   number, the largest mark on the screen (principle 4). */
+.droute {
+  --spine-x: 21px;
+  --stop-y: 22px;
+  --gutter: 60px;
+  position: relative;
+  margin: var(--s-3) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.dstop {
+  position: relative;
+  padding: 0 0 var(--s-5) var(--gutter);
+}
+
+.dstop__seg {
+  position: absolute;
+  z-index: 0;
+  inset-inline-start: var(--spine-x);
+  top: var(--stop-y);
+  bottom: calc(-1 * var(--stop-y));
+  width: var(--spine);
+  background: var(--c-brand);
+  overflow: hidden;
+}
+
+/* Black fill that runs down the section when the next stop is done. */
+.dstop__seg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--c-ink);
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform var(--dur-explain) var(--ease-out);
+}
+
+.dstop.is-travelled .dstop__seg::after {
+  transform: scaleY(1);
+}
+
+.dstop__marker {
+  position: absolute;
+  z-index: 1;
+  inset-inline-start: calc(var(--spine-x) + var(--spine) / 2 - var(--tick-w) / 2);
+  top: calc(var(--stop-y) - var(--tick-h) / 2);
+  width: var(--tick-w);
+  height: var(--tick-h);
+  background: var(--c-brand);
+}
+
+/* Folded done stops: a black lead-in shows the route already travelled. */
+.droute.has-collapsed::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: var(--spine-x);
+  top: calc(-1 * var(--s-3));
+  height: calc(var(--s-3) + var(--stop-y));
+  width: var(--spine);
+  background: var(--c-ink);
+}
+
+/* Done: the Completed shape (filled black square). */
+.dstop[data-state="done"] .dstop__marker {
+  top: calc(var(--stop-y) - 9px);
+  inset-inline-start: calc(var(--spine-x) + var(--spine) / 2 - 9px);
+  width: 18px;
+  height: 18px;
+  background: var(--c-ink);
+}
+
+/* No-show: the No-show shape (open red square with a diagonal). */
+.dstop[data-state="noshow"] .dstop__marker {
+  top: calc(var(--stop-y) - 10px);
+  inset-inline-start: calc(var(--spine-x) + var(--spine) / 2 - 10px);
+  width: 20px;
+  height: 20px;
+  background: var(--c-ground);
+  border: var(--rule-strong) solid var(--c-danger);
+}
+
+.dstop[data-state="noshow"] .dstop__marker::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: -3px;
+  bottom: -3px;
+  width: 3px;
+  margin-left: -1.5px;
+  background: var(--c-danger);
+  transform: rotate(45deg);
+}
+
+/* Next: a purple arrow plate carrying the stop number. */
+.dstop[data-state="next"] .dstop__marker {
+  top: calc(var(--stop-y) - 22px);
+  inset-inline-start: 0;
+  width: 52px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  padding-inline-start: 10px;
+  background: var(--c-brand);
+  color: var(--c-on-brand);
+  font-size: calc(var(--fs-heading) * var(--lf));
+  font-weight: var(--fw-bold);
+  line-height: 1;
+  clip-path: polygon(0 0, 70% 0, 100% 50%, 70% 100%, 0 100%);
+}
+
+.dstop__marker-num {
+  display: none;
+}
+
+.dstop[data-state="next"] .dstop__marker-num {
+  display: inline;
+}
+
+.dstop__end {
+  position: relative;
+  padding-top: calc(var(--stop-y) - 0.5em * var(--lh-subhead));
+  padding-inline-start: var(--gutter);
+  font-weight: var(--fw-bold);
+  font-size: calc(var(--fs-subhead) * var(--lf));
+  line-height: var(--lh-subhead);
+}
+
+.dstop__end::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: calc(var(--spine-x) + var(--spine) / 2 - var(--terminal-w) / 2);
+  top: calc(var(--stop-y) - var(--terminal-h) / 2);
+  width: var(--terminal-w);
+  height: var(--terminal-h);
+  background: var(--c-brand);
+}
+
+.dstop__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 var(--s-3);
+  font-size: calc(var(--fs-subhead) * var(--lf));
+  line-height: var(--lh-subhead);
+}
+
+.dstop__time {
+  font-weight: var(--fw-bold);
+  white-space: nowrap;
+}
+
+.dstop__place {
+  font-weight: var(--fw-bold);
+}
+
+.dstop__num {
+  font-size: calc(var(--fs-small) * var(--lf));
+  line-height: var(--lh-small);
+  color: var(--c-ink-2);
+  font-weight: var(--fw-regular);
+}
+
+.dstop__what {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-1) var(--s-3);
+  margin-top: var(--s-1);
+}
+
+.dstop__what > span {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-1);
+}
+
+.dstop__what strong {
+  font-weight: var(--fw-bold);
+}
+
+.dstop__meta {
+  margin-top: var(--s-1);
+  font-size: calc(var(--fs-small) * var(--lf));
+  line-height: var(--lh-small);
+  color: var(--c-ink-2);
+}
+
+.dstop__note {
+  margin-top: var(--s-2);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  align-items: center;
+}
+
+.dstop__contact {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2) var(--s-3);
+  margin-top: var(--s-2);
+}
+
+.dstop__actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s-2);
+  margin-top: var(--s-3);
+}
+
+.dstop__actions .btn {
+  min-height: var(--target-phone);
+  padding-inline: var(--s-2);
+}
+
+.dstop__status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2);
+  margin-top: var(--s-2);
+  font-weight: var(--fw-bold);
+}
+
+.dstop__navnote {
+  margin-top: var(--s-2);
+}
+
+/* Done and no-show stops shrink to one line of facts. */
+.dstop[data-state="done"] .dstop__body,
+.dstop[data-state="noshow"] .dstop__body {
+  display: none;
+}
+
+.dstop[data-state="done"],
+.dstop[data-state="noshow"] {
+  padding-bottom: var(--s-3);
+}
+
+.dstop[data-state="done"] .dstop__head,
+.dstop[data-state="noshow"] .dstop__head {
+  font-size: calc(var(--fs-body) * var(--lf));
+  line-height: var(--lh-body);
+}
+
+.dstop.is-collapsed {
+  display: none;
+}
+
+/* The next stop: the biggest thing on the screen (principle 4). */
+.dstop[data-state="next"] {
+  padding-bottom: var(--s-5);
+}
+
+.dstop__next-plate {
+  display: none;
+}
+
+.dstop[data-state="next"] .dstop__next-plate {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0 var(--s-2);
+  margin-bottom: var(--s-2);
+  padding: var(--s-1) var(--s-2);
+  background: var(--c-ink);
+  color: var(--c-on-ink);
+  font-weight: var(--fw-bold);
+  font-size: calc(var(--fs-body) * var(--lf));
+}
+
+.dstop[data-state="next"] .dstop__head {
+  display: block;
+}
+
+.dstop[data-state="next"] .dstop__time {
+  display: block;
+  font-size: calc(var(--fs-display) * 1.25 * var(--lf));
+  line-height: var(--lh-display);
+}
+
+.dstop[data-state="next"] .dstop__place {
+  display: block;
+  font-size: calc(var(--fs-heading) * var(--lf));
+  line-height: var(--lh-heading);
+}
+
+.dstop[data-state="next"] .dstop__what {
+  font-size: calc(var(--fs-subhead) * var(--lf));
+  line-height: var(--lh-subhead);
+}
+
+.dstop[data-state="next"] .dstop__actions {
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--s-3);
+}
+
+.dstop[data-state="next"] .dstop__actions .btn--done {
+  min-height: 56px;
+  font-size: calc(var(--fs-subhead) * var(--lf));
+}
+
+/* Only the next stop's Done is purple; later stops use the secondary style
+   so the next action stays the one obvious thing. */
+.dstop:not([data-state="next"]) .btn--done {
+  background: var(--c-ground);
+  border-color: var(--c-edge);
+  color: var(--c-ink);
+}
+
+.dstop:not([data-state="next"]) .btn--done:hover {
+  background: var(--c-panel);
+}
+
+/* No-show is always quieter than Done (brief 5.4): an underlined word on
+   later stops, an outline on the next stop, never purple. */
+.dstop:not([data-state="next"]) .btn--noshow {
+  grid-column: 1 / -1;
+  border-color: transparent;
+  background: none;
+  color: var(--c-ink);
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+
+.dstop:not([data-state="next"]) .btn--noshow:hover {
+  text-decoration-thickness: 3px;
+  background: var(--c-panel);
+}
+
+.confirm {
+  margin-top: var(--s-3);
+  padding: var(--s-3);
+  border: var(--rule) solid var(--c-danger);
+  border-inline-start-width: var(--spine);
+  background: var(--c-danger-tint);
+}
+
+.confirm__q {
+  font-weight: var(--fw-bold);
+}
+
+.confirm__q:focus {
+  outline: var(--focus-width) solid var(--c-focus);
+  outline-offset: var(--focus-offset);
+}
+
+.confirm .btn-row {
+  margin-top: var(--s-3);
+  flex-direction: column;
+  gap: var(--s-3);
+}
+
+.progress {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2) var(--s-3);
+  width: 100%;
+  min-height: var(--target-phone);
+  padding: var(--s-2) var(--s-3);
+  border: var(--rule) solid var(--c-ink);
+  border-radius: var(--radius-control);
+  background: var(--c-ground);
+  color: var(--c-ink);
+  font: inherit;
+  font-weight: var(--fw-bold);
+  text-align: start;
+  cursor: pointer;
+}
+
+.progress:hover {
+  background: var(--c-panel);
+}
+
+.progress .icon {
+  margin-inline-start: auto;
+}
+
+.progress[aria-expanded="false"] .icon {
+  transform: rotate(-90deg);
+}
+
+/* A horizontal spine: one cell per stop, black when done. */
+.progress__strip {
+  display: flex;
+  gap: 2px;
+  flex: 1 1 100%;
+  order: 3;
+}
+
+.progress__strip span {
+  flex: 1;
+  height: 8px;
+  background: var(--c-brand);
+}
+
+.progress__strip span.is-done {
+  background: var(--c-ink);
+}
+
+/* === Section: 22. Undo bar === */
+.undo-bar {
+  position: fixed;
+  z-index: 40;
+  left: 50%;
+  bottom: var(--s-3);
+  width: min(calc(100% - 2 * var(--s-3)), 448px);
+  transform: translateX(-50%);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-2) var(--s-3);
+  padding: var(--s-2) var(--s-2) var(--s-2) var(--s-3);
+  background: var(--c-ink);
+  color: var(--c-on-ink);
+  font-weight: var(--fw-bold);
+}
+
+.undo-bar .btn {
+  background: var(--c-ground);
+  color: var(--c-ink);
+  border-color: var(--c-ground);
+}
+
+.undo-bar .btn:hover {
+  background: var(--c-pressed);
+}
+
+.undo-bar :focus-visible {
+  outline-color: var(--c-focus-on-ink);
+}
+
+/* === Section: 23. Dialog === */
+.dialog {
+  width: min(560px, calc(100% - 32px));
+  padding: 0;
+  border: var(--rule-strong) solid var(--c-ink);
+  border-radius: var(--radius-plate);
+  background: var(--c-ground);
+  color: var(--c-ink);
+}
+
+/* No backdrop wash: translucency over content is not allowed (brief 3.2),
+   and an opaque one would hide the plan being approved. The page stays in
+   view (and inert) behind a black frame with a white ring. */
+.dialog {
+  outline: var(--s-2) solid var(--c-ground);
+}
+
+.dialog::backdrop {
+  background: none;
+}
+
+.dialog__head {
+  padding: var(--s-3) var(--s-4);
+  background: var(--c-ink);
+  color: var(--c-on-ink);
+}
+
+.dialog__body {
+  padding: var(--s-4);
+}
+
+.dialog__body > * + * {
+  margin-top: var(--s-3);
+}
+
+/* === Section: 24. Prototype controls === */
+/* Deliberately plain (system font, dashed grey edge) so it is not mistaken
+   for the design (brief 2). */
+.proto {
+  margin: var(--s-6) auto 0;
+  padding: 12px 16px 16px;
+  border: 2px dashed var(--proto-edge);
+  background: var(--c-ground);
+  color: var(--proto-ink);
+  font-family: var(--font-proto);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.proto h2 {
+  font-size: 14px;
+  font-weight: 700;
+  margin: 0 0 8px;
+}
+
+.proto__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.proto button,
+.proto a {
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid var(--proto-ink);
+  border-radius: 2px;
+  background: var(--proto-ground);
+  color: var(--proto-ink);
+  font: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+}
+
+.proto p {
+  margin: 8px 0 0;
+}
+
+.proto-note {
+  margin-top: var(--s-2);
+  padding: 4px 8px;
+  border: 1px dashed var(--proto-edge);
+  font-family: var(--font-proto);
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--proto-ink);
+}
+
+/* === Section: 25. Reduced motion === */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<!--
+  Purpose:      The driver's route link at phone width, in direction 1
+                "Stop by Stop": Van 1's day as a vertical route spine. Done
+                sections are solid black; the next stop is the largest thing
+                on the screen, with Navigate, Done and No-show.
+  Direction:    1 – Stop by Stop (docs/design/system-options/brief.md 6.1).
+  Requirements: FR-61, FR-65, FR-67, NFR-03, NFR-04, NFR-12, NFR-18, US-52,
+                US-60, D-09, Q-17 (map service not chosen: Navigate shows a note).
+  Depends on:   tokens.css, components.css, pages.css, script.js;
+                ../assets/crest-keyline.png, ../assets/crest.png (favicon);
+                Google Fonts (Overpass 400 and 700, Noto Sans Sinhala 400 and 700).
+  Sections:     icon sprite; header (black band, language switch); main
+                (title and van facts, offline banner, progress, the route:
+                14 stops and the end of day); undo bar; footer band;
+                prototype controls.
+  "Now" is 9:40 am on Tuesday 13/10/2026 (brief 4.4). Without JavaScript the
+  whole route shows, including the done stops; the buttons need the script.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Today's route – Van 1 – PolymathTransit</title>
+  <link rel="icon" href="../assets/crest.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@400;700&amp;family=Overpass:wght@400;700&amp;display=swap">
+  <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="components.css">
+  <link rel="stylesheet" href="pages.css">
+  <script src="script.js" defer></script>
+</head>
+<body class="page-phone" data-page="driver">
+
+<!-- === Section: Icon sprite (drawn for this direction; see index.html section 6) === -->
+<!-- BEGIN:icons -->
+<svg class="vh" aria-hidden="true" focusable="false" width="0" height="0">
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M2 12l3-3 4 4 10-10 3 3L9 19z"/></symbol>
+  <symbol id="i-van" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M1 5h15l5 6h2v8h-2.2a3 3 0 0 0-5.6 0H8.8a3 3 0 0 0-5.6 0H1zM3 7v4h5V7zm7 0v4h5V7z"/><circle cx="6" cy="19" r="2.2"/><circle cx="18" cy="19" r="2.2"/></symbol>
+  <symbol id="i-pickup" viewBox="0 0 24 24"><path d="M12 3l7 7h-5v6h-4v-6H5z"/><path d="M3 19h18v2H3z"/></symbol>
+  <symbol id="i-dropoff" viewBox="0 0 24 24"><path d="M12 17l-7-7h5V3h4v7h5z"/><path d="M3 19h18v2H3z"/></symbol>
+  <symbol id="i-passengers" viewBox="0 0 24 24"><circle cx="9" cy="6" r="3.5"/><path d="M2 21v-3.5A4.5 4.5 0 0 1 6.5 13h5a4.5 4.5 0 0 1 4.5 4.5V21z"/><circle cx="17" cy="7" r="2.8"/><path d="M17.5 12.5h.5a4 4 0 0 1 4 4V21h-4.5v-3.5a6 6 0 0 0-1.6-4.1z"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M6 1h12v22H6zM8 4v13h8V4zm3 15v2h2v-2z"/></symbol>
+  <symbol id="i-navigate" viewBox="0 0 24 24"><path d="M21 3v11L10 3z"/><path d="M3 18.5 14.5 7l2.5 2.5L5.5 21z"/></symbol>
+  <symbol id="i-gap" viewBox="0 0 24 24"><path d="M1 4h3v16H1zM20 4h3v16h-3z"/><path d="M7 9h10v6H7z"/></symbol>
+  <symbol id="i-undo" viewBox="0 0 24 24"><path d="M9 3 3 9l6 6v-4h6.5a3 3 0 0 1 0 6H12v4h3.5a7 7 0 0 0 0-14H9z"/></symbol>
+  <symbol id="i-offline" viewBox="0 0 24 24"><path d="M2 16h3.5v5H2zM7.5 12H11v9H7.5z"/><path d="M13 7l2-2 2.5 2.5L20 5l2 2-2.5 2.5L22 12l-2 2-2.5-2.5L15 14l-2-2 2.5-2.5z"/><path d="M13 17h3.5v4H13zM18.5 17H22v4h-3.5z"/></symbol>
+  <symbol id="i-chevron" viewBox="0 0 24 24"><path d="M2.5 8.5 5 6l7 7 7-7 2.5 2.5L12 18z"/></symbol>
+  <symbol id="i-calendar" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M6 2h2v2h8V2h2v2h3v17H3V4h3zM5 9v10h14V9zm2 2h4v4H7z"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M2 2h20v20H2zm9 8v8h2.5v-8zm0-4v2.5h2.5V6z"/></symbol>
+  <symbol id="i-repeat" viewBox="0 0 24 24"><path d="M3 12V5h13V2l5 5-5 5V8H6v4z"/><path d="M21 12v7H8v3l-5-5 5-5v3h10v-3z"/></symbol>
+  <symbol id="i-newrequester" viewBox="0 0 24 24"><circle cx="9" cy="6.5" r="4"/><path d="M1.5 21.5v-3A5.5 5.5 0 0 1 7 13h4a5.5 5.5 0 0 1 5.5 5.5v3z"/><path d="M18 5h2.5v3H23v2.5h-2.5v3H18v-3h-3V8h3z"/></symbol>
+  <symbol id="i-late" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M10 3a9 9 0 1 0 0 18a9 9 0 0 0 0-18zm-1 3h2v5.6l3.2 3.2-1.4 1.4L9 12.4z"/><path d="M20.5 2h2.5v12h-2.5zM20.5 17h2.5v3h-2.5z"/></symbol>
+  <symbol id="i-outofhours" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M10 3a9 9 0 1 0 0 18a9 9 0 0 0 0-18zm-1 3h2v5.6l3.2 3.2-1.4 1.4L9 12.4z"/><path d="M20.5 1h2.5v22h-2.5z"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M12 2a10 10 0 1 0 0 20a10 10 0 0 0 0-20zm-1 4h2v5.6l3.7 3.7-1.4 1.4L11 12.4z"/></symbol>
+  <symbol id="m-completed" viewBox="0 0 16 16"><rect x="2" y="2" width="12" height="12" fill="currentColor"/></symbol>
+  <symbol id="m-noshow" viewBox="0 0 16 16"><rect x="2.5" y="2.5" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M2.5 13.5l11-11" stroke="currentColor" stroke-width="2.2"/></symbol>
+</svg>
+<!-- END:icons -->
+
+<a class="skip-link" href="#main">Skip to main content</a>
+
+<!-- === Section: Header: black band and language switch === -->
+<header class="site-head">
+  <div class="band on-ink">
+    <div class="band__inner phone-col">
+      <img class="band__crest" src="../assets/crest-keyline.png" alt="Polymath College" width="30" height="32">
+      <span class="band__name" lang="en">PolymathTransit</span>
+    </div>
+  </div>
+  <div class="lang-bar">
+    <div class="phone-col">
+      <div class="lang-switch" role="group" aria-labelledby="lang-label">
+        <span class="lang-switch__label" id="lang-label" data-i18n="lang.label">Language</span>
+        <div class="lang-switch__options">
+          <!-- Links without JavaScript; in production the server renders the
+               chosen language (FR-65). script.js turns them into buttons. -->
+          <a class="lang-switch__btn" href="driver.html?lang=en" data-lang="en" lang="en" aria-current="true"><svg class="icon icon--s" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>English</a>
+          <a class="lang-switch__btn" href="driver.html?lang=si" data-lang="si" lang="si"><svg class="icon icon--s" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>සිංහල</a>
+        </div>
+      </div>
+      <p class="lang-note" lang="en">This Sinhala text is a draft for review by native speakers (D-09).</p>
+      <p class="lang-note" id="lang-status" role="status"></p>
+    </div>
+  </div>
+</header>
+
+<!-- === Section: Main === -->
+<main id="main" class="phone-col page-main" tabindex="-1">
+
+  <!-- === Section: Title and van facts === -->
+  <h1 data-i18n="driver.title">Today's route</h1>
+  <p class="driver-meta">
+    <span><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-van"/></svg><span><span data-i18n="driver.van">Van</span> 1</span></span>
+    <span><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-calendar"/></svg><span><span data-i18n="day.tuesday">Tuesday</span> 13/10/2026</span></span>
+  </p>
+  <p class="driver-meta driver-meta--who"><span data-i18n="driver.driver">Driver</span>: <span lang="en">Sunil Rathnayake</span></p>
+  <p class="driver-updated" id="updated" data-time="07:06">Route updated at 7:06 am</p>
+
+  <!-- === Section: Offline banner (NFR-18), shown by the prototype control === -->
+  <div id="offline-live" role="status">
+    <div class="alert alert--warning offline" id="offline" hidden>
+      <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-offline"/></svg>
+      <p class="alert__body" data-i18n="driver.offline">You are offline. This is the route as last loaded at 9:38 am.</p>
+    </div>
+  </div>
+
+  <!-- === Section: Progress: a horizontal spine, one cell per stop === -->
+  <div class="driver-progress">
+    <button type="button" class="progress" id="progress" aria-controls="droute">
+      <span id="progress-text">4 of 14 stops done</span>
+      <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-chevron"/></svg>
+      <span class="progress__strip" id="progress-strip" aria-hidden="true">
+        <span class="is-done"></span><span class="is-done"></span><span class="is-done"></span><span class="is-done"></span>
+        <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+      </span>
+    </button>
+  </div>
+
+  <!-- === Section: The route (FR-61, US-60) === -->
+  <ol class="droute" id="droute">
+<!-- BEGIN:stops -->
+<li class="dstop is-travelled" id="dstop-1" data-stop="1" data-state="done" data-time="07:30" data-pax="2" data-done-at="07:31">
+  <span class="dstop__seg" aria-hidden="true"></span>
+  <span class="dstop__marker" aria-hidden="true"><span class="dstop__marker-num">1</span></span>
+  <p class="dstop__next-plate"><span data-i18n="driver.next">Next stop</span><span data-in>in 20 min</span></p>
+  <h2 class="dstop__head"><span class="dstop__num"><span data-i18n="driver.stop">Stop</span> 1</span> <span class="dstop__time" data-time-label="07:30">7:30 am</span> <span class="dstop__place" lang="en">Branch A (main branch)</span></h2>
+  <p class="dstop__status" data-status><svg class="marker marker--completed" aria-hidden="true" focusable="false"><use href="#m-completed"/></svg><span data-status-text>Done at 7:31 am</span></p>
+  <div class="dstop__body">
+    <p class="dstop__what"><span><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-pickup"/></svg><strong data-i18n="driver.pickup">Pick up</strong></span><span><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-passengers"/></svg><span data-pax-label>2 passengers</span></span></p>
+    <p class="dstop__meta" lang="en">PT-2026-0131</p>
+    <div class="dstop__contact"><span><span data-i18n="driver.contact">Contact</span>: <span lang="en">Dilini Fernando</span></span><a class="btn btn--secondary" href="tel:+94770000131"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-phone"/></svg><span data-i18n="driver.call">Call</span><span class="vh" lang="en"> Dilini Fernando, 077 000 0131</span></a></div>
+    <p class="dstop__note"><span lang="en">Early trip</span></p>
+    <div class="dstop__actions">
+      <button type="button" class="btn btn--secondary btn--nav" data-act="navigate" aria-describedby="navnote-1"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-navigate"/></svg><span data-i18n="driver.navigate">Navigate</span></button>
+      <button type="button" class="btn btn--primary btn--done" data-act="done"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"/></svg><span data-i18n="driver.done">Done</span></button>
+      <button type="button" class="btn btn--secondary btn--noshow" data-act="noshow"><span data-i18n="driver.noshow">No-show</span></button>
+    </div>
+    <p class="proto-note dstop__navnote" id="navnote-1" hidden><span data-i18n="driver.navnote">Opens your map app</span> (prototype: the map service is not chosen yet, Q-17)</p>
+    <div class="confirm" data-confirm hidden>
+      <p class="confirm__q" tabindex="-1" data-i18n="driver.noshow.confirm">Mark as no-show? We will tell the transport coordinators.</p>
+      <div class="btn-row"><button type="button" class="btn btn--danger btn--block" data-act="noshow-yes"><span data-i18n="driver.noshow.yes">Yes, mark no-show</span></button><button type="button" class="btn btn--secondary btn--block" data-act="noshow-back"><span data-i18n="driver.goback">Go back</span></button></div>
+    </div>
+  </div>
+</li>
+<li class="dstop is-travelled" id="dstop-2" data-stop="2" data-state="done" data-time="07:55" data-pax="2" data-done-at="07:56">
+  <span class="dstop__seg" aria-hidden="true"></span>
+  <span class="dstop__marker" aria-hidden="true"><span class="dstop__marker-num">2</span></span>
+  <p class="dstop__next-plate"><span data-i18n="driver.next">Next stop</span><span data-in>in 20 min</span></p>
+  <h2 class="dstop__head"><span class="dstop__num"><span data-i18n="driver.stop">Stop</span> 2</span> <span class="dstop__time" data-time-label="07:55">7:55 am</span> <span class="dstop__place" lang="en">Branch C</span></h2>
+  <p class="dstop__status" data-status><svg class="marker marker--completed" aria-hidden="true" focusable="false"><use href="#m-completed"/></svg><span data-status-text>Done at 7:56 am</span></p>
+  <div class="dstop__body">
+    <p class="dstop__what"><span><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-dropoff"/></svg><strong data-i18n="driver.dropoff">Drop off</strong></span><span><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-passengers"/></svg><span data-pax-label>2 passengers</span></span></p>
+    <p class="dstop__meta" lang="en">PT-2026-0131</p>
+    <div class="dstop__actions">
+      <button type="button" class="btn btn--secondary btn--nav" data-act="navigate" aria-describedby="navnote-2"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-navigate"/></svg><span data-i18n="driver.navigate">Navigate</span></button>
+      <button type="button" class="btn btn--primary btn--done" data-act="done"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"/></svg><span data-i18n="driver.done">Done</span></button>
+      <button type="button" class="btn btn--secondary btn--noshow" data-act="noshow"><span data-i18n="driver.noshow">No-show</span></button>
+    </div>
+    <p class="proto-note dstop__navnote" id="navnote-2" hidden><span data-i18n="driver.navnote">Opens your map app</span> (prototype: the map service is not chosen yet, Q-17)</p>
+    <div class="confirm" data-confirm hidden>
+      <p class="confirm__q" tabindex="-1" data-i18n="driver.noshow.confirm">Mark as no-show? We will tell the transport coordinators.</p>
+      <div class="btn-row"><button type="button" class="btn btn--danger btn--block" data-act="noshow-yes"><span data-i18n="driver.noshow.yes">Yes, mark no-show</span></button><button type="button" class="btn btn--secondary btn--block" data-act="noshow-back"><span data-i18n="driver.goback">Go back</span></button></div>
+    </div>
+  </div>
+</li>
+<li class="dstop is-travelled" id="dstop-3" data-stop="3" data-state="done" data-time="09:05" data-pax="11" data-done-at="09:06">
+  <span class="dstop__seg" aria-hidden="true"></span>
+  <span class="dstop__marker" aria-hidden="true"><span class="dstop__marker-num">3</span></span>
+  <p class="dstop__next-plate"><span data-i18n="driver.next">Next stop</span><span data-in>in 20 min</span></p>
+  <h2 class="dstop__head"><span class="dstop__num"><span data-i18n="driver.stop">Stop</span> 3</span> <span class="dstop__time" data-time-label="09:05">9:05 am</span> <span class="dstop__place" lang="en">Branch A (main branch)</span></h2>
+  <p class="dstop__status" data-status><svg class="marker marker--completed" aria-hidden="true" focusable="false"><use href="#m-completed"/></svg><span data-status-text>Done at 9:06 am</span></p>
+  <div class="dstop__body">
+    <p class="dstop__what"><span><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-pickup"/></svg><strong data-i18n="driver.pickup">Pick up</strong></span><span><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-passengers"/></svg><span data-pax-label>11 passengers</span></span></p>
+    <p class="dstop__meta" lang="en">PT-2026-0119, Grade 7 Swimming</p>
+    <div class="dstop__contact"><span><span data-i18n="driver.contact">Contact</span>: <span lang="en">Ruwan Silva</span></span><a class="btn btn--secondary" href="tel:+94770000119"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-phone"/></svg><span data-i18n="driver.call">Call</span><span class="vh" lang="en"> Ruwan Silva, 077 000 0119</span></a></div>
+    <p class="dstop__note"><span lang="en">Swimming bags go in the back.</span></p>
+    <div class="dstop__actions">
+      <button type="button" class="btn btn--secondary btn--nav" data-act="navigate" aria-describedby="navnote-3"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-navigate"/></svg><span data-i18n="driver.navigate">Navigate</span></button>
+      <button type="button" class="btn btn--primary btn--done" data-act="done"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"/></svg><span data-i18n="driver.done">Done</span></button>
+      <button type="button" class="btn btn--secondary btn--noshow" data-act="noshow"><span data-i18n="driver.noshow">No-show</span></button>
+    </div>
+    <p class="proto-note dstop__navnote" id="navnote-3" hidden><span data-i18n="driver.navnote">Opens your map app</span> (prototype: the map service is not chosen yet, Q-17)</p>
+    <div class="confirm" data-confirm hidden>
+      <p class="confirm__q" tabindex="-1" data-i18n="driver.noshow.confirm">Mark as no-show? We will tell the transport coordinators.</p>
+      <div class="btn-row"><button type="button" class="btn btn--danger btn--block" data-act="noshow-yes"><span data-i18n="driver.noshow.yes">Yes, mark no-show</span></button><button type="button" class="btn btn--secondary btn--block" data-act="noshow-back"><span data-i18n="driver.goback">Go back</span></button></div>
+    </div>
+  </div>
+</li>
+<li class="dstop" id="dstop-4" data-stop="4" data-state="done" data-time="09:30" data-pax="11" data-done-at="09:29">
+  <span class="dstop__seg" aria-hidden="true"></span>
+  <span class="dstop__marker" aria-hidden="true"><span class="dstop__marker-num">4</span></span>
+  <p class="dstop__next-plate"><span data-i18n="driver.next">Next stop</span><span data-in>in 20 min</span></p>
+  <h2 class="dstop__head"><span class="dstop__num"><span data-i18n="driver.stop">Stop</span> 4</span> <span class="dstop__time" data-time-label="09:30">9:30 am</span> <span class="dstop__place" lang="en">Aquatic Centre</span></h2>
+  <p class="dstop__status" data-status><svg class="marker marker--completed" aria-hidden="true" focusable="false"><use href="#m-completed"/></svg><span data-status-text>Done at 9:29 am</span></p>
+  <div class="dstop__body">
+    <p class="dstop__what"><span><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-dropoff"/></svg><strong data-i18n="driver.dropoff">Drop off</strong></span><span><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-passengers"/></svg><span data-pax-label>11 passengers</span></span></p>
+    <p class="dstop__meta" lang="en">PT-2026-0119</p>
+    <p class="dstop__note"><span lang="en">Return pickup here at 11:30 am.</span></p>
+    <div class="dstop__actions">
+      <button type="button" class="btn btn--secondary btn--nav" data-act="navigate" aria-describedby="navnote-4"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-navigate"/></svg><span data-i18n="driver.navigate">Navigate</span></button>
+      <button type="button" class="btn btn--primary btn--done" data-act="done"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"/></svg><span data-i18n="driver.done">Done</span></button>
+      <button type="button" class="btn btn--secondary btn--noshow" data-act="noshow"><span data-i18n="driver.noshow">No-show</span></button>
+    </div>
+    <p class="proto-note dstop__navnote" id="navnote-4" hidden><span data-i18n="driver.navnote">Opens your map app</span> (prototype: the map service is not chosen yet, Q-17)</p>
+    <div class="confirm" data-confirm hidden>
+      <p class="confirm__q" tabindex="-1" data-i18n="driver.noshow.confirm">Mark as no-show? We will tell the transport coordinators.</p>
+      <div class="btn-row"><button type="button" class="btn btn--danger btn--block" data-act="noshow-yes"><span data-i18n="driver.noshow.yes">Yes, mark no-show</span></button><button type="button" class="btn btn--secondary btn--block" data-act="noshow-back"><span data-i18n="driver.goback">Go back</span></button></div>
+    </div>
+  </div>
+</li>
+<li class="dstop" id="dstop-5" data-stop="5" data-state="next" data-time="10:00" data-pax="1">
+  <span class="dstop__seg" aria-hidden="true"></span>
+  <span class="dstop__marker" aria-hidden="true"><span class="dstop__marker-num">5</span></span>
+  <p class="dstop__next-plate"><span data-i18n="driver.next">Next stop</span><span data-in>in 20 min</span></p>
+  <h2 class="dstop__head"><span class="dstop__num"><span data-i18n="driver.stop">Stop</span> 5</span> <span class="dstop__time" data-time-label="10:00">10:00 am</span> <span class="dstop__place" lang="en">Branch B</span></h2>
+  <p class="dstop__status" data-status hidden></p>
+  <div class="dstop__body">
+    <p class="dstop__what"><span><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-pickup"/></svg><strong data-i18n="driver.pickup">Pick up</strong></span><span><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-passengers"/></svg><span data-pax-label>1 passenger</span></span></p>
+    <p class="dstop__meta" lang="en">PT-2026-0145</p>
+    <div class="dstop__contact"><span><span data-i18n="driver.contact">Contact</span>: <span lang="en">Shamila Rodrigo</span></span><a class="btn btn--secondary" href="tel:+94770000145"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-phone"/></svg><span data-i18n="driver.call">Call</span><span class="vh" lang="en"> Shamila Rodrigo, 077 000 0145</span></a></div>
+    <p class="dstop__note"><span class="flag"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-gap"/></svg><span data-i18n="driver.gap">Gap job</span></span></p>
+    <div class="dstop__actions">
+      <button type="button" class="btn btn--secondary btn--nav" data-act="navigate" aria-describedby="navnote-5"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-navigate"/></svg><span data-i18n="driver.navigate">Navigate</span></button>
+      <button type="button" class="btn btn--primary btn--done" data-act="done"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"/></svg><span data-i18n="driver.done">Done</span></button>
+      <button type="button" class="btn btn--secondary btn--noshow" data-act="noshow"><span data-i18n="driver.noshow">No-show</span></button>
+    </div>
+    <p class="proto-note dstop__navnote" id="navnote-5" hidden><span data-i18n="driver.navnote">Opens your map app</span> (prototype: the map service is not chosen yet, Q-17)</p>
+    <div class="confirm" data-confirm hidden>
+      <p class="confirm__q" tabindex="-1" data-i18n="driver.noshow.confirm">Mark as no-show? We will tell the transport coordinators.</p>
+      <div class="btn-row"><button type="button" class="btn btn--danger btn--block" data-act="noshow-yes"><span data-i18n="driver.noshow.yes">Yes, mark no-show</span></button><button type="button" class="btn btn--secondary btn--block" data-act="noshow-back"><span data-i18n="driver.goback">Go back</span></button></div>
+    </div>
+  </div>
+</li>
+<li class="dstop" id="dstop-6" data-stop="6" data-state="upcoming" data-time="10:20" data-pax="1">
+  <span class="dstop__seg" aria-hidden="true"></span>
+  <span class="dstop__marker" aria-hidden="true"><span class="dstop__marker-num">6</span></span>
+  <p class="dstop__next-plate"><span data-i18n="driver.next">Next stop</span><span data-in>in 20 min</span></p>
+  <h2 class="dstop__head"><span class="dstop__num"><span data-i18n="driver.stop">Stop</span> 6</span> <span class="dstop__time" data-time-label="10:20">10:20 am</span> <span class="dstop__place" lang="en">Stationery supplier</span></h2>
+  <p class="dstop__status" data-status hidden></p>
+  <div class="dstop__body">
+    <p class="dstop__what"><span><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-dropoff"/></svg><strong data-i18n="driver.dropoff">Drop off</strong></span><span><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-passengers"/></svg><span data-pax-label>1 passenger</span></span></p>
+    <p class="dstop__meta" lang="en">PT-2026-0145</p>
+    <p class="dstop__note"><span lang="en">Wait about 15 minutes.</span></p>
+    <div class="dstop__actions">
+      <button type="button" class="btn btn--secondary btn--nav" data-act="navigate" aria-describedby="navnote-6"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-navigate"/></svg><span data-i18n="driver.navigate">Navigate</span></button>
+      <button type="button" class="btn btn--primary btn--done" data-act="done"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"/></svg><span data-i18n="driver.done">Done</span></button>
+      <button type="button" class="btn btn--secondary btn--noshow" data-act="noshow"><span data-i18n="driver.noshow">No-show</span></button>
+    </div>
+    <p class="proto-note dstop__navnote" id="navnote-6" hidden><span data-i18n="driver.navnote">Opens your map app</span> (prototype: the map service is not chosen yet, Q-17)</p>
+    <div class="confirm" data-confirm hidden>
+      <p class="confirm__q" tabindex="-1" data-i18n="driver.noshow.confirm">Mark as no-show? We will tell the transport coordinators.</p>
+      <div class="btn-row"><button type="button" class="btn btn--danger btn--block" data-act="noshow-yes"><span data-i18n="driver.noshow.yes">Yes, mark no-show</span></button><button type="button" class="btn btn--secondary btn--block" data-act="noshow-back"><span data-i18n="driver.goback">Go back</span></button></div>
+    </div>
+  </div>
+</li>
+<li class="dstop" id="dstop-7" data-stop="7" data-state="upcoming" data-time="10:35" data-pax="1">
+  <span class="dstop__seg" aria-hidden="true"></span>
+  <span class="dstop__marker" aria-hidden="true"><span class="dstop__marker-num">7</span></span>
+  <p class="dstop__next-plate"><span data-i18n="driver.next">Next stop</span><span data-in>in 20 min</span></p>
+  <h2 class="dstop__head"><span class="dstop__num"><span data-i18n="driver.stop">Stop</span> 7</span> <span class="dstop__time" data-time-label="10:35">10:35 am</span> <span class="dstop__place" lang="en">Stationery supplier</span></h2>
+  <p class="dstop__status" data-status hidden></p>
+  <div class="dstop__body">
+    <p class="dstop__what"><span><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-pickup"/></svg><strong data-i18n="driver.pickup">Pick up</strong></span><span><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-passengers"/></svg><span data-pax-label>1 passenger</span></span></p>
+    <p class="dstop__meta" lang="en">PT-2026-0145</p>
+    <div class="dstop__contact"><span><span data-i18n="driver.contact">Contact</span>: <span lang="en">Shamila Rodrigo</span></span><a class="btn btn--secondary" href="tel:+94770000145"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-phone"/></svg><span data-i18n="driver.call">Call</span><span class="vh" lang="en"> Shamila Rodrigo, 077 000 0145</span></a></div>
+    <p class="dstop__note"><span lang="en">She returns with boxes.</span></p>
+    <div class="dstop__actions">
+      <button type="button" class="btn btn--secondary btn--nav" data-act="navigate" aria-describedby="navnote-7"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-navigate"/></svg><span data-i18n="driver.navigate">Navigate</span></button>
+      <button type="button" class="btn btn--primary btn--done" data-act="done"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"/></svg><span data-i18n="driver.done">Done</span></button>
+      <button type="button" class="btn btn--secondary btn--noshow" data-act="noshow"><span data-i18n="driver.noshow">No-show</span></button>
+    </div>
+    <p class="proto-note dstop__navnote" id="navnote-7" hidden><span data-i18n="driver.navnote">Opens your map app</span> (prototype: the map service is not chosen yet, Q-17)</p>
+    <div class="confirm" data-confirm hidden>
+      <p class="confirm__q" tabindex="-1" data-i18n="driver.noshow.confirm">Mark as no-show? We will tell the transport coordinators.</p>
+      <div class="btn-row"><button type="button" class="btn btn--danger btn--block" data-act="noshow-yes"><span data-i18n="driver.noshow.yes">Yes, mark no-show</span></button><button type="button" class="btn btn--secondary btn--block" data-act="noshow-back"><span data-i18n="driver.goback">Go back</span></button></div>
+    </div>
+  </div>
+</li>
+<li class="dstop" id="dstop-8" data-stop="8" data-state="upcoming" data-time="10:50" data-pax="1">
+  <span class="dstop__seg" aria-hidden="true"></span>
+  <span class="dstop__marker" aria-hidden="true"><span class="dstop__marker-num">8</span></span>
+  <p class="dstop__next-plate"><span data-i18n="driver.next">Next stop</span><span data-in>in 20 min</span></p>
+  <h2 class="dstop__head"><span class="dstop__num"><span data-i18n="driver.stop">Stop</span> 8</span> <span class="dstop__time" data-time-label="10:50">10:50 am</span> <span class="dstop__place" lang="en">Branch B</span></h2>
+  <p class="dstop__status" data-status hidden></p>
+  <div class="dstop__body">
+    <p class="dstop__what"><span><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-dropoff"/></svg><strong data-i18n="driver.dropoff">Drop off</strong></span><span><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-passengers"/></svg><span data-pax-label>1 passenger</span></span></p>
+    <p class="dstop__meta" lang="en">PT-2026-0145</p>
+    <p class="dstop__note"><span lang="en">Then go to the Aquatic Centre (arrive by 11:10 am).</span></p>
+    <div class="dstop__actions">
+      <button type="button" class="btn btn--secondary btn--nav" data-act="navigate" aria-describedby="navnote-8"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-navigate"/></svg><span data-i18n="driver.navigate">Navigate</span></button>
+      <button type="button" class="btn btn--primary btn--done" data-act="done"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"/></svg><span data-i18n="driver.done">Done</span></button>
+      <button type="button" class="btn btn--secondary btn--noshow" data-act="noshow"><span data-i18n="driver.noshow">No-show</span></button>
+    </div>
+    <p class="proto-note dstop__navnote" id="navnote-8" hidden><span data-i18n="driver.navnote">Opens your map app</span> (prototype: the map service is not chosen yet, Q-17)</p>
+    <div class="confirm" data-confirm hidden>
+      <p class="confirm__q" tabindex="-1" data-i18n="driver.noshow.confirm">Mark as no-show? We will tell the transport coordinators.</p>
+      <div class="btn-row"><button type="button" class="btn btn--danger btn--block" data-act="noshow-yes"><span data-i18n="driver.noshow.yes">Yes, mark no-show</span></button><button type="button" class="btn btn--secondary btn--block" data-act="noshow-back"><span data-i18n="driver.goback">Go back</span></button></div>
+    </div>
+  </div>
+</li>
+<li class="dstop" id="dstop-9" data-stop="9" data-state="upcoming" data-time="11:30" data-pax="11">
+  <span class="dstop__seg" aria-hidden="true"></span>
+  <span class="dstop__marker" aria-hidden="true"><span class="dstop__marker-num">9</span></span>
+  <p class="dstop__next-plate"><span data-i18n="driver.next">Next stop</span><span data-in>in 20 min</span></p>
+  <h2 class="dstop__head"><span class="dstop__num"><span data-i18n="driver.stop">Stop</span> 9</span> <span class="dstop__time" data-time-label="11:30">11:30 am</span> <span class="dstop__place" lang="en">Aquatic Centre</span></h2>
+  <p class="dstop__status" data-status hidden></p>
+  <div class="dstop__body">
+    <p class="dstop__what"><span><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-pickup"/></svg><strong data-i18n="driver.pickup">Pick up</strong></span><span><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-passengers"/></svg><span data-pax-label>11 passengers</span></span></p>
+    <p class="dstop__meta" lang="en">PT-2026-0119</p>
+    <div class="dstop__contact"><span><span data-i18n="driver.contact">Contact</span>: <span lang="en">Ruwan Silva</span></span><a class="btn btn--secondary" href="tel:+94770000119"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-phone"/></svg><span data-i18n="driver.call">Call</span><span class="vh" lang="en"> Ruwan Silva, 077 000 0119</span></a></div>
+    <div class="dstop__actions">
+      <button type="button" class="btn btn--secondary btn--nav" data-act="navigate" aria-describedby="navnote-9"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-navigate"/></svg><span data-i18n="driver.navigate">Navigate</span></button>
+      <button type="button" class="btn btn--primary btn--done" data-act="done"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"/></svg><span data-i18n="driver.done">Done</span></button>
+      <button type="button" class="btn btn--secondary btn--noshow" data-act="noshow"><span data-i18n="driver.noshow">No-show</span></button>
+    </div>
+    <p class="proto-note dstop__navnote" id="navnote-9" hidden><span data-i18n="driver.navnote">Opens your map app</span> (prototype: the map service is not chosen yet, Q-17)</p>
+    <div class="confirm" data-confirm hidden>
+      <p class="confirm__q" tabindex="-1" data-i18n="driver.noshow.confirm">Mark as no-show? We will tell the transport coordinators.</p>
+      <div class="btn-row"><button type="button" class="btn btn--danger btn--block" data-act="noshow-yes"><span data-i18n="driver.noshow.yes">Yes, mark no-show</span></button><button type="button" class="btn btn--secondary btn--block" data-act="noshow-back"><span data-i18n="driver.goback">Go back</span></button></div>
+    </div>
+  </div>
+</li>
+<li class="dstop" id="dstop-10" data-stop="10" data-state="upcoming" data-time="11:55" data-pax="11">
+  <span class="dstop__seg" aria-hidden="true"></span>
+  <span class="dstop__marker" aria-hidden="true"><span class="dstop__marker-num">10</span></span>
+  <p class="dstop__next-plate"><span data-i18n="driver.next">Next stop</span><span data-in>in 20 min</span></p>
+  <h2 class="dstop__head"><span class="dstop__num"><span data-i18n="driver.stop">Stop</span> 10</span> <span class="dstop__time" data-time-label="11:55">11:55 am</span> <span class="dstop__place" lang="en">Branch A (main branch)</span></h2>
+  <p class="dstop__status" data-status hidden></p>
+  <div class="dstop__body">
+    <p class="dstop__what"><span><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-dropoff"/></svg><strong data-i18n="driver.dropoff">Drop off</strong></span><span><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-passengers"/></svg><span data-pax-label>11 passengers</span></span></p>
+    <p class="dstop__meta" lang="en">PT-2026-0119</p>
+    <div class="dstop__actions">
+      <button type="button" class="btn btn--secondary btn--nav" data-act="navigate" aria-describedby="navnote-10"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-navigate"/></svg><span data-i18n="driver.navigate">Navigate</span></button>
+      <button type="button" class="btn btn--primary btn--done" data-act="done"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"/></svg><span data-i18n="driver.done">Done</span></button>
+      <button type="button" class="btn btn--secondary btn--noshow" data-act="noshow"><span data-i18n="driver.noshow">No-show</span></button>
+    </div>
+    <p class="proto-note dstop__navnote" id="navnote-10" hidden><span data-i18n="driver.navnote">Opens your map app</span> (prototype: the map service is not chosen yet, Q-17)</p>
+    <div class="confirm" data-confirm hidden>
+      <p class="confirm__q" tabindex="-1" data-i18n="driver.noshow.confirm">Mark as no-show? We will tell the transport coordinators.</p>
+      <div class="btn-row"><button type="button" class="btn btn--danger btn--block" data-act="noshow-yes"><span data-i18n="driver.noshow.yes">Yes, mark no-show</span></button><button type="button" class="btn btn--secondary btn--block" data-act="noshow-back"><span data-i18n="driver.goback">Go back</span></button></div>
+    </div>
+  </div>
+</li>
+<li class="dstop" id="dstop-11" data-stop="11" data-state="upcoming" data-time="13:30" data-pax="6">
+  <span class="dstop__seg" aria-hidden="true"></span>
+  <span class="dstop__marker" aria-hidden="true"><span class="dstop__marker-num">11</span></span>
+  <p class="dstop__next-plate"><span data-i18n="driver.next">Next stop</span><span data-in>in 20 min</span></p>
+  <h2 class="dstop__head"><span class="dstop__num"><span data-i18n="driver.stop">Stop</span> 11</span> <span class="dstop__time" data-time-label="13:30">1:30 pm</span> <span class="dstop__place" lang="en">Branch A (main branch)</span></h2>
+  <p class="dstop__status" data-status hidden></p>
+  <div class="dstop__body">
+    <p class="dstop__what"><span><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-pickup"/></svg><strong data-i18n="driver.pickup">Pick up</strong></span><span><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-passengers"/></svg><span data-pax-label>6 passengers</span></span></p>
+    <p class="dstop__meta" lang="en">PT-2026-0150</p>
+    <div class="dstop__contact"><span><span data-i18n="driver.contact">Contact</span>: <span lang="en">Priyanka Wijesekara</span></span><a class="btn btn--secondary" href="tel:+94770000150"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-phone"/></svg><span data-i18n="driver.call">Call</span><span class="vh" lang="en"> Priyanka Wijesekara, 077 000 0150</span></a></div>
+    <div class="dstop__actions">
+      <button type="button" class="btn btn--secondary btn--nav" data-act="navigate" aria-describedby="navnote-11"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-navigate"/></svg><span data-i18n="driver.navigate">Navigate</span></button>
+      <button type="button" class="btn btn--primary btn--done" data-act="done"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"/></svg><span data-i18n="driver.done">Done</span></button>
+      <button type="button" class="btn btn--secondary btn--noshow" data-act="noshow"><span data-i18n="driver.noshow">No-show</span></button>
+    </div>
+    <p class="proto-note dstop__navnote" id="navnote-11" hidden><span data-i18n="driver.navnote">Opens your map app</span> (prototype: the map service is not chosen yet, Q-17)</p>
+    <div class="confirm" data-confirm hidden>
+      <p class="confirm__q" tabindex="-1" data-i18n="driver.noshow.confirm">Mark as no-show? We will tell the transport coordinators.</p>
+      <div class="btn-row"><button type="button" class="btn btn--danger btn--block" data-act="noshow-yes"><span data-i18n="driver.noshow.yes">Yes, mark no-show</span></button><button type="button" class="btn btn--secondary btn--block" data-act="noshow-back"><span data-i18n="driver.goback">Go back</span></button></div>
+    </div>
+  </div>
+</li>
+<li class="dstop" id="dstop-12" data-stop="12" data-state="upcoming" data-time="13:45" data-pax="6">
+  <span class="dstop__seg" aria-hidden="true"></span>
+  <span class="dstop__marker" aria-hidden="true"><span class="dstop__marker-num">12</span></span>
+  <p class="dstop__next-plate"><span data-i18n="driver.next">Next stop</span><span data-in>in 20 min</span></p>
+  <h2 class="dstop__head"><span class="dstop__num"><span data-i18n="driver.stop">Stop</span> 12</span> <span class="dstop__time" data-time-label="13:45">1:45 pm</span> <span class="dstop__place" lang="en">Branch B</span></h2>
+  <p class="dstop__status" data-status hidden></p>
+  <div class="dstop__body">
+    <p class="dstop__what"><span><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-dropoff"/></svg><strong data-i18n="driver.dropoff">Drop off</strong></span><span><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-passengers"/></svg><span data-pax-label>6 passengers</span></span></p>
+    <p class="dstop__meta" lang="en">PT-2026-0150</p>
+    <div class="dstop__actions">
+      <button type="button" class="btn btn--secondary btn--nav" data-act="navigate" aria-describedby="navnote-12"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-navigate"/></svg><span data-i18n="driver.navigate">Navigate</span></button>
+      <button type="button" class="btn btn--primary btn--done" data-act="done"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"/></svg><span data-i18n="driver.done">Done</span></button>
+      <button type="button" class="btn btn--secondary btn--noshow" data-act="noshow"><span data-i18n="driver.noshow">No-show</span></button>
+    </div>
+    <p class="proto-note dstop__navnote" id="navnote-12" hidden><span data-i18n="driver.navnote">Opens your map app</span> (prototype: the map service is not chosen yet, Q-17)</p>
+    <div class="confirm" data-confirm hidden>
+      <p class="confirm__q" tabindex="-1" data-i18n="driver.noshow.confirm">Mark as no-show? We will tell the transport coordinators.</p>
+      <div class="btn-row"><button type="button" class="btn btn--danger btn--block" data-act="noshow-yes"><span data-i18n="driver.noshow.yes">Yes, mark no-show</span></button><button type="button" class="btn btn--secondary btn--block" data-act="noshow-back"><span data-i18n="driver.goback">Go back</span></button></div>
+    </div>
+  </div>
+</li>
+<li class="dstop" id="dstop-13" data-stop="13" data-state="upcoming" data-time="15:30" data-pax="6">
+  <span class="dstop__seg" aria-hidden="true"></span>
+  <span class="dstop__marker" aria-hidden="true"><span class="dstop__marker-num">13</span></span>
+  <p class="dstop__next-plate"><span data-i18n="driver.next">Next stop</span><span data-in>in 20 min</span></p>
+  <h2 class="dstop__head"><span class="dstop__num"><span data-i18n="driver.stop">Stop</span> 13</span> <span class="dstop__time" data-time-label="15:30">3:30 pm</span> <span class="dstop__place" lang="en">Branch B</span></h2>
+  <p class="dstop__status" data-status hidden></p>
+  <div class="dstop__body">
+    <p class="dstop__what"><span><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-pickup"/></svg><strong data-i18n="driver.pickup">Pick up</strong></span><span><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-passengers"/></svg><span data-pax-label>6 passengers</span></span></p>
+    <p class="dstop__meta" lang="en">PT-2026-0150</p>
+    <div class="dstop__contact"><span><span data-i18n="driver.contact">Contact</span>: <span lang="en">Priyanka Wijesekara</span></span><a class="btn btn--secondary" href="tel:+94770000150"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-phone"/></svg><span data-i18n="driver.call">Call</span><span class="vh" lang="en"> Priyanka Wijesekara, 077 000 0150</span></a></div>
+    <div class="dstop__actions">
+      <button type="button" class="btn btn--secondary btn--nav" data-act="navigate" aria-describedby="navnote-13"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-navigate"/></svg><span data-i18n="driver.navigate">Navigate</span></button>
+      <button type="button" class="btn btn--primary btn--done" data-act="done"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"/></svg><span data-i18n="driver.done">Done</span></button>
+      <button type="button" class="btn btn--secondary btn--noshow" data-act="noshow"><span data-i18n="driver.noshow">No-show</span></button>
+    </div>
+    <p class="proto-note dstop__navnote" id="navnote-13" hidden><span data-i18n="driver.navnote">Opens your map app</span> (prototype: the map service is not chosen yet, Q-17)</p>
+    <div class="confirm" data-confirm hidden>
+      <p class="confirm__q" tabindex="-1" data-i18n="driver.noshow.confirm">Mark as no-show? We will tell the transport coordinators.</p>
+      <div class="btn-row"><button type="button" class="btn btn--danger btn--block" data-act="noshow-yes"><span data-i18n="driver.noshow.yes">Yes, mark no-show</span></button><button type="button" class="btn btn--secondary btn--block" data-act="noshow-back"><span data-i18n="driver.goback">Go back</span></button></div>
+    </div>
+  </div>
+</li>
+<li class="dstop" id="dstop-14" data-stop="14" data-state="upcoming" data-time="15:45" data-pax="6">
+  <span class="dstop__seg" aria-hidden="true"></span>
+  <span class="dstop__marker" aria-hidden="true"><span class="dstop__marker-num">14</span></span>
+  <p class="dstop__next-plate"><span data-i18n="driver.next">Next stop</span><span data-in>in 20 min</span></p>
+  <h2 class="dstop__head"><span class="dstop__num"><span data-i18n="driver.stop">Stop</span> 14</span> <span class="dstop__time" data-time-label="15:45">3:45 pm</span> <span class="dstop__place" lang="en">Branch A (main branch)</span></h2>
+  <p class="dstop__status" data-status hidden></p>
+  <div class="dstop__body">
+    <p class="dstop__what"><span><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-dropoff"/></svg><strong data-i18n="driver.dropoff">Drop off</strong></span><span><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-passengers"/></svg><span data-pax-label>6 passengers</span></span></p>
+    <p class="dstop__meta" lang="en">PT-2026-0150</p>
+    <p class="dstop__note"><span lang="en">End of day at Branch A.</span></p>
+    <div class="dstop__actions">
+      <button type="button" class="btn btn--secondary btn--nav" data-act="navigate" aria-describedby="navnote-14"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-navigate"/></svg><span data-i18n="driver.navigate">Navigate</span></button>
+      <button type="button" class="btn btn--primary btn--done" data-act="done"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"/></svg><span data-i18n="driver.done">Done</span></button>
+      <button type="button" class="btn btn--secondary btn--noshow" data-act="noshow"><span data-i18n="driver.noshow">No-show</span></button>
+    </div>
+    <p class="proto-note dstop__navnote" id="navnote-14" hidden><span data-i18n="driver.navnote">Opens your map app</span> (prototype: the map service is not chosen yet, Q-17)</p>
+    <div class="confirm" data-confirm hidden>
+      <p class="confirm__q" tabindex="-1" data-i18n="driver.noshow.confirm">Mark as no-show? We will tell the transport coordinators.</p>
+      <div class="btn-row"><button type="button" class="btn btn--danger btn--block" data-act="noshow-yes"><span data-i18n="driver.noshow.yes">Yes, mark no-show</span></button><button type="button" class="btn btn--secondary btn--block" data-act="noshow-back"><span data-i18n="driver.goback">Go back</span></button></div>
+    </div>
+  </div>
+</li>
+<!-- END:stops -->
+    <li class="dstop__end"><span data-i18n="driver.end">End of day at Branch A</span></li>
+  </ol>
+</main>
+
+<!-- === Section: Undo bar (10 seconds after Done or No-show) === -->
+<div class="undo-bar" id="undo-bar" hidden>
+  <span id="undo-text"></span>
+  <button type="button" class="btn" id="undo-btn"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-undo"/></svg><span data-i18n="driver.undo">Undo</span></button>
+</div>
+<p class="vh" id="live" role="status"></p>
+
+<!-- === Section: Footer band === -->
+<footer class="band band--foot on-ink">
+  <div class="band__inner phone-col">
+    <img class="band__crest band__crest--small" src="../assets/crest-keyline.png" alt="" width="22" height="24">
+    <span class="band__name band__name--small" lang="en">PolymathTransit</span>
+  </div>
+</footer>
+
+<!-- === Section: Prototype controls (not part of the design) === -->
+<aside class="proto phone-col" aria-labelledby="proto-title" lang="en">
+  <h2 id="proto-title">Prototype controls (not part of the design; need JavaScript)</h2>
+  <div class="proto__row">
+    <button type="button" data-proto="offline">Simulate offline</button>
+    <button type="button" data-proto="done">Mark next stop done</button>
+    <button type="button" data-proto="reset">Reset</button>
+  </div>
+  <p>Direction 1, Stop by Stop: <a href="index.html">Foundations</a> · <a href="request.html">Request form</a> · <a href="dashboard.html">Coordinator dashboard</a> · <a href="../index.html">All five directions</a></p>
+</aside>
+
+</body>
+</html>

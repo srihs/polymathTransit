@@ -1,0 +1,930 @@
+/* =========================================================================
+   PolymathTransit – Direction 1 "Stop by Stop" – page layouts
+   -------------------------------------------------------------------------
+   What this file is for:
+     How the components are laid out on each page: the phone column for the
+     request form and the driver's route, the 12-column desktop grid for the
+     dashboard and the foundations page, and the specimens that only the
+     foundations page shows. Uses only tokens from tokens.css.
+   Requirements: NFR-04 (360 px first, 320 px reflow, desktop 1280–1440 px),
+     NFR-02 (one scrolling page), US-22 AC-1 (dashboard region order).
+   Sections:
+     1. Phone column (request.html, driver.html)
+     2. Request form layout
+     3. Confirmation view
+     4. Driver page layout
+     5. Desktop column and dashboard grid
+     6. Foundations page layout
+     7. Foundations specimens (swatches, type, spacing, grids, icons, states)
+     8. Below 1100 px (stacked dashboard and foundations)
+     9. Enhanced-only parts (shown or hidden once script.js runs)
+    10. Foundations demo adjustments
+   ========================================================================= */
+
+/* === Section: 1. Phone column === */
+.phone-col {
+  width: 100%;
+  max-width: var(--phone-column-max);
+  margin-inline: auto;
+  padding-inline: var(--grid-phone-margin);
+}
+
+.band__inner.phone-col,
+.band__inner.desk-col {
+  padding-block: var(--s-2);
+}
+
+.band__crest--small {
+  height: 24px;
+}
+
+.band__name--small {
+  font-size: calc(var(--fs-small) * var(--lf));
+}
+
+.page-main {
+  padding-top: var(--s-4);
+  padding-bottom: var(--s-6);
+}
+
+.page-main:focus {
+  outline: none;
+}
+
+.lede {
+  margin-top: var(--s-2);
+  color: var(--c-ink);
+}
+
+/* === Section: 2. Request form layout === */
+.form-section {
+  margin-top: var(--s-5);
+}
+
+/* Plates run to the edges of the phone column, like a sign band. */
+.form-section > .plate,
+.disclosure--plate > summary {
+  margin-inline: calc(-1 * var(--grid-phone-margin));
+}
+
+.field--tight {
+  margin-top: var(--s-2);
+}
+
+.field--flush {
+  margin-top: 0;
+}
+
+.field__note {
+  margin-top: var(--s-2);
+}
+
+.input--phone {
+  max-width: 20ch;
+}
+
+/* Fields on the spine are spaced by the spine items, not by margins, so the
+   line segments meet exactly at each stop. */
+.route .field {
+  margin-top: 0;
+}
+
+.route .address {
+  margin-top: var(--s-2);
+}
+
+.address > * + * {
+  margin-top: var(--s-2);
+}
+
+.address .field {
+  margin-top: 0;
+}
+
+.stop__kind {
+  margin-top: var(--s-2);
+}
+
+.stop__kind .choice {
+  min-height: var(--target-phone);
+}
+
+#stops-pool > .stop + .stop {
+  margin-top: var(--s-4);
+}
+
+/* Extra stops: no fieldset frame. Without JavaScript they sit in the
+   disclosure with no gutter; on the spine, .route__stop sets the gutter. */
+.stop {
+  margin: 0;
+  border: 0;
+  min-width: 0;
+}
+
+#stops-pool .stop {
+  padding: 0;
+}
+
+.form-submit {
+  margin-top: var(--s-5);
+}
+
+.privacy {
+  margin-top: var(--s-3);
+  font-size: calc(var(--fs-small) * var(--lf));
+  line-height: var(--lh-small);
+  color: var(--c-ink);
+}
+
+.privacy a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--target-phone-min);
+}
+
+#extra .disclosure__body {
+  padding-top: var(--s-2);
+}
+
+/* === Section: 3. Confirmation view === */
+.done__title {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+}
+
+.done__title:focus {
+  outline: none;
+}
+
+
+.done__icon {
+  width: 32px;
+  height: 32px;
+  color: var(--c-ok);
+}
+
+/* The reference on a black plate: large, tabular, easy to read aloud. */
+.ref-plate {
+  margin: var(--s-4) calc(-1 * var(--grid-phone-margin)) 0;
+  padding: var(--s-3) var(--grid-phone-margin);
+  background: var(--c-ink);
+  color: var(--c-on-ink);
+}
+
+.ref-plate__label {
+  display: block;
+  font-size: calc(var(--fs-body) * var(--lf));
+}
+
+.ref-plate__ref {
+  display: block;
+  margin-top: var(--s-1);
+  font-size: calc(var(--fs-display) * 1.25);
+  line-height: var(--lh-display);
+  font-weight: var(--fw-bold);
+  user-select: all;
+}
+
+.done .plate {
+  margin: var(--s-5) calc(-1 * var(--grid-phone-margin)) 0;
+}
+
+.summary {
+  margin-top: var(--s-3);
+}
+
+.summary__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  padding: var(--s-2) 0;
+  border-bottom: var(--rule-hair) solid var(--c-line-inactive);
+}
+
+.summary__row dt {
+  font-size: calc(var(--fs-small) * var(--lf));
+  line-height: var(--lh-small);
+  color: var(--c-ink-2);
+}
+
+.summary__row dd {
+  font-weight: var(--fw-bold);
+}
+
+/* Pick up, extra stops and Going to are read back on the spine. Every row
+   keeps the spine's gutter, so the answers line up. */
+.summary.route {
+  --stop-y: 18px;
+  margin-top: var(--s-2);
+}
+
+.summary .summary__row {
+  padding: var(--s-2) 0 var(--s-2) var(--gutter);
+  border-bottom: var(--rule-hair) solid var(--c-line-inactive);
+}
+
+.done__next-title {
+  margin-top: var(--s-5);
+  margin-bottom: var(--s-2);
+}
+
+.done__another {
+  margin-top: var(--s-4);
+}
+
+.done__another a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--target-phone);
+  font-weight: var(--fw-bold);
+}
+
+/* === Section: 4. Driver page layout === */
+.driver-head {
+  display: grid;
+  gap: var(--s-1);
+}
+
+.driver-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-1) var(--s-3);
+  margin-top: var(--s-2);
+  font-weight: var(--fw-bold);
+}
+
+.driver-meta > span {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-1);
+}
+
+.driver-meta--who {
+  display: block;
+  margin-top: var(--s-1);
+}
+
+.driver-updated {
+  margin-top: var(--s-1);
+  font-size: calc(var(--fs-small) * var(--lf));
+  line-height: var(--lh-small);
+  color: var(--c-ink-2);
+}
+
+.driver-progress {
+  margin-top: var(--s-3);
+}
+
+.offline {
+  margin-top: var(--s-3);
+}
+
+/* === Section: 5. Desktop column and dashboard grid === */
+.desk-col {
+  width: 100%;
+  max-width: var(--grid-desk-max);
+  margin-inline: auto;
+  padding-inline: var(--grid-desk-gutter);
+}
+
+.band--desk .band__inner {
+  min-height: var(--band-desk);
+}
+
+.band--desk .band__crest {
+  height: 40px;
+}
+
+.band__user {
+  font-size: calc(var(--fs-body) * var(--lf));
+}
+
+.band__signout {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 var(--s-3);
+  border: var(--rule) solid var(--c-on-ink);
+  border-radius: var(--radius-control);
+  font-weight: var(--fw-bold);
+  text-decoration: none;
+}
+
+.band__signout:hover {
+  background: var(--c-on-ink);
+  color: var(--c-ink);
+}
+
+.nav__list.desk-col {
+  padding-inline: var(--s-2);
+}
+
+.dash {
+  padding-top: var(--s-4);
+  padding-bottom: var(--s-6);
+}
+
+.dash__title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s-2) var(--s-4);
+}
+
+.tile__refs span {
+  white-space: nowrap;
+}
+
+.dash__title h1 {
+  /* The page title steps down so the next thing, the approval deadline,
+     is the biggest thing on the page (principle 4). */
+  font-size: calc(var(--fs-heading) * var(--lf));
+  line-height: var(--lh-heading);
+}
+
+.dash .tile-plan__deadline {
+  align-items: baseline;
+  font-size: calc(var(--fs-subhead) * var(--lf));
+  line-height: var(--lh-subhead);
+}
+
+.dash .tile__count {
+  /* Counts are one size below the approval time (principle 4). */
+  font-size: calc(var(--fs-heading) * var(--lf));
+  line-height: var(--lh-heading);
+}
+
+.dash .tile-plan__time {
+  font-size: calc(var(--fs-display) * var(--lf));
+  line-height: var(--lh-display);
+  white-space: nowrap;
+}
+
+.dash__updated {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-1);
+  font-size: calc(var(--fs-small) * var(--lf));
+  color: var(--c-ink-2);
+}
+
+.dash__status {
+  margin-top: var(--s-3);
+}
+
+.dash .tiles {
+  margin-top: var(--s-4);
+}
+
+.dash__work {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: var(--grid-desk-gutter);
+  align-items: start;
+  margin-top: var(--s-5);
+}
+
+.dash__day {
+  grid-column: span 8;
+  min-width: 0;
+}
+
+.dash__panel {
+  grid-column: span 4;
+  position: sticky;
+  top: var(--s-3);
+}
+
+.dash__day > .plate {
+  font-size: calc(var(--fs-subhead) * var(--lf));
+  line-height: var(--lh-subhead);
+}
+
+.dash__bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--s-3);
+  margin-top: var(--s-3);
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2) var(--s-3);
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.filters legend {
+  float: left;
+  width: 100%;
+  margin-bottom: var(--s-1);
+  font-size: calc(var(--fs-small) * var(--lf));
+  font-weight: var(--fw-bold);
+}
+
+.filters .field {
+  margin-top: 0;
+  min-width: 140px;
+}
+
+.filters .field__label {
+  font-size: calc(var(--fs-small) * var(--lf));
+  line-height: var(--lh-small);
+}
+
+.filters .select,
+.filters .input {
+  margin-top: var(--s-1);
+}
+
+.timeline-scroll {
+  overflow-x: auto;
+}
+
+.timeline-scroll .timeline {
+  min-width: 760px;
+}
+
+.list-view {
+  margin-top: var(--s-3);
+}
+
+/* === Section: 6. Foundations page layout === */
+.found {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: var(--grid-desk-gutter);
+  padding-top: var(--s-5);
+  padding-bottom: var(--s-6);
+}
+
+.found__toc {
+  grid-column: span 3;
+  position: sticky;
+  top: var(--s-3);
+  align-self: start;
+}
+
+.found__subtitle {
+  margin-top: var(--s-5);
+  font-size: calc(var(--fs-subhead) * var(--lf));
+  line-height: var(--lh-subhead);
+}
+
+.found__toc-title {
+  font-weight: var(--fw-bold);
+  font-size: calc(var(--fs-small) * var(--lf));
+  line-height: var(--lh-small);
+}
+
+.found__toc .route {
+  --stop-y: 12px;
+  margin-top: var(--s-2);
+}
+
+.found__toc .route__stop {
+  padding-bottom: var(--s-2);
+}
+
+.found__toc a {
+  display: inline-block;
+  padding-block: 2px;
+}
+
+.found__main {
+  grid-column: span 9;
+  min-width: 0;
+}
+
+.found__section {
+  padding-top: var(--s-6);
+}
+
+.found__section:first-child {
+  padding-top: 0;
+}
+
+.found__section > .plate {
+  margin-bottom: var(--s-4);
+}
+
+.found__section h3 {
+  margin-top: var(--s-5);
+  margin-bottom: var(--s-2);
+}
+
+.found__section > p,
+.found__section .prose {
+  max-width: 68ch;
+}
+
+.found__section p + p {
+  margin-top: var(--s-2);
+}
+
+.principles {
+  margin-top: var(--s-3);
+  padding-inline-start: var(--s-4);
+}
+
+.principles li + li {
+  margin-top: var(--s-1);
+}
+
+.linklist {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2) var(--s-4);
+  margin-top: var(--s-3);
+  padding: 0;
+  list-style: none;
+  font-weight: var(--fw-bold);
+}
+
+/* === Section: 7. Foundations specimens === */
+.spec-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--s-4);
+}
+
+.spec-grid--2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.spec-grid--4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.spec {
+  min-width: 0;
+}
+
+.spec__stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 160px;
+  padding: var(--s-4);
+  border: var(--rule-hair) solid var(--c-line-inactive);
+}
+
+.spec__stage--ink { background: var(--c-ink); }
+.spec__stage--brand { background: var(--c-brand); }
+.spec__stage--panel { background: var(--c-panel); }
+.spec__stage--tint { background: var(--c-brand-tint); }
+
+.spec__caption {
+  margin-top: var(--s-2);
+  font-size: calc(var(--fs-small) * var(--lf));
+  line-height: var(--lh-small);
+}
+
+.logo-full {
+  width: 360px;
+  height: auto;
+}
+
+.crest-64 { height: 64px; width: auto; }
+.crest-24 { height: 24px; width: auto; }
+.logo-240 { width: 240px; height: auto; }
+
+/* Clear space: a dashed frame one quarter of the crest's height away. */
+.clearspace {
+  position: relative;
+  display: inline-block;
+  padding: 24px;
+  outline: var(--rule) dashed var(--c-brand);
+}
+
+.clearspace img {
+  display: block;
+  height: 96px;
+  width: auto;
+  outline: var(--rule-hair) solid var(--c-line-inactive);
+}
+
+.swatch-table td,
+.swatch-table th {
+  vertical-align: middle;
+}
+
+.swatch {
+  display: block;
+  width: 56px;
+  height: 32px;
+  border: var(--rule-hair) solid var(--c-ink);
+}
+
+.scale-row {
+  display: grid;
+  grid-template-columns: repeat(11, minmax(0, 1fr));
+  gap: var(--s-1);
+  margin-top: var(--s-2);
+  padding: 0;
+  list-style: none;
+}
+
+.scale-row--6 {
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+}
+
+.scale-row li {
+  font-size: calc(var(--fs-small) * var(--lf));
+  line-height: var(--lh-small);
+}
+
+.scale-row .swatch {
+  width: 100%;
+  height: 48px;
+  margin-bottom: var(--s-1);
+}
+
+.aa {
+  font-weight: var(--fw-bold);
+}
+
+.type-specimen {
+  display: grid;
+  grid-template-columns: 180px minmax(0, 1fr);
+  gap: var(--s-2) var(--s-4);
+  align-items: baseline;
+  padding: var(--s-3) 0;
+  border-bottom: var(--rule-hair) solid var(--c-line-inactive);
+}
+
+.type-specimen__meta {
+  font-size: calc(var(--fs-small) * var(--lf));
+  line-height: var(--lh-small);
+  color: var(--c-ink-2);
+}
+
+.ts-display { font-size: calc(var(--fs-display) * var(--lf)); line-height: var(--lh-display); font-weight: var(--fw-bold); }
+.ts-heading { font-size: calc(var(--fs-heading) * var(--lf)); line-height: var(--lh-heading); font-weight: var(--fw-bold); }
+.ts-subhead { font-size: calc(var(--fs-subhead) * var(--lf)); line-height: var(--lh-subhead); font-weight: var(--fw-bold); }
+.ts-body { font-size: calc(var(--fs-body) * var(--lf)); line-height: var(--lh-body); }
+.ts-small { font-size: calc(var(--fs-small) * var(--lf)); line-height: var(--lh-small); }
+
+/* Sinhala at factor 1.0, to compare with the 0.95 factor beside it. */
+.lf-off {
+  --lf: 1 !important;
+}
+
+.bilingual {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s-4);
+}
+
+.bilingual > div {
+  padding: var(--s-3);
+  border: var(--rule) solid var(--c-ink);
+  /* Phone scale inside, as these are phone strings. */
+  --fs-display: 32px;
+  --fs-heading: 24px;
+  --fs-body: 17px;
+}
+
+.bilingual > div > * + * {
+  margin-top: var(--s-2);
+}
+
+.space-bars {
+  display: grid;
+  gap: var(--s-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.space-bars li {
+  display: grid;
+  grid-template-columns: 120px minmax(0, 1fr);
+  align-items: center;
+  gap: var(--s-3);
+  font-size: calc(var(--fs-small) * var(--lf));
+}
+
+.space-bars span.bar {
+  display: block;
+  height: 16px;
+  background: var(--c-brand);
+}
+
+/* Grid diagrams: columns drawn as tinted strips with ruled edges. */
+.grid-demo {
+  display: grid;
+  height: 160px;
+  border: var(--rule) solid var(--c-ink);
+}
+
+.grid-demo--phone {
+  width: 360px;
+  max-width: 100%;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  padding: 0 16px;
+}
+
+.grid-demo--desk {
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 24px;
+  padding: 0 24px;
+}
+
+.grid-demo span {
+  background: var(--c-brand-tint);
+  border-inline: var(--rule-hair) solid var(--c-brand);
+}
+
+.icon-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
+  gap: var(--s-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.icon-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--s-2);
+  padding: var(--s-3);
+  border: var(--rule-hair) solid var(--c-line-inactive);
+  font-size: calc(var(--fs-small) * var(--lf));
+  line-height: var(--lh-small);
+}
+
+.states {
+  display: grid;
+  gap: var(--s-4);
+}
+
+.states__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--s-3);
+}
+
+.states__variant {
+  flex: 0 0 120px;
+  padding-top: 10px;
+}
+
+.state-cell {
+  min-width: 0;
+}
+
+.state-cell .t-small {
+  margin-top: var(--s-1);
+  color: var(--c-ink-2);
+}
+
+/* Code in this document uses the one typeface (principle 3), in bold. */
+.found code {
+  font-family: inherit;
+  font-weight: var(--fw-bold);
+  white-space: nowrap;
+}
+
+.found .table-wrap {
+  margin-top: var(--s-3);
+}
+
+.field-states {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--s-4);
+}
+
+.field-states .field,
+.field-states .fieldset {
+  margin-top: 0;
+}
+
+.demo-phone {
+  max-width: 360px;
+  border: var(--rule) solid var(--c-ink);
+}
+
+.demo-phone--wide {
+  max-width: 420px;
+}
+
+.greyscale {
+  filter: grayscale(1);
+}
+
+.badge-board {
+  display: grid;
+  grid-template-columns: 160px minmax(0, 1fr);
+  gap: var(--s-3);
+  align-items: center;
+  padding: var(--s-3) 0;
+  border-bottom: var(--rule-hair) solid var(--c-line-inactive);
+}
+
+.signature-demo {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--s-5);
+}
+
+.motion-table td:first-child {
+  font-weight: var(--fw-bold);
+}
+
+/* === Section: 8. Below 1100 px (stacked) === */
+@media (max-width: 1099px) {
+  .dash__day,
+  .dash__panel {
+    grid-column: 1 / -1;
+  }
+
+  .dash__panel {
+    position: static;
+  }
+
+  .tile-plan {
+    grid-column: 1 / -1;
+  }
+
+  .tile {
+    grid-column: span 3;
+  }
+
+  .found__toc,
+  .found__main {
+    grid-column: 1 / -1;
+  }
+
+  .found__toc {
+    position: static;
+  }
+
+  .spec-grid,
+  .spec-grid--4,
+  .field-states,
+  .signature-demo,
+  .bilingual {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .scale-row {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .tl-legend {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .tile {
+    grid-column: span 6;
+  }
+
+  .tl-legend {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .type-specimen,
+  .badge-board,
+  .space-bars li {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* === Section: 9. Enhanced-only parts === */
+/* script.js adds the class "js" to <html>. Without it, every reveal is open
+   and every "(only if …)" note shows (brief 5.2, "Without JavaScript"). */
+.js .reveal:not(.is-open) {
+  display: none;
+}
+
+.js .nojs-only {
+  display: none;
+}
+
+.reveal {
+  margin-top: var(--s-2);
+}
+
+/* === Section: 10. Foundations demo adjustments === */
+/* The signature demos are phone components: show them at phone sizes. */
+.signature-demo {
+  --fs-display: 32px;
+  --fs-heading: 24px;
+}
+
+.demo-nav {
+  margin: var(--s-2) 0 var(--s-4);
+}
