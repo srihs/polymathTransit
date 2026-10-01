@@ -81,10 +81,12 @@
   <symbol id="i-submitted" viewBox="0 0 24 24"><path d="M3.75 13.5h4.5l1.5 2.5h4.5l1.5-2.5h4.5v6.75H3.75z"/><path d="M12 3.75v8M8.75 8.75 12 12l3.25-3.25"/></symbol>
   <symbol id="i-hourglass" viewBox="0 0 24 24"><path d="M6.75 3.75h10.5M6.75 20.25h10.5"/><path d="M8 3.75c0 4.75 8 4.5 8 8.25s-8 3.5-8 8.25M16 3.75c0 4.75-8 4.5-8 8.25s8 3.5 8 8.25"/></symbol>
   <symbol id="i-cancelled" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.25"/><path d="M6.2 6.2l11.6 11.6"/></symbol>
+  <!-- Busy mark (review 5.5): three dots drawn as round ends, static. -->
+  <symbol id="i-busy" viewBox="0 0 24 24"><path d="M5.5 12h.01M12 12h.01M18.5 12h.01" stroke-width="3.5"/></symbol>
   <symbol id="i-noshow" viewBox="0 0 24 24"><circle cx="9" cy="7.75" r="3.25"/><path d="M3 19.75a6 6 0 0 1 12 0z"/><path d="M16.5 9.5l4.5 4.5M21 9.5l-4.5 4.5"/></symbol>
 </svg>
 
-<a class="skip-link" href="#main">Skip to main content</a>
+<a class="skip-link" href="#main" data-i18n="skip">Skip to main content</a>
 
 <!-- === 2. Header and language switch === -->
 <header class="site-header">
@@ -222,8 +224,10 @@
                   <option value="Aquatic Centre">Aquatic Centre</option>
                   <option value="Sports Centre">Sports Centre</option>
                 </optgroup>
-                <!-- Other saved places: no group label string exists yet (reported). -->
-                <option value="Stationery supplier">Stationery supplier</option>
+                <!-- US-02 AC-1: other saved places are their own group (place.saved, review C3). -->
+                <optgroup label="Other places" data-i18n-label="place.saved">
+                  <option value="Stationery supplier">Stationery supplier</option>
+                </optgroup>
                 <option value="other" data-i18n="place.other">Another address</option>
               </select>
               <svg class="icon" aria-hidden="true"><use href="#i-chevron"/></svg>
@@ -259,8 +263,10 @@
                   <option value="Aquatic Centre">Aquatic Centre</option>
                   <option value="Sports Centre">Sports Centre</option>
                 </optgroup>
-                <!-- Other saved places: no group label string exists yet (reported). -->
-                <option value="Stationery supplier">Stationery supplier</option>
+                <!-- US-02 AC-1: other saved places are their own group (place.saved, review C3). -->
+                <optgroup label="Other places" data-i18n-label="place.saved">
+                  <option value="Stationery supplier">Stationery supplier</option>
+                </optgroup>
                 <option value="other" data-i18n="place.other">Another address</option>
               </select>
               <svg class="icon" aria-hidden="true"><use href="#i-chevron"/></svg>
@@ -300,8 +306,10 @@
                             <option value="Aquatic Centre">Aquatic Centre</option>
                             <option value="Sports Centre">Sports Centre</option>
                           </optgroup>
-                          <!-- Other saved places: no group label string exists yet (reported). -->
-                          <option value="Stationery supplier">Stationery supplier</option>
+                          <!-- US-02 AC-1: other saved places are their own group (place.saved, review C3). -->
+                          <optgroup label="Other places" data-i18n-label="place.saved">
+                            <option value="Stationery supplier">Stationery supplier</option>
+                          </optgroup>
                         </select>
                         <svg class="icon" aria-hidden="true"><use href="#i-chevron"/></svg>
                       </div>
@@ -331,8 +339,10 @@
                             <option value="Aquatic Centre">Aquatic Centre</option>
                             <option value="Sports Centre">Sports Centre</option>
                           </optgroup>
-                          <!-- Other saved places: no group label string exists yet (reported). -->
-                          <option value="Stationery supplier">Stationery supplier</option>
+                          <!-- US-02 AC-1: other saved places are their own group (place.saved, review C3). -->
+                          <optgroup label="Other places" data-i18n-label="place.saved">
+                            <option value="Stationery supplier">Stationery supplier</option>
+                          </optgroup>
                         </select>
                         <svg class="icon" aria-hidden="true"><use href="#i-chevron"/></svg>
                       </div>
@@ -362,8 +372,10 @@
                             <option value="Aquatic Centre">Aquatic Centre</option>
                             <option value="Sports Centre">Sports Centre</option>
                           </optgroup>
-                          <!-- Other saved places: no group label string exists yet (reported). -->
-                          <option value="Stationery supplier">Stationery supplier</option>
+                          <!-- US-02 AC-1: other saved places are their own group (place.saved, review C3). -->
+                          <optgroup label="Other places" data-i18n-label="place.saved">
+                            <option value="Stationery supplier">Stationery supplier</option>
+                          </optgroup>
                         </select>
                         <svg class="icon" aria-hidden="true"><use href="#i-chevron"/></svg>
                       </div>
@@ -908,7 +920,11 @@
       </section>
 
       <div class="send">
-        <button class="btn btn--primary btn--block btn--large" type="submit" id="send"><span data-i18n="submit">Send request</span></button>
+        <!-- Busy state (review 5.5, C3): while the request is sent the label
+             reads "Sending…" with the static mark, and the status region below
+             says the same; it stays until the confirmation shows. -->
+        <button class="btn btn--primary btn--block btn--large" type="submit" id="send"><svg class="icon btn__busy-mark" aria-hidden="true"><use href="#i-busy"/></svg><span data-i18n="submit">Send request</span></button>
+        <p class="vh" id="send-status" role="status"></p>
         <!-- FR-49, US-44 AC-1: the privacy notice sits below the button. -->
         <p class="privacy small"><span data-i18n="privacy">We use your name and phone number only to plan this trip. Transport coordinators and the van driver will see them. We keep them for 24 months.</span> <!-- The privacy page is not part of this prototype; the link stays on the page. --><a href="#" data-i18n="privacy.link">How we use your details</a></p>
       </div>
@@ -932,7 +948,7 @@
 
 <!-- === 5. Footer === -->
 <footer class="site-footer">
-  <p class="small muted">PolymathTransit · Polymath College transport office <a href="tel:+94110000100">011 000 0100</a></p>
+  <p class="small muted">PolymathTransit · <span data-i18n="footer.office">Polymath College transport office</span> <a href="tel:+94110000100">011 000 0100</a></p>
   <p class="small muted" lang="en"><a href="index.html">Ticket: foundations</a> · <a href="../index.html">All five directions</a></p>
 </footer>
 

@@ -580,6 +580,36 @@ block, which is identical to the table).
 | `driver.progress` | {done} of {total} stops done | නැවතුම් {total}න් {done}ක් නිම කළා |
 | `driver.updated` | Route updated at {time} | ගමන් මාර්‍ගය {time}ට යාවත්කාලීන කළා |
 | `driver.navnote` | Opens your map app | ඔබේ සිතියම් යෙදුම විවෘත කරයි |
+| `place.saved` | Other places | වෙනත් ස්ථාන |
+| `status.submitted` | Submitted | ඉදිරිපත් කළා |
+| `done.status` | Not confirmed yet | තවම තහවුරු කර නැත |
+| `busy.sending` | Sending… | යවමින්… |
+| `skip` | Skip to main content | ප්‍රධාන අන්තර්ගතයට යන්න |
+| `footer.office` | Polymath College transport office | Polymath College ප්‍රවාහන කාර්යාලය |
+
+The last six keys (`place.saved` to `footer.office`) were added after review
+C3 on 01/10/2026. Their Sinhala, like all Sinhala here, is a draft for D-09.
+Where an earlier direction had drafted the same string, its draft is reused
+(`place.saved` from direction 3; `status.submitted` and `skip` from direction
+2). How they are used:
+
+- `place.saved` labels the third group in the place pickers, holding the other
+  saved places (US-02 AC-1).
+- `status.submitted` is the status word for Submitted wherever a status is
+  shown to a requester or staff member (badges, the self-service page).
+- `done.status` is the stamp on the requester's confirmation. It says plainly
+  what Submitted means to the requester, so a sent request never reads as
+  booked (review 5.1).
+- `busy.sending` is the label of a busy button (review 5.5).
+- `skip` is the skip link; `footer.office` names the transport office in the
+  footer, before its phone number.
+
+Not added, on purpose: a singular "1 passenger" (`driver.passenger`), because a
+direction can show the count as a labelled number instead ("Passengers 1");
+the date remarks (`remark.*`), which only direction 4 uses; and "seats", which
+appears only on the English-only dashboard (FR-65), so it needs no Sinhala. The
+self-service page will need Sinhala for the other seven status words; they are
+not used on the public pages yet.
 
 Copy this object into your `script.js` (it is the same content as the table):
 
@@ -719,7 +749,13 @@ const STRINGS = {
     "driver.contact": "Contact",
     "driver.progress": "{done} of {total} stops done",
     "driver.updated": "Route updated at {time}",
-    "driver.navnote": "Opens your map app"
+    "driver.navnote": "Opens your map app",
+    "place.saved": "Other places",
+    "status.submitted": "Submitted",
+    "done.status": "Not confirmed yet",
+    "busy.sending": "Sending…",
+    "skip": "Skip to main content",
+    "footer.office": "Polymath College transport office"
   },
   si: {
     "form.title": "වෑන් රථයක් ඉල්ලන්න",
@@ -849,7 +885,13 @@ const STRINGS = {
     "driver.contact": "සම්බන්ධ කරගන්න",
     "driver.progress": "නැවතුම් {total}න් {done}ක් නිම කළා",
     "driver.updated": "ගමන් මාර්‍ගය {time}ට යාවත්කාලීන කළා",
-    "driver.navnote": "ඔබේ සිතියම් යෙදුම විවෘත කරයි"
+    "driver.navnote": "ඔබේ සිතියම් යෙදුම විවෘත කරයි",
+    "place.saved": "වෙනත් ස්ථාන",
+    "status.submitted": "ඉදිරිපත් කළා",
+    "done.status": "තවම තහවුරු කර නැත",
+    "busy.sending": "යවමින්…",
+    "skip": "ප්‍රධාන අන්තර්ගතයට යන්න",
+    "footer.office": "Polymath College ප්‍රවාහන කාර්යාලය"
   }
 };
 ```

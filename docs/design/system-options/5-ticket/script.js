@@ -155,7 +155,13 @@
       "driver.contact": "Contact",
       "driver.progress": "{done} of {total} stops done",
       "driver.updated": "Route updated at {time}",
-      "driver.navnote": "Opens your map app"
+      "driver.navnote": "Opens your map app",
+      "place.saved": "Other places",
+      "status.submitted": "Submitted",
+      "done.status": "Not confirmed yet",
+      "busy.sending": "Sending…",
+      "skip": "Skip to main content",
+      "footer.office": "Polymath College transport office"
     },
     si: {
       "form.title": "වෑන් රථයක් ඉල්ලන්න",
@@ -285,28 +291,15 @@
       "driver.contact": "සම්බන්ධ කරගන්න",
       "driver.progress": "නැවතුම් {total}න් {done}ක් නිම කළා",
       "driver.updated": "ගමන් මාර්‍ගය {time}ට යාවත්කාලීන කළා",
-      "driver.navnote": "ඔබේ සිතියම් යෙදුම විවෘත කරයි"
+      "driver.navnote": "ඔබේ සිතියම් යෙදුම විවෘත කරයි",
+      "place.saved": "වෙනත් ස්ථාන",
+      "status.submitted": "ඉදිරිපත් කළා",
+      "done.status": "තවම තහවුරු කර නැත",
+      "busy.sending": "යවමින්…",
+      "skip": "ප්‍රධාන අන්තර්ගතයට යන්න",
+      "footer.office": "Polymath College ප්‍රවාහන කාර්යාලය"
     }
   };
-
-  /*
-   * Strings this direction needs beyond brief 4.9. Kept apart so the block
-   * above stays an exact copy of the brief. Each Sinhala string here is a
-   * draft by the ux-designer and is on the D-09 review list.
-   *
-   * done.status – the status stamp on the requester's confirmation. A request
-   * that has just been sent is Submitted, not Confirmed (US-01 AC-5, FR-04,
-   * specification 6.2), so the stamp says so in plain words (review 5.1).
-   */
-  STRINGS.en['done.status'] = 'Not confirmed yet';
-  STRINGS.si['done.status'] = 'තවම තහවුරු කර නැත'; // Draft, D-09.
-  /*
-   * busy.sending – the label of a busy button (review 5.5): static mark plus
-   * these words. Shown on index.html; the request form's Send button gets
-   * its busy state with the shared strings (review C3).
-   */
-  STRINGS.en['busy.sending'] = 'Sending…';
-  STRINGS.si['busy.sending'] = 'යවමින්…'; // Draft, D-09.
 
   // === Section: 2. Small helpers ===
 
@@ -640,6 +633,16 @@
   let stopTemplate = null;
   /** The answers shown on the confirmation, kept to redraw it in Sinhala. */
   let receivedData = null;
+  /** True while a request is being sent, so a second tap cannot send it twice. */
+  let sending = false;
+  /** The prototype's stand-in for the server's reply (see submitForm). */
+  let sendTimer = null;
+  /**
+   * Prototype only: how long the pretend server takes to reply, in ms. Long
+   * enough to see the busy state, well inside the 3 seconds of US-01 AC-5.
+   * @type {number}
+   */
+  const PROTO_SEND_WAIT = 1000;
 
   /**
    * Reads the form into a plain object.
@@ -1070,6 +1073,8 @@
    */
   function resetForm() {
     const form = $('#request-form');
+    window.clearTimeout(sendTimer);
+    setSending(false);
     form.reset();
     $$('#stops-list .stop').forEach(function (row) {
       row.remove();
@@ -1123,7 +1128,41 @@
   }
 
   /**
-   * Handles "Send request": shows errors, or shows the received ticket (FR-04).
+   * Puts "Send request" into or out of its busy state (review 5.5, C3).
+   * Busy: the label reads "Sending…" (busy.sending) beside the static mark,
+   * aria-busy and aria-disabled are set (not disabled, so focus stays on the
+   * button), and the status region says "Sending…" too, so a screen reader
+   * hears it. Not busy: the label is "Send request" and the region is empty.
+   * @param {boolean} busy True while the request is being sent.
+   * @returns {void}
+   */
+  function setSending(busy) {
+    sending = busy;
+    const btn = $('#send');
+    const label = btn.querySelector('[data-i18n]');
+    label.dataset.i18n = busy ? 'busy.sending' : 'submit';
+    applyI18n(label);
+    if (busy) {
+      btn.setAttribute('aria-busy', 'true');
+      btn.setAttribute('aria-disabled', 'true');
+    } else {
+      btn.removeAttribute('aria-busy');
+      btn.removeAttribute('aria-disabled');
+    }
+    const status = $('#send-status');
+    if (busy) {
+      status.dataset.i18n = 'busy.sending';
+      applyI18n(status);
+    } else {
+      delete status.dataset.i18n;
+      status.textContent = '';
+    }
+  }
+
+  /**
+   * Handles "Send request": shows errors, or sends the request and shows the
+   * received ticket (FR-04). While it is sent the button is busy, and a
+   * second tap does nothing.
    * @param {Event} [event] The submit event.
    * @returns {void}
    */
@@ -1131,10 +1170,20 @@
     if (event) {
       event.preventDefault();
     }
+    if (sending) {
+      return;
+    }
     const errors = validateAll();
     showSummary(errors);
     if (!errors.length) {
-      showConfirmation();
+      setSending(true);
+      // Prototype only: this wait stands in for the server. In production the
+      // form posts and the server renders the confirmation; the busy state
+      // stays until that page arrives.
+      sendTimer = window.setTimeout(function () {
+        setSending(false);
+        showConfirmation();
+      }, PROTO_SEND_WAIT);
     }
   }
 

@@ -184,18 +184,34 @@ US-26, US-44, US-46, US-47, US-52, US-54, US-58, US-60, D-09, Q-17.
 
 ## 11. Known gaps
 
-- **Missing shared strings** (not invented, reported): no label for the
-  "Other saved places" group (Stationery supplier sits ungrouped after
-  Venues); no Sinhala for the "Submitted" badge; no shared Sinhala for
-  "Sending…" (a draft is listed below), so the request page shows no busy
-  state yet (the busy component is shown on index.html); no Sinhala for
-  "seats".
-- **Strings added beyond brief 4.9** (drafts by the ux-designer, on the
-  D-09 review list; kept in a separate block under the copied strings in
-  `script.js`): `done.status` "Not confirmed yet" / "තවම තහවුරු කර නැත",
-  the status stamp on the requester's confirmation (review 5.1);
-  `busy.sending` "Sending…" / "යවමින්…", the label of a busy button
-  (review 5.5).
+- **Shared strings added after review C3** (01/10/2026). The strings
+  Ticket was missing are now in brief 4.9, and `script.js` again holds an
+  exact copy of that block, with nothing kept apart. Ticket uses them: the
+  place pickers have an "Other places" group (`place.saved`, US-02 AC-1);
+  the skip link (`skip`) and the footer's "transport office"
+  (`footer.office`) switch to Sinhala; "Send request" shows the busy state
+  "Sending…" (`busy.sending`) until the confirmation shows; the
+  confirmation's stamp is `done.status`; and index.html shows the Submitted
+  badge in Sinhala (`status.submitted`).
+- **D-09 review list for this direction.** Every Sinhala string in brief
+  4.9 is a draft for native-speaker review, including the six keys added
+  after review C3:
+
+  | Key | English | Sinhala (draft) | Where Ticket uses it |
+  |---|---|---|---|
+  | `place.saved` | Other places | වෙනත් ස්ථාන | Group in the place pickers |
+  | `status.submitted` | Submitted | ඉදිරිපත් කළා | Status badge (index.html) |
+  | `done.status` | Not confirmed yet | තවම තහවුරු කර නැත | Stamp on the requester's confirmation |
+  | `busy.sending` | Sending… | යවමින්… | Busy "Send request" button and its status message |
+  | `skip` | Skip to main content | ප්‍රධාන අන්තර්ගතයට යන්න | Skip link on request.html and driver.html |
+  | `footer.office` | Polymath College transport office | Polymath College ප්‍රවාහන කාර්යාලය | Footer of request.html |
+
+  Ticket adds no Sinhala outside brief 4.9.
+- **Still without Sinhala, on purpose:** "seats" appears only on the
+  English-only dashboard (FR-65). Ticket needs no singular "1 passenger"
+  (the stub shows a labelled count) and does not use direction 4's date
+  remarks. The other seven status words will need Sinhala when the
+  self-service page is designed.
 - **Extra stops** offer saved places only, not "Another address".
 - **Filters, sorting, Change and Decline** are visible but do not work
   (as the brief allows).

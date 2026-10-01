@@ -398,7 +398,7 @@
     </div>
 
     <h3>Status stamps and flags</h3>
-    <p class="fd-measure small">A stamp: the word in capitals, its colour, a 2 px rectangle and an icon, never rotated. Cancelled has a dashed rectangle; Needs attention, Completed and No-show are tinted. Flags are smaller outline stamps in ink. The second row of each is the same markup in greyscale: every one still reads by its word and icon.</p>
+    <p class="fd-measure small">A stamp: the word in capitals, its colour, a 2 px rectangle and an icon, never rotated. Cancelled has a dashed rectangle; Needs attention, Completed and No-show are tinted. Flags are smaller outline stamps in ink. The second row of each is the same markup in greyscale: every one still reads by its word and icon. The third row shows Submitted in Sinhala and the stamp a requester sees after sending, in both languages.</p>
     <div class="fd-panel">
       <ul class="stamp-list" aria-label="Statuses">
         <li><span class="stamp stamp--submitted"><svg class="icon" aria-hidden="true"><use href="#i-submitted"/></svg>Submitted</span> <span class="small">PT-2026-0155</span></li>
@@ -419,6 +419,13 @@
         <li><span class="stamp stamp--cancelled"><svg class="icon"><use href="#i-cancelled"/></svg>Cancelled</span></li>
         <li><span class="stamp stamp--completed"><svg class="icon"><use href="#i-punch"/></svg>Completed</span></li>
         <li><span class="stamp stamp--noshow"><svg class="icon"><use href="#i-noshow"/></svg>No-show</span></li>
+      </ul>
+      <!-- Review C3: Submitted in Sinhala (status.submitted), and the stamp on
+           the requester's confirmation (done.status), which says what
+           Submitted means to them. Sinhala drafts for D-09 (brief 4.9). -->
+      <ul class="stamp-list" aria-label="Submitted in Sinhala, and the requester's confirmation stamp" style="margin-top:12px">
+        <li><span class="stamp stamp--submitted" lang="si"><svg class="icon" aria-hidden="true"><use href="#i-submitted"/></svg>ඉදිරිපත් කළා</span> <span class="small">Submitted, in Sinhala</span></li>
+        <li><span class="stamp stamp--submitted"><svg class="icon" aria-hidden="true"><use href="#i-submitted"/></svg>Not confirmed yet</span> <span class="stamp stamp--submitted" lang="si"><svg class="icon" aria-hidden="true"><use href="#i-submitted"/></svg>තවම තහවුරු කර නැත</span> <span class="small">On the requester's confirmation</span></li>
       </ul>
       <ul class="stamp-list" aria-label="Flags" style="margin-top:24px">
         <li><span class="flag"><svg class="icon" aria-hidden="true"><use href="#i-late"/></svg>Late (exception)</span></li>
