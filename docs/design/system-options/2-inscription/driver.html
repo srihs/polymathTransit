@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<!--
+  Purpose:      The driver's route link for Van 1 on Tuesday 13/10/2026, at
+                phone width (360 px first): next stop, stops done, stops to
+                come, Done / No-show with Undo, Navigate, Call, the language
+                switch and the offline banner.
+  Direction:    2 – Inscription (brief section 6.2).
+  Requirements: FR-61, FR-65, FR-67, NFR-03, NFR-04, NFR-12, NFR-18, US-52,
+                US-60, D-09.
+  Depends on:   tokens.css, components.css, pages.css, script.js,
+                ../assets/crest-keyline.png, ../assets/crest.png (favicon),
+                Google Fonts (Marcellus, Ysabeau Office, Abhaya Libre 700,
+                Noto Serif Sinhala).
+  Sections:     icon sprite; header band (masthead, language switch);
+                main: route band (title, van and driver, progress, the next
+                stop in a white opening, with the Undo toast above it);
+                stops done (closed); later stops; end of day; prototype
+                controls. Regions between "frozen" comments are the script's
+                own output, saved so the route reads without JavaScript.
+  Without JS:   the whole route is readable; Done, No-show and Navigate need
+                the script in this prototype (in production each is a POST
+                form, so they work without it). The "now" is 9:40 am.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Today's route, Van 1 – PolymathTransit</title>
+  <link rel="icon" href="../assets/crest.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Abhaya+Libre:wght@700&amp;family=Marcellus&amp;family=Noto+Serif+Sinhala:wght@400;600&amp;family=Ysabeau+Office:ital,wght@0,400;0,600;1,400&amp;display=swap">
+  <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="components.css">
+  <link rel="stylesheet" href="pages.css">
+  <script src="script.js" defer></script>
+</head>
+<body class="page-driver" data-page="driver">
+<!-- === Icon sprite (drawn for this direction) === -->
+<svg xmlns="http://www.w3.org/2000/svg" class="visually-hidden" aria-hidden="true" focusable="false">
+  <symbol id="i-van" viewBox="0 0 24 24"><path d="M2.75 16.25V6.75h11.5l4 4.5h3v5"/><path d="M14.25 6.75v4.5h4"/><path d="M5.25 16.25h-2.5M9.75 16.25h4.5M18.75 16.25h2.5"/><circle cx="7.5" cy="16.75" r="2.25"/><circle cx="16.5" cy="16.75" r="2.25"/></symbol>
+  <symbol id="i-passengers" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.25"/><path d="M2.75 19.5c0-3.6 2.8-6.25 6.25-6.25s6.25 2.65 6.25 6.25"/><path d="M15 4.9a3.25 3.25 0 0 1 0 6.2"/><path d="M17.5 13.6c2.2.8 3.75 3 3.75 5.9"/></symbol>
+  <symbol id="i-pickup" viewBox="0 0 24 24"><path d="M12 18V4.5M6.75 9.75 12 4.5l5.25 5.25"/><path d="M4.5 20.25h15"/></symbol>
+  <symbol id="i-dropoff" viewBox="0 0 24 24"><path d="M12 3.75v13.5M6.75 12 12 17.25 17.25 12"/><path d="M4.5 20.25h15"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><path d="M8.6 3.75 10.4 8l-2.3 1.6a11.5 11.5 0 0 0 6.3 6.3l1.6-2.3 4.25 1.8v3.6a1.5 1.5 0 0 1-1.6 1.5C10.1 19.8 4.2 13.9 3.5 5.35a1.5 1.5 0 0 1 1.5-1.6z"/></symbol>
+  <symbol id="i-navigate" viewBox="0 0 24 24"><path d="M20.25 3.75 3.75 10.5l7 2.75 2.75 7z"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M4.5 12.75 9.5 17.5l10-11"/></symbol>
+  <symbol id="i-cross" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.25"/><path d="M12 10.5v6M12 7.25V9"/></symbol>
+  <symbol id="i-repeat" viewBox="0 0 24 24"><path d="M4.5 11.25V9.75a3 3 0 0 1 3-3h12"/><path d="M16.5 3.75l3 3-3 3"/><path d="M19.5 12.75v1.5a3 3 0 0 1-3 3h-12"/><path d="M7.5 20.25l-3-3 3-3"/></symbol>
+  <symbol id="i-gap" viewBox="0 0 24 24"><path d="M3.75 6v12M20.25 6v12M3.75 12h3M17.25 12h3"/><rect x="8.25" y="8.25" width="7.5" height="7.5"/></symbol>
+  <symbol id="i-early" viewBox="0 0 24 24"><path d="M3 18.75h18"/><path d="M7.5 18.75a4.5 4.5 0 0 1 9 0"/><path d="M12 4.5v6M9.75 6.75 12 4.5l2.25 2.25"/><path d="M4.5 13.5l1.5 1M19.5 13.5l-1.5 1"/></symbol>
+  <symbol id="i-undo" viewBox="0 0 24 24"><path d="M8.25 5.25 4.5 9l3.75 3.75"/><path d="M4.5 9h9.75a5.25 5.25 0 0 1 0 10.5H10.5"/></symbol>
+  <symbol id="i-offline" viewBox="0 0 24 24"><path d="M3.75 3.75l16.5 16.5"/><path d="M2.25 9.5a14 14 0 0 1 4.6-2.7M10.4 6.05A14 14 0 0 1 21.75 9.5"/><path d="M5.5 13a9.5 9.5 0 0 1 3.4-2M13.6 10.6a9.5 9.5 0 0 1 4.9 2.4"/><path d="M9 16.25a4.25 4.25 0 0 1 4.6-.9M12 19.5v.75"/></symbol>
+  <symbol id="i-chevron" viewBox="0 0 24 24"><path d="M9 5.25 15.75 12 9 18.75"/></symbol>
+</svg>
+
+<a class="skip-link" href="#main" data-i18n="x.skip">Skip to main content</a>
+
+<!-- === Header band: masthead and language switch (FR-65) === -->
+<header class="band phone-band phone-band--head">
+  <div class="phone-band__inner">
+    <div class="masthead">
+      <a class="brand" href="driver.html">
+        <img src="../assets/crest-keyline.png" alt="" width="37" height="40">
+        <span class="brand__name">PolymathTransit</span>
+      </a>
+    </div>
+    <div class="phone-band__lang">
+      <div class="lang-switch" role="group" aria-labelledby="lang-label">
+        <span id="lang-label" class="lang-switch__label t-small" data-i18n="lang.label">Language</span>
+        <!-- Links without JS (the server renders the language in production). -->
+        <ul class="lang-switch__options">
+          <li><a class="lang-switch__option" href="driver.html?lang=en" lang="en" hreflang="en" data-lang="en" aria-current="true"><svg class="icon icon--16" aria-hidden="true"><use href="#i-check"/></svg>English</a></li>
+          <li><a class="lang-switch__option" href="driver.html?lang=si" lang="si" hreflang="si" data-lang="si"><svg class="icon icon--16" aria-hidden="true"><use href="#i-check"/></svg>සිංහල</a></li>
+        </ul>
+      </div>
+      <p class="proto-note band-note" lang="en">This Sinhala text is a draft for review by native speakers (D-09).</p>
+      <p class="lang-status t-small band-note" role="status" id="lang-status"></p>
+    </div>
+  </div>
+</header>
+
+<main id="main" tabindex="-1">
+  <!-- === Route band: the day, progress and the next stop === -->
+  <div class="band phone-band phone-band--title">
+    <div class="phone-band__inner">
+      <!-- NFR-18: shown when the phone is offline; the route stays visible. -->
+      <div class="alert alert--warning offline" id="offline" role="status" hidden>
+        <svg class="icon" aria-hidden="true"><use href="#i-offline"/></svg>
+        <p class="alert__body" data-i18n="driver.offline">You are offline. This is the route as last loaded at 9:38 am.</p>
+      </div>
+      <div class="phone-band__title">
+        <h1 class="t-title" data-i18n="driver.title">Today's route</h1>
+        <p class="route-meta t-small">
+          <span><span data-i18n="driver.van">Van</span> <span class="num">1</span> · <span data-i18n="day.tuesday">Tuesday</span> <span class="num">13/10/2026</span></span>
+          <span><span data-i18n="driver.driver">Driver</span>: <span lang="en">Sunil Rathnayake</span></span>
+          <span data-i18n-tpl="driver.updated" data-time="7:06 am">Route updated at 7:06 am</span>
+        </p>
+      </div>
+      <!-- Progress: words first, then a strip of 14 cells (one per stop). -->
+      <div class="progress">
+        <p class="t-small" id="progress-text" data-i18n-tpl="driver.progress" data-done="4" data-total="14">4 of 14 stops done</p>
+        <div class="progress__bar" id="progress-bar" aria-hidden="true">
+          <i class="is-done"></i><i class="is-done"></i><i class="is-done"></i><i class="is-done"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+        </div>
+      </div>
+      <!-- Toast: what just happened, with Undo for 10 seconds (US-60). It sits
+                 in the page flow, above the next stop, so it never covers a
+                 focused button (WCAG 2.4.11). -->
+      <div class="toast driver-toast" id="toast" role="status" hidden>
+        <svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>
+        <p class="toast__text" id="toast-text"></p>
+        <button class="btn btn--quiet" type="button" id="toast-undo"><svg class="icon" aria-hidden="true"><use href="#i-undo"/></svg><span data-i18n="driver.undo">Undo</span></button>
+      </div>
+      <!-- Principle 3: the band frames the one thing that matters now. -->
+      <div id="next-wrap"><!-- frozen:next -->
+<section class="opening next-stop" aria-labelledby="next-title" id="next-stop"><div class="next-stop__top"><h2 class="t-inscription" id="next-title" tabindex="-1">Next stop</h2><span class="next-stop__in">in 20 min</span></div><p class="next-stop__time"><time class="num">10:00 am</time></p><p class="next-stop__place t-heading" lang="en">Branch B</p><div class="next-stop__body"><p class="stop__what"><svg class="icon" aria-hidden="true"><use href="#i-pickup"></use></svg><strong>Pick up</strong><span aria-hidden="true">·</span><span class="pax"><svg class="icon icon--20" aria-hidden="true"><use href="#i-passengers"></use></svg>1 passenger</span></p><p class="t-small">Stop <span class="num">5</span> · <span class="ref" lang="en">PT-2026-0145</span></p><ul class="flags"><li class="flag"><svg class="icon icon--16" aria-hidden="true"><use href="#i-gap"></use></svg><span>Gap job</span></li></ul><div class="contact"><span>Contact: <span lang="en">Shamila Rodrigo</span><br><span class="num" lang="en">077 000 0145</span></span><a class="call-link" href="tel:+94770000145"><svg class="icon" aria-hidden="true"><use href="#i-phone"></use></svg><span>Call</span><span class="visually-hidden" lang="en"> Shamila Rodrigo</span></a></div></div><div class="stop__actions" data-actions="5"><button class="btn btn--secondary" type="button" data-nav="5"><svg class="icon" aria-hidden="true"><use href="#i-navigate"></use></svg><span>Navigate</span></button><button class="btn btn--primary btn--done" type="button" data-done="5"><svg class="icon" aria-hidden="true"><use href="#i-check"></use></svg><span>Done</span></button><button class="btn btn--plain" type="button" data-noshow="5"><svg class="icon" aria-hidden="true"><use href="#i-cross"></use></svg><span>No-show</span></button></div><p class="t-small nav-note" id="nav-note-5" role="status"></p></section>
+<!-- /frozen:next --></div>
+    </div>
+  </div>
+
+  <div class="phone-main">
+    <!-- === Stops done (closed by default) === -->
+    <details class="disclosure done-stops driver-section" id="done-stops">
+      <summary><svg class="icon" aria-hidden="true"><use href="#i-chevron"/></svg><span id="done-summary"><span data-i18n="x.done.stops">Stops done</span> (<span class="num" id="done-count">4</span>)</span></summary>
+      <div class="disclosure__body">
+        <ol class="stops" id="done-list"><!-- frozen:done -->
+<li class="stop is-done"><p class="stop__time"><time class="num">7:30 am</time><small>Stop 1</small></p><div class="stop__body"><p class="stop__place" lang="en">Branch A (main branch)</p><p class="stop__what"><svg class="icon" aria-hidden="true"><use href="#i-pickup"></use></svg><strong>Pick up</strong><span aria-hidden="true">·</span><span class="pax"><svg class="icon icon--20" aria-hidden="true"><use href="#i-passengers"></use></svg>2 passengers</span></p><p class="stop__done"><svg class="icon icon--20" aria-hidden="true"><use href="#i-check"></use></svg><span>Done at 7:31 am</span></p></div></li>
+<li class="stop is-done"><p class="stop__time"><time class="num">7:55 am</time><small>Stop 2</small></p><div class="stop__body"><p class="stop__place" lang="en">Branch C</p><p class="stop__what"><svg class="icon" aria-hidden="true"><use href="#i-dropoff"></use></svg><strong>Drop off</strong><span aria-hidden="true">·</span><span class="pax"><svg class="icon icon--20" aria-hidden="true"><use href="#i-passengers"></use></svg>2 passengers</span></p><p class="stop__done"><svg class="icon icon--20" aria-hidden="true"><use href="#i-check"></use></svg><span>Done at 7:56 am</span></p></div></li>
+<li class="stop is-done"><p class="stop__time"><time class="num">9:05 am</time><small>Stop 3</small></p><div class="stop__body"><p class="stop__place" lang="en">Branch A (main branch)</p><p class="stop__what"><svg class="icon" aria-hidden="true"><use href="#i-pickup"></use></svg><strong>Pick up</strong><span aria-hidden="true">·</span><span class="pax"><svg class="icon icon--20" aria-hidden="true"><use href="#i-passengers"></use></svg>11 passengers</span></p><p class="stop__done"><svg class="icon icon--20" aria-hidden="true"><use href="#i-check"></use></svg><span>Done at 9:06 am</span></p></div></li>
+<li class="stop is-done"><p class="stop__time"><time class="num">9:30 am</time><small>Stop 4</small></p><div class="stop__body"><p class="stop__place" lang="en">Aquatic Centre</p><p class="stop__what"><svg class="icon" aria-hidden="true"><use href="#i-dropoff"></use></svg><strong>Drop off</strong><span aria-hidden="true">·</span><span class="pax"><svg class="icon icon--20" aria-hidden="true"><use href="#i-passengers"></use></svg>11 passengers</span></p><p class="stop__done"><svg class="icon icon--20" aria-hidden="true"><use href="#i-check"></use></svg><span>Done at 9:29 am</span></p></div></li>
+<!-- /frozen:done --></ol>
+      </div>
+    </details>
+
+    <!-- === Later stops === -->
+    <section class="driver-section" aria-labelledby="later-title">
+      <h2 class="t-inscription section-name" id="later-title" data-i18n="x.later">Later stops</h2>
+      <ol class="stops" id="later-list"><!-- frozen:later -->
+<li class="stop" id="stop-6"><p class="stop__time"><time class="num">10:20 am</time><small>Stop 6</small></p><div class="stop__body"><h3 class="stop__place" lang="en">Stationery supplier</h3><p class="stop__what"><svg class="icon" aria-hidden="true"><use href="#i-dropoff"></use></svg><strong>Drop off</strong><span aria-hidden="true">·</span><span class="pax"><svg class="icon icon--20" aria-hidden="true"><use href="#i-passengers"></use></svg>1 passenger</span></p><p class="t-small ref" lang="en">PT-2026-0145</p><p class="t-voice" lang="en">Wait about 15 minutes.</p><div class="stop__actions" data-actions="6"><button class="btn btn--secondary" type="button" data-nav="6"><svg class="icon" aria-hidden="true"><use href="#i-navigate"></use></svg><span>Navigate</span></button><button class="btn btn--secondary btn--done" type="button" data-done="6"><svg class="icon" aria-hidden="true"><use href="#i-check"></use></svg><span>Done</span></button><button class="btn btn--plain" type="button" data-noshow="6"><svg class="icon" aria-hidden="true"><use href="#i-cross"></use></svg><span>No-show</span></button></div><p class="t-small nav-note" id="nav-note-6" role="status"></p></div></li>
+<li class="stop" id="stop-7"><p class="stop__time"><time class="num">10:35 am</time><small>Stop 7</small></p><div class="stop__body"><h3 class="stop__place" lang="en">Stationery supplier</h3><p class="stop__what"><svg class="icon" aria-hidden="true"><use href="#i-pickup"></use></svg><strong>Pick up</strong><span aria-hidden="true">·</span><span class="pax"><svg class="icon icon--20" aria-hidden="true"><use href="#i-passengers"></use></svg>1 passenger</span></p><p class="t-small ref" lang="en">PT-2026-0145</p><p class="t-voice" lang="en">She returns with boxes.</p><div class="contact"><span>Contact: <span lang="en">Shamila Rodrigo</span><br><span class="num" lang="en">077 000 0145</span></span><a class="call-link" href="tel:+94770000145"><svg class="icon" aria-hidden="true"><use href="#i-phone"></use></svg><span>Call</span><span class="visually-hidden" lang="en"> Shamila Rodrigo</span></a></div><div class="stop__actions" data-actions="7"><button class="btn btn--secondary" type="button" data-nav="7"><svg class="icon" aria-hidden="true"><use href="#i-navigate"></use></svg><span>Navigate</span></button><button class="btn btn--secondary btn--done" type="button" data-done="7"><svg class="icon" aria-hidden="true"><use href="#i-check"></use></svg><span>Done</span></button><button class="btn btn--plain" type="button" data-noshow="7"><svg class="icon" aria-hidden="true"><use href="#i-cross"></use></svg><span>No-show</span></button></div><p class="t-small nav-note" id="nav-note-7" role="status"></p></div></li>
+<li class="stop" id="stop-8"><p class="stop__time"><time class="num">10:50 am</time><small>Stop 8</small></p><div class="stop__body"><h3 class="stop__place" lang="en">Branch B</h3><p class="stop__what"><svg class="icon" aria-hidden="true"><use href="#i-dropoff"></use></svg><strong>Drop off</strong><span aria-hidden="true">·</span><span class="pax"><svg class="icon icon--20" aria-hidden="true"><use href="#i-passengers"></use></svg>1 passenger</span></p><p class="t-small ref" lang="en">PT-2026-0145</p><p class="t-voice" lang="en">Then go to the Aquatic Centre (arrive by 11:10 am).</p><div class="stop__actions" data-actions="8"><button class="btn btn--secondary" type="button" data-nav="8"><svg class="icon" aria-hidden="true"><use href="#i-navigate"></use></svg><span>Navigate</span></button><button class="btn btn--secondary btn--done" type="button" data-done="8"><svg class="icon" aria-hidden="true"><use href="#i-check"></use></svg><span>Done</span></button><button class="btn btn--plain" type="button" data-noshow="8"><svg class="icon" aria-hidden="true"><use href="#i-cross"></use></svg><span>No-show</span></button></div><p class="t-small nav-note" id="nav-note-8" role="status"></p></div></li>
+<li class="stop" id="stop-9"><p class="stop__time"><time class="num">11:30 am</time><small>Stop 9</small></p><div class="stop__body"><h3 class="stop__place" lang="en">Aquatic Centre</h3><p class="stop__what"><svg class="icon" aria-hidden="true"><use href="#i-pickup"></use></svg><strong>Pick up</strong><span aria-hidden="true">·</span><span class="pax"><svg class="icon icon--20" aria-hidden="true"><use href="#i-passengers"></use></svg>11 passengers</span></p><p class="t-small ref" lang="en">PT-2026-0119</p><div class="contact"><span>Contact: <span lang="en">Ruwan Silva</span><br><span class="num" lang="en">077 000 0119</span></span><a class="call-link" href="tel:+94770000119"><svg class="icon" aria-hidden="true"><use href="#i-phone"></use></svg><span>Call</span><span class="visually-hidden" lang="en"> Ruwan Silva</span></a></div><div class="stop__actions" data-actions="9"><button class="btn btn--secondary" type="button" data-nav="9"><svg class="icon" aria-hidden="true"><use href="#i-navigate"></use></svg><span>Navigate</span></button><button class="btn btn--secondary btn--done" type="button" data-done="9"><svg class="icon" aria-hidden="true"><use href="#i-check"></use></svg><span>Done</span></button><button class="btn btn--plain" type="button" data-noshow="9"><svg class="icon" aria-hidden="true"><use href="#i-cross"></use></svg><span>No-show</span></button></div><p class="t-small nav-note" id="nav-note-9" role="status"></p></div></li>
+<li class="stop" id="stop-10"><p class="stop__time"><time class="num">11:55 am</time><small>Stop 10</small></p><div class="stop__body"><h3 class="stop__place" lang="en">Branch A (main branch)</h3><p class="stop__what"><svg class="icon" aria-hidden="true"><use href="#i-dropoff"></use></svg><strong>Drop off</strong><span aria-hidden="true">·</span><span class="pax"><svg class="icon icon--20" aria-hidden="true"><use href="#i-passengers"></use></svg>11 passengers</span></p><p class="t-small ref" lang="en">PT-2026-0119</p><div class="stop__actions" data-actions="10"><button class="btn btn--secondary" type="button" data-nav="10"><svg class="icon" aria-hidden="true"><use href="#i-navigate"></use></svg><span>Navigate</span></button><button class="btn btn--secondary btn--done" type="button" data-done="10"><svg class="icon" aria-hidden="true"><use href="#i-check"></use></svg><span>Done</span></button><button class="btn btn--plain" type="button" data-noshow="10"><svg class="icon" aria-hidden="true"><use href="#i-cross"></use></svg><span>No-show</span></button></div><p class="t-small nav-note" id="nav-note-10" role="status"></p></div></li>
+<li class="stop" id="stop-11"><p class="stop__time"><time class="num">1:30 pm</time><small>Stop 11</small></p><div class="stop__body"><h3 class="stop__place" lang="en">Branch A (main branch)</h3><p class="stop__what"><svg class="icon" aria-hidden="true"><use href="#i-pickup"></use></svg><strong>Pick up</strong><span aria-hidden="true">·</span><span class="pax"><svg class="icon icon--20" aria-hidden="true"><use href="#i-passengers"></use></svg>6 passengers</span></p><p class="t-small ref" lang="en">PT-2026-0150</p><div class="contact"><span>Contact: <span lang="en">Priyanka Wijesekara</span><br><span class="num" lang="en">077 000 0150</span></span><a class="call-link" href="tel:+94770000150"><svg class="icon" aria-hidden="true"><use href="#i-phone"></use></svg><span>Call</span><span class="visually-hidden" lang="en"> Priyanka Wijesekara</span></a></div><div class="stop__actions" data-actions="11"><button class="btn btn--secondary" type="button" data-nav="11"><svg class="icon" aria-hidden="true"><use href="#i-navigate"></use></svg><span>Navigate</span></button><button class="btn btn--secondary btn--done" type="button" data-done="11"><svg class="icon" aria-hidden="true"><use href="#i-check"></use></svg><span>Done</span></button><button class="btn btn--plain" type="button" data-noshow="11"><svg class="icon" aria-hidden="true"><use href="#i-cross"></use></svg><span>No-show</span></button></div><p class="t-small nav-note" id="nav-note-11" role="status"></p></div></li>
+<li class="stop" id="stop-12"><p class="stop__time"><time class="num">1:45 pm</time><small>Stop 12</small></p><div class="stop__body"><h3 class="stop__place" lang="en">Branch B</h3><p class="stop__what"><svg class="icon" aria-hidden="true"><use href="#i-dropoff"></use></svg><strong>Drop off</strong><span aria-hidden="true">·</span><span class="pax"><svg class="icon icon--20" aria-hidden="true"><use href="#i-passengers"></use></svg>6 passengers</span></p><p class="t-small ref" lang="en">PT-2026-0150</p><div class="stop__actions" data-actions="12"><button class="btn btn--secondary" type="button" data-nav="12"><svg class="icon" aria-hidden="true"><use href="#i-navigate"></use></svg><span>Navigate</span></button><button class="btn btn--secondary btn--done" type="button" data-done="12"><svg class="icon" aria-hidden="true"><use href="#i-check"></use></svg><span>Done</span></button><button class="btn btn--plain" type="button" data-noshow="12"><svg class="icon" aria-hidden="true"><use href="#i-cross"></use></svg><span>No-show</span></button></div><p class="t-small nav-note" id="nav-note-12" role="status"></p></div></li>
+<li class="stop" id="stop-13"><p class="stop__time"><time class="num">3:30 pm</time><small>Stop 13</small></p><div class="stop__body"><h3 class="stop__place" lang="en">Branch B</h3><p class="stop__what"><svg class="icon" aria-hidden="true"><use href="#i-pickup"></use></svg><strong>Pick up</strong><span aria-hidden="true">·</span><span class="pax"><svg class="icon icon--20" aria-hidden="true"><use href="#i-passengers"></use></svg>6 passengers</span></p><p class="t-small ref" lang="en">PT-2026-0150</p><div class="contact"><span>Contact: <span lang="en">Priyanka Wijesekara</span><br><span class="num" lang="en">077 000 0150</span></span><a class="call-link" href="tel:+94770000150"><svg class="icon" aria-hidden="true"><use href="#i-phone"></use></svg><span>Call</span><span class="visually-hidden" lang="en"> Priyanka Wijesekara</span></a></div><div class="stop__actions" data-actions="13"><button class="btn btn--secondary" type="button" data-nav="13"><svg class="icon" aria-hidden="true"><use href="#i-navigate"></use></svg><span>Navigate</span></button><button class="btn btn--secondary btn--done" type="button" data-done="13"><svg class="icon" aria-hidden="true"><use href="#i-check"></use></svg><span>Done</span></button><button class="btn btn--plain" type="button" data-noshow="13"><svg class="icon" aria-hidden="true"><use href="#i-cross"></use></svg><span>No-show</span></button></div><p class="t-small nav-note" id="nav-note-13" role="status"></p></div></li>
+<li class="stop" id="stop-14"><p class="stop__time"><time class="num">3:45 pm</time><small>Stop 14</small></p><div class="stop__body"><h3 class="stop__place" lang="en">Branch A (main branch)</h3><p class="stop__what"><svg class="icon" aria-hidden="true"><use href="#i-dropoff"></use></svg><strong>Drop off</strong><span aria-hidden="true">·</span><span class="pax"><svg class="icon icon--20" aria-hidden="true"><use href="#i-passengers"></use></svg>6 passengers</span></p><p class="t-small ref" lang="en">PT-2026-0150</p><div class="stop__actions" data-actions="14"><button class="btn btn--secondary" type="button" data-nav="14"><svg class="icon" aria-hidden="true"><use href="#i-navigate"></use></svg><span>Navigate</span></button><button class="btn btn--secondary btn--done" type="button" data-done="14"><svg class="icon" aria-hidden="true"><use href="#i-check"></use></svg><span>Done</span></button><button class="btn btn--plain" type="button" data-noshow="14"><svg class="icon" aria-hidden="true"><use href="#i-cross"></use></svg><span>No-show</span></button></div><p class="t-small nav-note" id="nav-note-14" role="status"></p></div></li>
+<!-- /frozen:later --></ol>
+      <p class="end-of-day"><svg class="icon" aria-hidden="true"><use href="#i-van"/></svg><span class="t-heading" data-i18n="driver.end">End of day at Branch A</span></p>
+    </section>
+  </div>
+</main>
+
+
+<!-- === Prototype controls (not part of the design) === -->
+<aside class="proto" lang="en" aria-labelledby="proto-title">
+  <h2 id="proto-title">Prototype controls</h2>
+  <div class="proto__buttons">
+    <button type="button" data-proto="offline">Simulate offline</button>
+    <button type="button" data-proto="done">Mark next stop done</button>
+    <button type="button" data-proto="reset">Reset</button>
+  </div>
+</aside>
+</body>
+</html>

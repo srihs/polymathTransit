@@ -1,0 +1,294 @@
+/* ==========================================================================
+   PolymathTransit – Direction 2 "Inscription" – design tokens
+   --------------------------------------------------------------------------
+   What this file is for:
+     Every raw value the direction uses (colour, type, space, borders,
+     motion) lives here once, as CSS custom properties. Components and pages
+     use only the semantic aliases in section 2, never raw values.
+     Brief: docs/design/system-options/brief.md sections 3 and 6.2.
+     Colour scales: research.md 1.4 (purple) and 1.5 (neutral).
+
+   Sections:
+     1. Global tokens   – palette (brand, purple scale, neutrals, materials),
+                          type families, type sizes, space, borders, motion
+     2. Semantic tokens – what each colour, size and space is FOR
+     3. Type scale switch – phone sizes by default, desktop sizes on
+                          .scale-desktop (dashboard) and wide .scale-auto
+     4. Sinhala factors – size factors under :lang(si) (brief 3.5, 6.2)
+
+   Contrast (WCAG 2.2, calculated with the WCAG relative-luminance formula;
+   the full list is on index.html, section 3):
+     ink on lime-wash 16.43:1 · ink-2 on lime-wash 5.39:1 · brand on
+     lime-wash 8.30:1 · white on brand 8.86:1 · white on band 14.95:1 ·
+     band-note on band 10.49:1 · edge on white 3.73:1 (UI) · focus band on
+     lime-wash 13.99:1.
+   ========================================================================== */
+
+/* === Section 1: Global tokens === */
+:root {
+  /* -- Brand (research.md 1.2) -- */
+  --g-purple-50: #FCF4FD;
+  --g-purple-100: #F7E6FB;
+  --g-purple-200: #EDCEF4;
+  --g-purple-300: #DCADE7;
+  --g-purple-500: #AA61BB;
+  --g-purple-700: #722A82;   /* crest purple, the brand */
+  --g-purple-800: #581D65;
+  --g-purple-900: #3F1448;   /* the verandah band */
+  --g-grey-500: #63666B;     /* wordmark grey */
+  --g-black: #000000;        /* tagline black */
+  --g-white: #FFFFFF;
+
+  /* -- Neutral scale (research.md 1.5), used on index.html only -- */
+  --g-grey-50: #F5F7F9;
+  --g-grey-100: #EEF0F3;
+  --g-grey-200: #DCDEE1;
+  --g-grey-400: #8F9298;
+  --g-grey-450: #7D8086;
+  --g-grey-700: #3D4044;
+  --g-grey-900: #181B1F;
+
+  /* -- Materials (brief 6.2: every colour comes from a material) -- */
+  --g-limewash: #FAF7F2;     /* lime-washed wall: the page ground */
+  --g-warm-black: #1C181B;   /* text */
+  --g-sand: #D9CFC0;         /* decorative hairline only */
+  --g-stone: #8C8378;        /* control edges, 3.73:1 on white */
+  --g-leaf: #335C2A;         /* leaf green: Confirmed, Completed */
+  --g-leaf-tint: #E9F6E6;
+  --g-laterite: #A34D16;     /* laterite: Needs attention, warnings */
+  --g-laterite-tint: #FFEEE6;
+  --g-brick: #972527;        /* brick: errors, Declined, No-show */
+  --g-brick-tint: #FFEDEB;
+  --g-slate: #285F78;        /* slate: Proposed, information */
+  --g-slate-tint: #E3F5FF;
+
+  /* -- Type families (brief 3.6: Latin face, Sinhala face, fallbacks) -- */
+  --g-font-sinhala-fallback: "Noto Sans Sinhala", "Nirmala UI", "Iskoola Pota", "Sinhala Sangam MN";
+  --g-font-text: "Ysabeau Office", "Noto Serif Sinhala", system-ui, -apple-system, "Segoe UI", Roboto, var(--g-font-sinhala-fallback), sans-serif;
+  --g-font-head: "Ysabeau Office", "Abhaya Libre", "Noto Serif Sinhala", system-ui, -apple-system, "Segoe UI", Roboto, var(--g-font-sinhala-fallback), sans-serif;
+  --g-font-inscription: "Marcellus", Georgia, "Times New Roman", serif;
+  /* Ysabeau first so spaces and digits never pull Abhaya's Latin file. */
+  --g-font-inscription-si: "Ysabeau Office", "Abhaya Libre", "Noto Serif Sinhala", var(--g-font-sinhala-fallback), serif;
+
+  /* -- Type sizes (brief 6.2 type table), phone then desktop -- */
+  --g-fs-inscription: 15px;
+  --g-fs-inscription-si: 17px;
+  --g-fs-title-phone: 30px;
+  --g-fs-title-desk: 36px;
+  --g-fs-heading-phone: 22px;
+  --g-fs-heading-desk: 24px;
+  --g-fs-body-phone: 19px;
+  --g-fs-body-desk: 17px;
+  --g-fs-voice-phone: 18px;
+  --g-fs-voice-desk: 16px;
+  --g-fs-small-phone: 15px;
+  --g-fs-small-desk: 14px;
+  --g-fs-figure: 36px;       /* reference number and tile counts */
+
+  /* -- Weights (only the weights we load; font-synthesis is off) -- */
+  --g-fw-regular: 400;
+  --g-fw-strong: 600;
+
+  /* -- Space: 4 px base, calm scale near the golden ratio (brief 6.2) -- */
+  --g-space-1: 4px;
+  --g-space-2: 8px;
+  --g-space-3: 12px;
+  --g-space-4: 20px;
+  --g-space-5: 32px;
+  --g-space-6: 52px;
+  --g-space-7: 84px;
+
+  /* -- Borders and corners -- */
+  --g-radius: 2px;
+  --g-border-hair: 1px;
+  --g-border-base: 2px;
+  --g-border-rule: 3px;
+
+  /* -- Targets -- */
+  --g-target-phone: 48px;
+  --g-target-phone-min: 44px;
+  --g-target-desk: 32px;
+
+  /* -- Motion (brief 3.7) -- */
+  --g-dur-fill: 200ms;
+  --g-dur-fade: 150ms;
+  --g-ease-out: cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+
+/* === Section 2: Semantic tokens === */
+:root {
+  /* Surfaces */
+  --c-ground: var(--g-limewash);
+  --c-surface: var(--g-white);
+  --c-band: var(--g-purple-900);
+  --c-band-note: var(--g-purple-200);
+  --c-on-band: var(--g-white);
+  --c-selected: var(--g-purple-100);
+
+  /* Text */
+  --c-ink: var(--g-warm-black);
+  --c-ink-2: var(--g-grey-500);
+  --c-on-brand: var(--g-white);
+
+  /* Brand and actions */
+  --c-brand: var(--g-purple-700);
+  --c-brand-hover: var(--g-purple-800);
+  --c-brand-pressed: var(--g-purple-900);
+
+  /* Lines */
+  --c-rule: var(--g-sand);          /* decoration only, never a control edge */
+  --c-edge: var(--g-stone);         /* control edges (3:1 or more) */
+  --c-edge-strong: var(--g-warm-black);
+
+  /* Signals: each has a job (brief 3.2) */
+  --c-leaf: var(--g-leaf);
+  --c-leaf-tint: var(--g-leaf-tint);
+  --c-laterite: var(--g-laterite);
+  --c-laterite-tint: var(--g-laterite-tint);
+  --c-brick: var(--g-brick);
+  --c-brick-tint: var(--g-brick-tint);
+  --c-slate: var(--g-slate);
+  --c-slate-tint: var(--g-slate-tint);
+  --c-neutral-tint: var(--g-grey-100);   /* Cancelled badge ground */
+  --c-row-hover: var(--g-purple-50);     /* table row under the pointer */
+
+  /* Prototype controls only (plain on purpose, brief 2) */
+  --c-proto-edge: var(--g-grey-400);
+  --c-proto-ink: var(--g-grey-900);
+  --c-proto-button: var(--g-grey-50);
+  --c-proto-button-edge: var(--g-grey-700);
+
+  /* Focus (brief 6.2 colour table) */
+  --c-focus: var(--g-purple-900);
+  --c-focus-on-band: var(--g-white);
+  --focus-width: 3px;
+  --focus-offset: 2px;
+
+  /* Families */
+  --font-text: var(--g-font-text);
+  --font-head: var(--g-font-head);
+  --font-inscription: var(--g-font-inscription);
+  --font-inscription-si: var(--g-font-inscription-si);
+
+  /* Space aliases */
+  --space-hair: var(--g-space-1);
+  --space-tight: var(--g-space-2);
+  --space-snug: var(--g-space-3);
+  --space-base: var(--g-space-4);
+  --space-loose: var(--g-space-5);
+  --space-section: var(--g-space-6);
+  --space-room: var(--g-space-7);
+  --page-margin: var(--g-space-4);   /* 20 px phone margins */
+  --gutter: 24px;
+  --rail-width: 300px;
+  --phone-column: 480px;
+
+  /* Shape */
+  --radius: var(--g-radius);
+  --border: var(--g-border-hair);
+  --border-base: var(--g-border-base);
+  --border-rule: var(--g-border-rule);
+
+  /* Component sizes (one place for each, brief 2: no raw values) */
+  --icon: 24px;              /* the icon grid */
+  --icon-md: 20px;
+  --icon-sm: 16px;           /* icons beside small text; status glyphs */
+  --icon-xs: 14px;           /* icons beside timeline references */
+  --gap-icon: 6px;           /* optical gap between an icon and its word */
+  --control-height: 52px;    /* inputs, selects, stepper buttons */
+  --control-pad: 10px;       /* vertical padding inside controls */
+  --choice-height: 56px;     /* radio cards */
+  --choice-pad: 14px;
+  --target-large: 56px;      /* the driver's Done on the next stop */
+  --crest-height: 40px;      /* crest in the masthead */
+  --stepper-input: 88px;
+  --textarea-height: 120px;
+  --rule-heavy: 6px;         /* the brand rule on top of a dialog */
+  --nav-height: 44px;        /* coordinator navigation links */
+  --button-desk: 40px;       /* button height on the desktop dashboard */
+  --fs-caption: 13px;        /* timeline axis, table headers, references */
+  --fs-meta: 14px;           /* metadata on the desktop dashboard */
+
+  /* Targets */
+  --target: var(--g-target-phone);
+  --target-min: var(--g-target-phone-min);
+
+  /* Motion */
+  --motion-fill: var(--g-dur-fill) var(--g-ease-out);
+  --motion-fade: var(--g-dur-fade) var(--g-ease-out);
+
+  /* Weights */
+  --fw-regular: var(--g-fw-regular);
+  --fw-strong: var(--g-fw-strong);
+
+  /* Line heights */
+  --lh-inscription: 1.3;
+  --lh-title: 1.15;
+  --lh-heading: 1.25;
+  --lh-body: 1.5;
+  --lh-body-si: 1.7;
+  --lh-voice: 1.45;
+  --lh-small: 1.4;
+
+  /* Sinhala factors default to 1 (section 4 overrides) */
+  --k-text: 1;
+  --k-head: 1;
+}
+
+/* === Section 3: Type scale switch === */
+:root {
+  --fs-inscription: var(--g-fs-inscription);
+  --fs-inscription-si: var(--g-fs-inscription-si);
+  --fs-title: var(--g-fs-title-phone);
+  --fs-heading: var(--g-fs-heading-phone);
+  --fs-body: var(--g-fs-body-phone);
+  --fs-voice: var(--g-fs-voice-phone);
+  --fs-small: var(--g-fs-small-phone);
+  --fs-figure: var(--g-fs-figure);
+}
+.scale-desktop {
+  --fs-title: var(--g-fs-title-desk);
+  --fs-heading: var(--g-fs-heading-desk);
+  --fs-body: var(--g-fs-body-desk);
+  --fs-voice: var(--g-fs-voice-desk);
+  --fs-small: var(--g-fs-small-desk);
+  --target: var(--g-target-desk);
+  --target-min: 24px;
+}
+@media (min-width: 64rem) {
+  .scale-auto {
+    --fs-title: var(--g-fs-title-desk);
+    --fs-heading: var(--g-fs-heading-desk);
+    --fs-body: var(--g-fs-body-desk);
+    --fs-voice: var(--g-fs-voice-desk);
+    --fs-small: var(--g-fs-small-desk);
+  }
+}
+
+/* === Section 4: Sinhala factors === */
+/* Brief 6.2: Abhaya Libre draws Sinhala small (letter height 0.414 em), so
+   headings in Sinhala are set 1.35 times larger; Noto Serif Sinhala draws it
+   slightly large, so text is set at 0.95. Data shown as entered (names,
+   places) carries lang="en" and resets to 1. */
+:lang(si) {
+  --k-text: 0.95;
+  --k-head: 1.35;
+  /* Sinhala vowel signs reach far above and below the letter body
+     (research.md 3.2), so every style gets more line height. */
+  --lh-inscription: 1.5;
+  --lh-title: 1.35;
+  --lh-heading: 1.5;
+  --lh-body: var(--lh-body-si);
+  --lh-voice: 1.7;
+  --lh-small: 1.6;
+}
+:lang(en) {
+  --k-text: 1;
+  --k-head: 1;
+  --lh-inscription: 1.3;
+  --lh-title: 1.15;
+  --lh-heading: 1.25;
+  --lh-body: 1.5;
+  --lh-voice: 1.45;
+  --lh-small: 1.4;
+}

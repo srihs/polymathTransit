@@ -1,0 +1,135 @@
+/* ==========================================================================
+   PolymathTransit – Direction 2 "Inscription" – page layouts
+   --------------------------------------------------------------------------
+   What this file is for:
+     How the two phone pages are laid out (request.html, driver.html): the
+     phone column with its band. The dashboard's layout is in dashboard.css
+     and the foundations page's in foundations.css, so phone pages download
+     only what they use (NFR-18). Uses tokens only.
+
+   Sections:
+     1. Phone pages: band and column
+     2. Request form page
+     3. Driver page
+   ========================================================================== */
+
+/* === Section 1: Phone pages: band and column === */
+/* Designed at 360 px; on wider screens the same column is centred (max
+   480 px) and the band runs full width (brief 3.4: no fake phone frame). */
+/* flow-root keeps child margins inside the band, so the header band and
+   the title band meet without a seam. */
+.phone-band { display: flow-root; padding-block-end: var(--space-loose); }
+.phone-band--head { padding-block-end: var(--space-tight); }
+.phone-band--title { padding-block-start: var(--space-tight); }
+.phone-band__inner,
+.phone-main {
+  max-width: var(--phone-column);
+  margin-inline: auto;
+  padding-inline: var(--page-margin);
+}
+.phone-main { padding-block-end: var(--space-section); }
+.phone-band .masthead { border-bottom: var(--border) solid var(--c-band-note); padding-block: var(--space-snug); }
+.phone-band__lang { padding-block: var(--space-snug) 0; }
+.phone-band__title { margin-block-start: var(--space-base); }
+.lang-status:empty { display: none; }
+.phone-band__title .t-voice { margin-block-start: var(--space-snug); }
+.lang-status { margin-block-start: var(--space-tight); }
+
+/* === Section 2: Request form page === */
+.request-form .section-name:first-child { margin-block-start: var(--space-loose); }
+.form-submit { margin-block-start: var(--space-loose); }
+.privacy { margin-block-start: var(--space-base); color: var(--c-ink-2); }
+.privacy a { display: inline-block; margin-block-start: var(--space-hair); padding-block: var(--space-snug); }
+.stop-row {
+  margin-block-start: var(--space-base);
+  padding: var(--space-base) var(--space-snug);
+  background: var(--c-surface);
+  border: var(--border) solid var(--c-rule);
+  border-radius: var(--radius);
+}
+.stop-row .field { margin-block-end: var(--space-base); }
+/* Sinhala "Drop off" (මගීන් බස්සන්න) is too wide for two chips at 320 px. */
+.stop-row .choices--two:lang(si) { grid-template-columns: minmax(0, 1fr); }
+.stop-row__legend { font-weight: var(--fw-strong); margin-block-end: var(--space-snug); }
+.stop-row .field__label {
+  font-family: var(--font-text);
+  font-size: calc(var(--fs-body) * var(--k-text));
+}
+.stops-disclosure { margin-block-start: var(--space-snug); }
+.add-stop { margin-block-start: var(--space-tight); padding-inline: 0; }
+.map-btn,
+.pax-split,
+.notes-field { margin-block-start: var(--space-snug); }
+.map-note { margin-block-start: var(--space-tight); }
+
+/* Confirmation (FR-04): the reference sits in a white opening on the band. */
+.ref-opening { margin-block-start: var(--space-base); padding-inline: var(--space-snug); }
+.ref-opening__ref {
+  display: block;
+  margin-block: var(--space-tight) var(--space-base);
+  font-family: var(--font-head);
+  font-size: var(--fs-figure);
+  font-weight: var(--fw-strong);
+  line-height: 1.1;
+  letter-spacing: 0.03em;
+  user-select: all;
+}
+.summary-list {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: var(--space-tight) var(--space-base);
+  margin-block-start: var(--space-snug);
+}
+.summary-list dt { color: var(--c-ink-2); }
+.summary-list dd { margin: 0; font-weight: var(--fw-strong); }
+.done-next { margin-block-start: var(--space-loose); }
+.done-next p { margin-block-start: var(--space-tight); }
+.done-another { display: inline-block; margin-block-start: var(--space-base); padding-block: 10px; font-weight: var(--fw-strong); }
+
+/* === Section 3: Driver page === */
+.route-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px var(--space-snug);
+  margin-block-start: var(--space-tight);
+  color: var(--c-band-note);
+}
+.progress { margin-block-start: var(--space-base); }
+.progress__bar {
+  display: grid;
+  grid-template-columns: repeat(14, 1fr);
+  gap: 3px;
+  margin-block-start: 6px;
+  height: 10px;
+}
+.progress__bar i { border: var(--border) solid var(--c-band-note); }
+.progress__bar i.is-done { background: var(--c-band-note); }
+.next-stop { margin-block-start: var(--space-base); }
+.next-stop__top {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-hair) var(--space-snug);
+}
+.next-stop__time {
+  font-family: var(--font-head);
+  font-size: calc(var(--fs-title) * var(--k-text) + 6px);
+  font-weight: var(--fw-strong);
+  line-height: 1.1;
+  margin-block-start: var(--space-tight);
+}
+.next-stop__in { font-weight: var(--fw-strong); color: var(--c-brand); }
+.next-stop__place { margin-block-start: var(--space-hair); }
+.next-stop__body > * + * { margin-block-start: var(--space-tight); }
+.driver-section { margin-block-start: var(--space-loose); }
+.done-stops > summary { min-height: var(--target); }
+.end-of-day {
+  display: flex;
+  align-items: center;
+  gap: var(--space-snug);
+  padding-block: var(--space-base);
+  border-top: var(--border-base) solid var(--c-ink);
+}
+.offline { margin-block: var(--space-base) 0; }
+.driver-toast { margin-block-start: var(--space-base); }

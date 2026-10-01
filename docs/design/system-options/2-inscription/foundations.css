@@ -1,0 +1,96 @@
+/* ==========================================================================
+   PolymathTransit – Direction 2 "Inscription" – foundations page layout
+   --------------------------------------------------------------------------
+   What this file is for:
+     The layout of index.html, the design-system foundations page: the
+     header band, the specimen grids, swatches, scales, type samples, spacing
+     bars, grid diagrams, icon grid and state rows. Uses tokens, except the
+     fixed drawing sizes of the specimen diagrams (they are pictures).
+
+   Sections:
+     1. Foundations page (index.html)
+   ========================================================================== */
+
+/* === Section 1: Foundations page (index.html) === */
+/* Specimen diagrams below (phone and desktop grids, swatch chips) use
+   fixed drawing sizes on purpose: they are pictures of the system. */
+:root { --found-width: 1200px; }
+.found-band .masthead { max-width: var(--found-width); margin-inline: auto; padding-inline: var(--page-margin); }
+.found-band__hero { max-width: var(--found-width); margin-inline: auto; padding: var(--space-loose) var(--page-margin) var(--space-section); }
+.found-band__hero .t-voice { max-width: 60ch; margin-block-start: var(--space-snug); font-size: var(--g-fs-body-phone); }
+.found-pages { display: flex; flex-wrap: wrap; gap: var(--space-tight) var(--space-base); list-style: none; padding: 0; margin: 0; }
+.found-pages a { display: inline-flex; align-items: center; min-height: var(--nav-height); }
+.found-pages--light a { color: var(--c-brand); }
+.confirm-demo { padding: var(--space-base); max-width: 360px; }
+.states-table td { vertical-align: middle; }
+.found-main { max-width: var(--found-width); margin-inline: auto; padding: 0 var(--page-margin) var(--space-room); }
+.found-main > section { padding-block-start: var(--space-section); }
+.found-main h2.t-title { margin-block-end: var(--space-base); }
+.found-main h3 { margin-block: var(--space-loose) var(--space-snug); }
+.found-main p { max-width: 68ch; }
+.found-main p + p { margin-block-start: var(--space-snug); }
+.principles { counter-reset: p; list-style: none; padding: 0; display: grid; gap: var(--space-snug); max-width: 68ch; }
+.principles li { counter-increment: p; display: grid; grid-template-columns: 2.5rem 1fr; }
+.principles li::before { content: counter(p, upper-roman); font-family: var(--font-inscription); color: var(--c-brand); letter-spacing: 0.08em; }
+.demo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); gap: var(--space-base); }
+.demo {
+  padding: var(--space-base);
+  background: var(--c-surface);
+  border: var(--border) solid var(--c-rule);
+  border-radius: var(--radius);
+}
+.demo__name { display: block; margin-block-end: var(--space-snug); color: var(--c-ink-2); }
+.demo--band { background: var(--c-band); color: var(--c-on-band); border-color: var(--c-band); }
+.demo--band .demo__name { color: var(--c-band-note); }
+.demo--purple .demo__name { color: var(--c-on-brand); }
+.demo--purple { background: var(--c-brand); color: var(--c-on-brand); border-color: var(--c-brand); }
+.demo--ground { background: var(--c-ground); }
+.logo-full { width: 320px; max-width: 100%; height: auto; }
+.crest-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr)); gap: var(--space-base); }
+.crest-row .demo { display: grid; justify-items: start; gap: var(--space-snug); }
+.crest-row img { height: 96px; width: auto; }
+.clearspace { display: inline-block; padding: 24px; border: var(--border) dashed var(--c-ink-2); background: var(--c-surface); }
+.clearspace img { height: 96px; width: auto; outline: var(--border) solid var(--c-rule); }
+.sizes { display: flex; align-items: end; gap: var(--space-loose); flex-wrap: wrap; }
+.sizes figure { display: grid; gap: var(--space-tight); justify-items: start; }
+.swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr)); gap: var(--space-snug); list-style: none; padding: 0; }
+.swatch { display: grid; grid-template-columns: 64px 1fr; gap: var(--space-snug); padding: var(--space-snug); background: var(--c-surface); border: var(--border) solid var(--c-rule); border-radius: var(--radius); font-size: calc(var(--fs-meta) + 1px); line-height: 1.4; }
+.swatch__chip { width: 64px; height: 64px; border: var(--border) solid var(--c-edge); border-radius: var(--radius); }
+.swatch code { font-size: var(--fs-caption); }
+.scale-strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(6.5rem, 1fr)); gap: 0; list-style: none; padding: 0; border: var(--border) solid var(--c-edge); }
+.scale-strip li { padding: var(--space-snug) var(--space-tight); min-height: 6rem; font-size: var(--fs-caption); line-height: 1.35; display: flex; flex-direction: column; justify-content: flex-end; }
+.ratio { font-weight: var(--fw-strong); }
+.type-table td, .type-table th { vertical-align: middle; }
+.type-pair { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); gap: var(--space-base); }
+.factor-demo { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); gap: var(--space-base); }
+.factor-off .t-heading:lang(si) { --k-head: 1; }
+.space-bars { list-style: none; padding: 0; display: grid; gap: var(--space-tight); }
+.space-bars li { display: grid; grid-template-columns: 7rem 1fr; align-items: center; gap: var(--space-snug); font-size: calc(var(--fs-meta) + 1px); }
+.space-bars span.bar { display: block; height: 16px; background: var(--c-brand); }
+.grid-diagrams { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2.6fr); gap: var(--space-loose); align-items: start; }
+.grid-phone { width: 180px; border: var(--border) solid var(--c-edge); background: var(--c-surface); }
+.grid-phone__band { height: 48px; background: var(--c-band); }
+.grid-phone__col { margin: 12px 10px; height: 220px; background: var(--c-selected); border: var(--border) dashed var(--c-brand); }
+.grid-desk { display: grid; grid-template-columns: 60px 1fr; grid-template-rows: 18px 200px; border: var(--border) solid var(--c-edge); background: var(--c-ground); }
+.grid-desk__arm { grid-column: 1 / -1; background: var(--c-band); }
+.grid-desk__rail { background: var(--c-band); }
+.grid-desk__cols { display: grid; grid-template-columns: repeat(12, 1fr); gap: 5px; padding: 6px; }
+.grid-desk__cols i { background: var(--c-selected); border: var(--border) dashed var(--c-brand); }
+.icon-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(8.5rem, 1fr)); gap: var(--space-tight); list-style: none; padding: 0; }
+.icon-grid li { display: flex; align-items: center; gap: var(--space-snug); padding: var(--space-tight) var(--space-snug); background: var(--c-surface); border: var(--border) solid var(--c-rule); font-size: var(--fs-meta); }
+.state-row { display: flex; flex-wrap: wrap; gap: var(--space-base); align-items: flex-start; }
+.state { display: grid; gap: var(--space-tight); min-width: 0; }
+.state__name { font-size: var(--fs-caption); color: var(--c-ink-2); }
+.badge-row { display: flex; flex-wrap: wrap; gap: var(--space-tight) var(--space-snug); align-items: center; }
+.greyscale { filter: grayscale(1); }
+.stack > .error-summary--demo { margin-block-start: var(--space-snug); }
+.comp { margin-block-start: var(--space-loose); padding-block-start: var(--space-base); border-top: var(--border) solid var(--c-rule); }
+.comp > h3 { margin-block-start: 0; }
+.phone-head-demo { max-width: 360px; padding: 0 var(--page-margin) var(--space-base); }
+.nav-demo { padding: var(--space-tight) var(--space-base); }
+.signature-demo { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); gap: var(--space-base); }
+.motion-table td:first-child { font-weight: var(--fw-strong); }
+.found-footer { border-top: var(--border) solid var(--c-rule); margin-block-start: var(--space-section); padding-block-start: var(--space-base); color: var(--c-ink-2); font-size: calc(var(--fs-meta) + 1px); }
+@media (max-width: 47.99rem) {
+  .grid-diagrams { grid-template-columns: minmax(0, 1fr); }
+}

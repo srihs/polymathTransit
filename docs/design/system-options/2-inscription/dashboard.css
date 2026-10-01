@@ -1,0 +1,120 @@
+/* ==========================================================================
+   PolymathTransit – Direction 2 "Inscription" – dashboard layout
+   --------------------------------------------------------------------------
+   What this file is for:
+     The layout of dashboard.html: the verandah, an L-shaped band whose top
+     arm holds the header and navigation and whose 300 px rail holds the date
+     and today's plan, around a lime-wash courtyard (tiles, timeline, detail
+     panel). Designed for 1280 to 1440 px; stacked and usable below 1024 px.
+     Uses tokens only.
+
+   Sections:
+     1. Dashboard: verandah and courtyard
+     2. Dashboard: below 1024 px (stacked, usable)
+   ========================================================================== */
+
+/* === Section 1: Dashboard: verandah and courtyard === */
+.dash {
+  display: grid;
+  grid-template-columns: var(--rail-width) minmax(0, 1fr);
+  grid-template-rows: auto 1fr;
+  min-height: 100vh;
+}
+/* The top arm of the verandah: header and navigation (US-22 AC-1 region 1). */
+.dash-arm {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: var(--rail-width) minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0 var(--space-base);
+  padding-inline-end: var(--space-loose);
+}
+.dash-arm .brand { padding: var(--space-snug) var(--space-base) var(--space-snug) var(--space-loose); }
+.dash-arm .brand img { height: calc(var(--crest-height) - 4px); }
+.dash-user {
+  display: flex;
+  align-items: center;
+  gap: var(--space-snug);
+  font-size: var(--fs-meta);
+  line-height: 1.3;
+}
+.dash-user p { max-width: 11rem; }
+.dash-user span { color: var(--c-band-note); }
+.dash-user a { display: inline-flex; align-items: center; min-height: 32px; }
+
+.dash-main {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: var(--rail-width) minmax(0, 1fr);
+}
+/* The rail of the verandah: the day and its plan (region 2, first tile). */
+.dash-rail { padding: var(--space-base) var(--space-base) var(--space-section) var(--space-loose); }
+.dash-rail__inner { position: sticky; top: var(--space-base); }
+.dash-rail h1 .t-inscription { display: block; color: var(--c-band-note); margin-block-end: var(--space-hair); }
+.plan { margin-block-start: var(--space-loose); padding-block-start: var(--space-base); border-top: var(--border) solid var(--c-band-note); }
+.plan__facts { margin-block-start: var(--space-snug); font-size: calc(var(--fs-meta) + 1px); }
+.plan__facts li { padding-block: 3px; }
+.plan__facts { list-style: none; padding: 0; }
+.plan .ladder { margin-block: var(--space-base); }
+.plan__deadline { margin-block-start: var(--space-snug); }
+.plan__note { margin-block-start: var(--space-snug); font-size: calc(var(--fs-meta) + 1px); }
+.plan .btn { margin-block-start: var(--space-base); width: 100%; }
+.plan .alert { margin-block-start: var(--space-base); }
+
+.dash-court { padding: var(--space-loose); min-width: 0; }
+.dash-court > * + * { margin-block-start: var(--space-loose); }
+.court-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-tight) var(--space-base);
+}
+.updated { color: var(--c-ink-2); font-size: var(--fs-meta); }
+.view-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: var(--space-snug) var(--space-base);
+  margin-block-end: var(--space-snug);
+}
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: var(--space-snug);
+}
+.filters label { display: block; font-size: var(--fs-caption); color: var(--c-ink-2); margin-block-end: 2px; }
+.filters .select,
+.filters .input {
+  min-height: 36px;
+  padding-block: 4px;
+  font-size: calc(var(--fs-meta) + 1px);
+  border-bottom-width: var(--border-base);
+}
+.filters .select { padding-inline-end: 40px; background-size: 20px 20px; background-position: right 8px center; }
+.filters .input { width: 9.5rem; }
+.dash .btn { min-height: var(--button-desk); padding: var(--gap-icon) var(--space-base); font-size: calc(var(--fs-body) - 1px); }
+.dash .dash-notice:empty { display: none; }
+
+/* Between 1024 and 1400 px the eight links tighten so they stay on one line. */
+@media (max-width: 87.5rem) {
+  .dash-arm .nav__link { padding-inline: var(--space-tight); }
+  .dash-arm { gap: 0 var(--space-snug); }
+}
+
+/* === Section 2: Dashboard: below 1024 px (stacked, usable) === */
+@media (max-width: 63.99rem) {
+  .dash,
+  .dash-main { grid-template-columns: minmax(0, 1fr); }
+  .dash-arm { grid-template-columns: minmax(0, 1fr); padding: 0 var(--page-margin) var(--space-snug); }
+  .dash-arm .brand { padding-inline: 0; }
+  .dash-user { white-space: normal; flex-wrap: wrap; }
+  .dash-rail { padding: var(--space-base) var(--page-margin) var(--space-loose); }
+  .dash-court { padding: var(--space-base) var(--page-margin); }
+  .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .panel__grid { grid-template-columns: minmax(0, 1fr); }
+  .timeline-scroll { overflow-x: auto; }
+  .timeline { min-width: 900px; }
+}

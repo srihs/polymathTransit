@@ -1,0 +1,1542 @@
+/* ==========================================================================
+   PolymathTransit – Direction 2 "Inscription" – components
+   --------------------------------------------------------------------------
+   What this file is for:
+     Every component of the direction and all of its states. Uses only the
+     semantic tokens from tokens.css (no raw colours, sizes or spaces).
+     Grammar of the direction (brief 6.2, principle 2):
+       capitals NAME (Marcellus), italic GUIDES (Ysabeau Office italic),
+       roman does the WORK (Ysabeau Office).
+
+   Sections:
+     1.  Base
+     2.  Type styles
+     3.  Links and focus
+     4.  Icons
+     5.  Band (the verandah) and masthead
+     6.  Language switch
+     7.  Section names
+     8.  Buttons
+     9.  Fields
+     10. Choices: radios, radio rows, date rows, chips, checkboxes
+     11. Passenger stepper
+     12. Disclosures
+     13. Alerts and the error summary
+     14. Status glyphs, badges and flags
+     15. The step ladder (signature)
+     16. Data table
+     17. Coordinator navigation
+     18. Tiles
+     19. Day timeline
+     20. Detail panel
+     21. Dialog
+     22. Toast (status with Undo)
+     23. Driver stops
+     24. Prototype controls
+     25. Utilities
+     26. Forced colours (Windows contrast themes)
+     27. Reduced motion
+   ========================================================================== */
+
+/* === Section 1: Base === */
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html {
+  background: var(--c-ground);
+  color: var(--c-ink);
+  font-family: var(--font-text);
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  /* Brief 3.5: never let the browser fake bold or italic Sinhala. */
+  font-synthesis: none;
+}
+
+body {
+  margin: 0;
+  font-size: calc(var(--fs-body) * var(--k-text));
+  line-height: var(--lh-body);
+  font-weight: var(--fw-regular);
+  /* Avoid a lone word (or "pm") on the last line where browsers allow it. */
+  text-wrap: pretty;
+}
+
+h1, h2, h3, h4, p, ul, ol, dl, dd, figure, fieldset, legend { margin: 0; }
+ul, ol { padding: 0; }
+fieldset { border: 0; padding: 0; min-width: 0; }
+legend { padding: 0; }
+img, svg { display: block; max-width: 100%; }
+button, input, select, textarea { font: inherit; color: inherit; }
+[hidden] { display: none !important; }
+
+/* Times, references and counts line up (NFR-12 "10:30 am"). */
+.num,
+time,
+.ref { font-variant-numeric: tabular-nums lining-nums; }
+
+/* === Section 2: Type styles === */
+/* Inscription: capitals that NAME. Never more than four words. */
+.t-inscription {
+  font-family: var(--font-inscription);
+  font-size: var(--fs-inscription);
+  font-weight: var(--fw-regular);
+  line-height: var(--lh-inscription);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+/* Sinhala has no capitals: section names use Abhaya Libre 700 (brief 6.2). */
+.t-inscription:lang(si) {
+  font-family: var(--font-inscription-si);
+  font-size: calc(var(--fs-inscription-si) * var(--k-head));
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.t-title {
+  font-family: var(--font-head);
+  font-size: calc(var(--fs-title) * var(--k-head));
+  font-weight: var(--fw-strong);
+  line-height: var(--lh-title);
+}
+
+.t-heading {
+  font-family: var(--font-head);
+  font-size: calc(var(--fs-heading) * var(--k-head));
+  font-weight: var(--fw-strong);
+  line-height: var(--lh-heading);
+}
+
+.t-body {
+  font-size: calc(var(--fs-body) * var(--k-text));
+  line-height: var(--lh-body);
+}
+
+/* Voice: the italic that GUIDES (hints, explanations, the system's notes). */
+.t-voice {
+  font-size: calc(var(--fs-voice) * var(--k-text));
+  font-style: italic;
+  line-height: var(--lh-voice);
+  color: var(--c-ink-2);
+}
+/* Sinhala has no italic: regular style in the same colour (brief 6.2). */
+.t-voice:lang(si) { font-style: normal; }
+
+.t-small {
+  font-size: calc(var(--fs-small) * var(--k-text));
+  line-height: var(--lh-small);
+}
+
+.t-figure {
+  font-family: var(--font-head);
+  font-size: var(--fs-figure);
+  font-weight: var(--fw-strong);
+  line-height: 1;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+.t-strong { font-weight: var(--fw-strong); }
+.t-muted { color: var(--c-ink-2); }
+
+/* === Section 3: Links and focus === */
+a {
+  color: var(--c-brand);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+}
+a:hover { color: var(--c-brand-hover); text-decoration-thickness: 2px; }
+a:visited { color: var(--c-brand-hover); }
+
+/* One focus style everywhere: 3 px band outline, 2 px away (13.99:1 on
+   lime-wash, 14.95:1 on white). On the band it turns white (14.95:1). */
+:focus-visible {
+  outline: var(--focus-width) solid var(--c-focus);
+  outline-offset: var(--focus-offset);
+}
+.band :focus-visible,
+.on-band :focus-visible {
+  outline-color: var(--c-focus-on-band);
+}
+/* Elements inside the band that sit on a white opening use the band focus
+   again, because white would vanish on white. */
+.band .opening :focus-visible { outline-color: var(--c-focus); }
+
+[tabindex="-1"]:focus { outline: none; }
+[tabindex="-1"]:focus-visible { outline: var(--focus-width) solid var(--c-focus); }
+
+.skip-link {
+  position: absolute;
+  left: var(--space-tight);
+  top: -100px;
+  z-index: 100;
+  padding: var(--space-snug) var(--space-base);
+  background: var(--c-surface);
+  color: var(--c-brand);
+  font-weight: var(--fw-strong);
+}
+.skip-link:focus { top: var(--space-tight); }
+
+/* === Section 4: Icons === */
+/* Fine line icons on a 24 px grid: 1.5 px stroke, round joins, flat ends.
+   Drawn for this direction, from scratch (brief 6.2, 3.9). */
+.icon {
+  width: var(--icon);
+  height: var(--icon);
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: butt;
+  stroke-linejoin: round;
+}
+.icon--16 { width: var(--icon-sm); height: var(--icon-sm); }
+.icon--20 { width: var(--icon-md); height: var(--icon-md); }
+.icon--32 { width: calc(var(--icon) + var(--space-tight)); height: calc(var(--icon) + var(--space-tight)); }
+.icon--down { transform: rotate(90deg); }
+
+/* === Section 5: Band (the verandah) and masthead === */
+/* Brief 6.2, principle 3: one deep band frames what matters most on each
+   page; everything else is calm. */
+.band {
+  background: var(--c-band);
+  color: var(--c-on-band);
+}
+.band a { color: var(--c-on-band); }
+.band a:visited { color: var(--c-band-note); }
+.band .t-voice,
+.band-note { color: var(--c-band-note); }
+/* Inside a white opening the voice returns to the logo grey (5.76:1). */
+.band .opening .t-voice { color: var(--c-ink-2); }
+
+.masthead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-snug) var(--space-base);
+  padding-block: var(--space-snug);
+}
+.brand {
+  display: flex;
+  align-items: center;
+  min-height: var(--target-min);
+  gap: var(--space-snug);
+  color: inherit;
+  text-decoration: none;
+}
+.brand img { width: auto; height: var(--crest-height); }
+.brand__name {
+  font-family: var(--font-inscription);
+  font-size: var(--fs-inscription);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  line-height: 1.2;
+}
+
+/* The opening: a lit, white space set into the band (a verandah frames the
+   view). Used for the driver's next stop and the request reference. */
+.opening {
+  background: var(--c-surface);
+  color: var(--c-ink);
+  border-radius: var(--radius);
+  padding: var(--space-base);
+}
+.opening a { color: var(--c-brand); }
+
+/* === Section 6: Language switch === */
+.lang-switch {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-tight) var(--space-snug);
+}
+.lang-switch__label { color: var(--c-band-note); }
+.lang-switch__options {
+  display: flex;
+  gap: var(--space-tight);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.lang-switch__option {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gap-icon);
+  min-height: var(--target-min);
+  min-width: var(--target-min);
+  padding: var(--gap-icon) var(--choice-pad);
+  border: var(--border) solid var(--c-band-note);
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--c-on-band);
+  font-size: calc(var(--fs-small) * var(--k-text) + 2px);
+  line-height: 1.3;
+  text-decoration: none;
+  cursor: pointer;
+}
+.lang-switch__option:visited { color: var(--c-on-band); }
+.lang-switch__option .icon { display: none; }
+/* Current language: white fill, band text and a tick, so it is marked by
+   fill, shape and state, not by colour alone (brief 3.5). */
+.lang-switch__option[aria-pressed="true"],
+.lang-switch__option[aria-current="true"] {
+  background: var(--c-surface);
+  border-color: var(--c-surface);
+  color: var(--c-band);
+  font-weight: var(--fw-strong);
+}
+.lang-switch__option[aria-pressed="true"] .icon,
+.lang-switch__option[aria-current="true"] .icon { display: block; }
+.lang-switch__option:hover { border-color: var(--c-surface); }
+
+/* The prototype-only note about the Sinhala draft (D-09): set like the
+   prototype controls so it is not mistaken for the design. */
+.proto-note {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: var(--fs-caption);
+  line-height: 1.4;
+  font-style: normal;
+  border: 1px dashed currentColor;
+  padding: var(--space-hair) var(--space-tight);
+  margin-block-start: var(--space-tight);
+}
+
+/* === Section 7: Section names === */
+/* A name in capitals, then a sand hairline to the edge, like a ruled ledger.
+   The hairline is decoration only (brief 6.2: --c-rule). */
+.section-name {
+  display: flex;
+  align-items: center;
+  gap: var(--space-snug);
+  color: var(--c-ink);
+  margin-block: var(--space-section) var(--space-base);
+}
+.section-name::after {
+  content: "";
+  flex: 1;
+  border-top: var(--border) solid var(--c-rule);
+}
+
+/* === Section 8: Buttons === */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-tight);
+  min-height: var(--target);
+  padding: var(--control-pad) var(--space-base);
+  border: var(--border-base) solid transparent;
+  border-radius: var(--radius);
+  font-family: var(--font-text);
+  font-size: calc(var(--fs-body) * var(--k-text));
+  font-weight: var(--fw-strong);
+  line-height: 1.3;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  /* Sinhala labels can be three times longer (research.md 3.2): wrap. */
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.btn--block { display: flex; width: 100%; }
+
+/* Primary: brand fill (white on it 8.86:1). */
+.btn--primary { background: var(--c-brand); color: var(--c-on-brand); }
+.btn--primary:visited { color: var(--c-on-brand); }
+.btn--primary:hover,
+.btn--primary.is-hover { background: var(--c-brand-hover); color: var(--c-on-brand); }
+.btn--primary:active,
+.btn--primary.is-pressed {
+  background: var(--c-brand-pressed);
+  border-bottom-color: var(--c-brand-pressed);
+}
+
+/* Secondary: white with a brand edge and brand text (8.86:1). */
+.btn--secondary {
+  background: var(--c-surface);
+  color: var(--c-brand);
+  border-color: var(--c-brand);
+}
+.btn--secondary:visited { color: var(--c-brand); }
+.btn--secondary:hover,
+.btn--secondary.is-hover { background: var(--c-selected); color: var(--c-brand-hover); }
+.btn--secondary:active,
+.btn--secondary.is-pressed { background: var(--c-selected); border-color: var(--c-brand-pressed); color: var(--c-brand-pressed); }
+
+/* Quiet: underlined text, for low-weight actions (Undo, Change on lists). */
+.btn--quiet {
+  background: transparent;
+  color: var(--c-brand);
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+  padding-inline: var(--space-snug);
+}
+.btn--quiet:hover,
+.btn--quiet.is-hover { text-decoration-thickness: 2px; background: var(--c-selected); }
+.btn--quiet:active,
+.btn--quiet.is-pressed { color: var(--c-brand-pressed); }
+
+/* Destructive: brick edge and text (8.05:1); the confirming step is filled. */
+.btn--danger {
+  background: var(--c-surface);
+  color: var(--c-brick);
+  border-color: var(--c-brick);
+}
+.btn--danger:hover,
+.btn--danger.is-hover { background: var(--c-brick-tint); }
+.btn--danger:active,
+.btn--danger.is-pressed { background: var(--c-brick-tint); border-width: 3px; padding: calc(var(--control-pad) - 1px) calc(var(--space-base) - 1px); }
+.btn--danger-fill { background: var(--c-brick); color: var(--c-on-brand); border-color: var(--c-brick); }
+.btn--danger-fill:hover { background: var(--c-ink); border-color: var(--c-ink); }
+
+/* Plain: white with a stone edge and ink text. Quieter than Done, for
+   No-show and Go back (brief 5.4). */
+.btn--plain {
+  background: var(--c-surface);
+  color: var(--c-ink);
+  border-color: var(--c-edge);
+}
+.btn--plain:hover { border-color: var(--c-ink); }
+.btn--plain:active { background: var(--c-ground); }
+
+/* On the band: the primary becomes a white opening with band text. */
+.btn--on-band { background: var(--c-surface); color: var(--c-band); }
+.btn--on-band:hover { background: var(--c-selected); }
+.btn--on-band:active { background: var(--c-band-note); }
+
+/* Disabled: dashed edge and grey text; shape changes, not only colour. */
+.btn:disabled,
+.btn[aria-disabled="true"],
+.btn.is-disabled {
+  background: var(--c-ground);
+  color: var(--c-ink-2);
+  border: var(--border) dashed var(--c-edge);
+  cursor: not-allowed;
+  text-decoration: none;
+}
+
+/* Busy: the label says what is happening ("Sending…"). No spinner. */
+.btn[aria-busy="true"],
+.btn.is-busy { cursor: progress; }
+
+.btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-snug);
+}
+/* Decline sits apart from Approve and Change (touch-target-design). */
+.btn-row__apart { margin-inline-start: auto; }
+
+/* === Section 9: Fields === */
+.field { margin-block-end: var(--space-loose); }
+.field__label,
+.field__legend {
+  display: block;
+  font-family: var(--font-head);
+  font-size: calc(var(--fs-heading) * var(--k-head));
+  font-weight: var(--fw-strong);
+  line-height: var(--lh-heading);
+  margin-block-end: var(--space-tight);
+}
+/* Labels in Sinhala use the text face at heading size: Abhaya Libre is for
+   headings and short names only (research.md 3.1). */
+.field__label:lang(si),
+.field__legend:lang(si) {
+  font-family: var(--font-text);
+  font-size: calc(var(--fs-heading) * var(--k-text));
+}
+.field__hint {
+  display: block;
+  margin-block: calc(var(--space-tight) * -0.5) var(--space-tight);
+}
+.field__error {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-tight);
+  margin-block-end: var(--space-tight);
+  color: var(--c-brick);
+  font-weight: var(--fw-strong);
+}
+.field__error .icon { margin-top: 0.15em; }
+
+/* A field in error carries a 3 px brick rule on its left, an icon and a
+   message: never the red border alone (brief 3.2). */
+.field.is-error,
+.is-error > .field__group {
+  border-inline-start: var(--border-rule) solid var(--c-brick);
+  padding-inline-start: var(--space-snug);
+}
+
+.input,
+.select,
+.textarea {
+  display: block;
+  width: 100%;
+  min-height: var(--control-height);
+  padding: var(--control-pad) var(--space-snug);
+  background: var(--c-surface);
+  color: var(--c-ink);
+  /* The inscribed baseline: a fine stone edge with a heavier ink line at
+     the foot, as letters sit on a ruled line. */
+  border: var(--border) solid var(--c-edge);
+  border-bottom: var(--border-base) solid var(--c-ink);
+  border-radius: var(--radius);
+  font-size: calc(var(--fs-body) * var(--k-text));
+  line-height: 1.4;
+}
+.input--short { max-width: 12ch; }
+.input--date { max-width: 14ch; }
+.textarea { min-height: var(--textarea-height); resize: vertical; }
+.input:hover,
+.select:hover,
+.textarea:hover,
+.input.is-hover { border-color: var(--c-ink); }
+.input:focus-visible,
+.select:focus-visible,
+.textarea:focus-visible,
+.input.is-focus {
+  border-color: var(--c-ink);
+  outline: var(--focus-width) solid var(--c-focus);
+  outline-offset: var(--focus-offset);
+}
+.input[aria-invalid="true"],
+.select[aria-invalid="true"],
+.textarea[aria-invalid="true"] {
+  border: var(--border-base) solid var(--c-brick);
+}
+.input:disabled,
+.select:disabled,
+.input.is-disabled {
+  background: var(--c-ground);
+  color: var(--c-ink-2);
+  border-style: dashed;
+  border-bottom-width: var(--border);
+  border-color: var(--c-edge);
+  cursor: not-allowed;
+}
+
+.select {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-inline-end: calc(var(--icon) * 2);
+  /* Chevron: inline SVG in the direction's line style. */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath d='M6 9.5l6 6 6-6' fill='none' stroke='%231C181B' stroke-width='1.5' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right var(--space-snug) center;
+  background-size: var(--icon) var(--icon);
+}
+
+/* Data typed by people (names, places) keeps its own language. */
+.input:lang(si),
+.select:lang(si) { line-height: 1.6; }
+
+/* Revealed sub-fields (another address, return time) hang from a rule. */
+.subfields {
+  margin-block-start: var(--space-base);
+  padding-inline-start: var(--space-base);
+  border-inline-start: var(--border-base) solid var(--c-rule);
+}
+.subfields .field:last-child { margin-block-end: 0; }
+
+/* === Section 10: Choices === */
+.choices {
+  display: grid;
+  gap: var(--space-tight);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.choices--two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+.choice {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-snug);
+  min-height: var(--choice-height);
+  padding: var(--choice-pad) var(--space-snug) var(--choice-pad) var(--choice-pad);
+  background: var(--c-surface);
+  border: var(--border) solid var(--c-edge);
+  border-radius: var(--radius);
+  cursor: pointer;
+  height: 100%;
+}
+.choice:hover,
+.choice.is-hover { border-color: var(--c-ink); }
+.choice__text { flex: 1; min-width: 0; line-height: 1.35; }
+.choice__text:lang(si) { line-height: 1.6; }
+.choice__main { display: block; font-weight: var(--fw-strong); }
+.choice__sub { display: block; }
+
+/* Native radio and checkbox, drawn in the direction's style. They keep
+   their native role, keyboard and form behaviour. */
+.radio,
+.check {
+  appearance: none;
+  -webkit-appearance: none;
+  flex: none;
+  width: var(--icon);
+  height: var(--icon);
+  margin: 0;
+  background: var(--c-surface);
+  border: var(--border-base) solid var(--c-edge);
+  cursor: pointer;
+}
+.radio { border-radius: 50%; }
+.check { border-radius: var(--radius); }
+/* Selected radio: a filled centre inside a ring (a shape change). */
+.radio:checked {
+  border-color: var(--c-brand);
+  background: var(--c-brand);
+  box-shadow: inset 0 0 0 var(--space-hair) var(--c-surface);
+}
+.check:checked {
+  border-color: var(--c-brand);
+  background-color: var(--c-brand);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5.5 12.5l4 4 9-9' fill='none' stroke='%23FFFFFF' stroke-width='2.5' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-size: var(--icon-md) var(--icon-md);
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.radio:disabled,
+.check:disabled { background: var(--c-ground); border-style: dashed; cursor: not-allowed; }
+.choice .radio,
+.choice .check { margin-top: 1px; }
+/* The card shows the focus, so the ring sits round the whole target. */
+.choice .radio:focus-visible,
+.choice .check:focus-visible { outline: none; }
+.choice:has(:focus-visible),
+.choice.is-focus {
+  outline: var(--focus-width) solid var(--c-focus);
+  outline-offset: var(--focus-offset);
+}
+/* Selected card: purple-100 fill, 2 px brand edge and the filled radio. */
+.choice:has(:checked),
+.choice.is-selected {
+  background: var(--c-selected);
+  border: var(--border-base) solid var(--c-brand);
+  padding: calc(var(--choice-pad) - 1px) calc(var(--space-snug) - 1px) calc(var(--choice-pad) - 1px) calc(var(--choice-pad) - 1px);
+}
+.choices.is-error .choice,
+.choice.is-error { border-color: var(--c-brick); }
+
+/* A closed date: shown, cannot be chosen, says "Closed" (FR-07, BRL-13). */
+.choice.is-closed {
+  background: var(--c-ground);
+  border-style: dashed;
+  color: var(--c-ink-2);
+  cursor: not-allowed;
+}
+.choice.is-closed .choice__main { text-decoration: none; }
+.closed-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-hair);
+  margin-block-start: 2px;
+  font-weight: var(--fw-strong);
+  color: var(--c-ink);
+}
+.choice__note { display: block; margin-block-start: var(--space-hair); }
+
+/* Plain checkbox row (no card), for "Send my updates on WhatsApp". */
+.check-row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-snug);
+  min-height: var(--target-min);
+  padding-block: var(--control-pad);
+  cursor: pointer;
+}
+.check-row .check { margin-top: 2px; }
+.check-row:has(:focus-visible) {
+  outline: var(--focus-width) solid var(--c-focus);
+  outline-offset: var(--focus-offset);
+}
+.check-row .check:focus-visible { outline: none; }
+.check-row.is-disabled { color: var(--c-ink-2); cursor: not-allowed; }
+
+/* The status line under a legend (cutoff message, FR-07). */
+.cutoff {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-tight);
+  margin-block-end: var(--space-snug);
+  color: var(--c-slate);
+}
+.cutoff .icon { margin-top: 0.1em; }
+/* No special cutoff for this date: the status line stays (so screen
+   readers hear the next change) but takes no space. */
+.cutoff.is-empty { margin: 0; }
+.cutoff.is-empty .icon { display: none; }
+.cutoff__text { color: var(--c-ink); }
+
+/* === Section 11: Passenger stepper === */
+.stepper {
+  display: flex;
+  align-items: stretch;
+  gap: var(--space-tight);
+}
+.stepper__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--control-height);
+  min-height: var(--control-height);
+  padding: 0;
+  background: var(--c-surface);
+  color: var(--c-brand);
+  border: var(--border-base) solid var(--c-brand);
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+.stepper__btn:hover { background: var(--c-selected); }
+.stepper__btn[aria-disabled="true"] {
+  color: var(--c-ink-2);
+  border: var(--border) dashed var(--c-edge);
+  background: var(--c-ground);
+  cursor: not-allowed;
+}
+.stepper .input {
+  width: 6ch;
+  min-width: var(--stepper-input);
+  text-align: center;
+  font-weight: var(--fw-strong);
+}
+
+/* === Section 12: Disclosures === */
+.disclosure > summary {
+  display: flex;
+  align-items: center;
+  gap: var(--space-tight);
+  min-height: var(--target);
+  padding-block: var(--space-tight);
+  color: var(--c-brand);
+  font-weight: var(--fw-strong);
+  cursor: pointer;
+  list-style: none;
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+.disclosure > summary::-webkit-details-marker { display: none; }
+.disclosure > summary .icon { transition: transform var(--motion-fade); }
+.disclosure[open] > summary .icon { transform: rotate(90deg); }
+.disclosure__body { padding-block: var(--space-snug) 0; }
+/* The section-level disclosure ("Anything special?") reads as a section. */
+.disclosure--section > summary {
+  color: var(--c-ink);
+  text-decoration: none;
+  border-top: var(--border) solid var(--c-rule);
+  border-bottom: var(--border) solid var(--c-rule);
+  padding-block: var(--space-snug);
+}
+.disclosure--section > summary .icon { color: var(--c-brand); }
+
+/* === Section 13: Alerts and the error summary === */
+.alert {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-hair) var(--space-snug);
+  padding: var(--space-snug) var(--space-base) var(--space-snug) var(--space-snug);
+  border-inline-start: var(--border-rule) solid;
+  border-radius: var(--radius);
+  color: var(--c-ink);
+}
+.alert > .icon { grid-row: 1 / span 2; margin-top: 0.1em; }
+.alert__title { font-weight: var(--fw-strong); }
+.alert__body > * + * { margin-block-start: var(--space-tight); }
+.alert--info { background: var(--c-slate-tint); border-color: var(--c-slate); }
+.alert--info > .icon { color: var(--c-slate); }
+.alert--success { background: var(--c-leaf-tint); border-color: var(--c-leaf); }
+.alert--success > .icon { color: var(--c-leaf); }
+.alert--warning { background: var(--c-laterite-tint); border-color: var(--c-laterite); }
+.alert--warning > .icon { color: var(--c-laterite); }
+.alert--error { background: var(--c-brick-tint); border-color: var(--c-brick); }
+.alert--error > .icon { color: var(--c-brick); }
+
+.error-summary { margin-block: var(--space-loose) 0; }
+.error-summary__title {
+  font-family: var(--font-head);
+  font-size: calc(var(--fs-heading) * var(--k-head));
+  font-weight: var(--fw-strong);
+  line-height: var(--lh-heading);
+}
+.error-summary__list { list-style: none; margin-block-start: var(--space-tight); }
+.error-summary__list li + li { margin-block-start: var(--space-tight); }
+.error-summary__list a { color: var(--c-brick); font-weight: var(--fw-strong); }
+
+/* === Section 14: Status glyphs, badges and flags === */
+/* The ladder glyph (16 px) is the shape of every status: the steps filled
+   show how far the booking has climbed; a step that drops below the line
+   shows it left the ladder (brief 6.2). */
+.glyph {
+  width: var(--icon-sm);
+  height: var(--icon-sm);
+  flex: none;
+  fill: currentColor;
+  stroke: currentColor;
+  stroke-width: 0;   /* outlined steps set their own 1 px stroke */
+}
+.glyph--submitted { color: var(--c-brand); }
+.glyph--proposed { color: var(--c-slate); }
+.glyph--attention { color: var(--c-laterite); }
+.glyph--confirmed,
+.glyph--completed { color: var(--c-leaf); }
+.glyph--declined,
+.glyph--noshow { color: var(--c-brick); }
+.glyph--cancelled { color: var(--c-ink-2); }
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gap-icon);
+  padding: 3px var(--space-tight) 3px 7px;
+  border-inline-start: var(--border-rule) solid currentColor;
+  border-radius: var(--radius);
+  font-size: calc(var(--fs-small) * var(--k-text));
+  font-weight: var(--fw-strong);
+  line-height: 1.3;
+  white-space: nowrap;
+}
+.badge__word { color: var(--c-ink); }
+.badge--submitted { color: var(--c-brand); background: var(--c-selected); }
+.badge--proposed { color: var(--c-slate); background: var(--c-slate-tint); }
+.badge--attention { color: var(--c-laterite); background: var(--c-laterite-tint); }
+.badge--confirmed,
+.badge--completed { color: var(--c-leaf); background: var(--c-leaf-tint); }
+.badge--declined,
+.badge--noshow { color: var(--c-brick); background: var(--c-brick-tint); }
+.badge--cancelled { color: var(--c-ink-2); background: var(--c-neutral-tint); }
+.badge--fill { transition: background-color var(--motion-fill); }
+
+/* Flags: italic words with a small icon, no box (brief 6.2). */
+.flag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-hair);
+  color: var(--c-ink-2);
+  font-style: italic;
+  font-size: calc(var(--fs-small) * var(--k-text));
+  white-space: nowrap;
+}
+.flag:lang(si) { font-style: normal; }
+.flags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-hair) var(--space-snug);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* === Section 15: The step ladder (signature) === */
+/* Four rising steps, Submitted, Proposed, Confirmed, Completed, drawn from
+   plain rectangles (the crest's stepped top, not traced). */
+.ladder {
+  --ladder-unit: 12px;
+  --ladder-fill: var(--c-brand);
+  --ladder-todo: var(--c-edge);
+  --ladder-line: var(--c-ink);
+  --ladder-label: var(--c-ink);
+  --ladder-label-todo: var(--c-ink-2);
+  display: grid;
+  grid-auto-columns: minmax(0, 1fr);
+  grid-auto-flow: column;
+  /* The steps touch, so they read as one staircase (the crest's stepped
+     top), not as separate bars. */
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ladder__step {
+  display: grid;
+  grid-template-rows: calc(var(--ladder-unit) * 4 + 2px) var(--ladder-unit) auto;
+  align-items: end;
+}
+/* The block of each step; its height is set by --rise (1 to 4). */
+.ladder__block {
+  display: block;
+  height: calc(var(--ladder-unit) * var(--rise, 1) + 2px);
+  border: var(--border-base) solid var(--ladder-todo);
+  border-bottom: 0;
+  background: var(--c-surface);
+  transform-origin: bottom;
+}
+/* Neighbouring steps share one edge. */
+.ladder__step + .ladder__step .ladder__block { margin-inline-start: calc(var(--border-base) * -1); }
+.ladder__label { padding-inline-end: var(--space-hair); }
+.ladder--on-band .ladder__block { background: transparent; }
+/* The line the steps stand on. */
+.ladder__step::after {
+  content: "";
+  grid-row: 1;
+  grid-column: 1;
+  align-self: end;
+  border-bottom: var(--border-base) solid var(--ladder-line);
+}
+.ladder__block { grid-row: 1; grid-column: 1; }
+.ladder__drop { grid-row: 2; grid-column: 1; align-self: start; display: none; }
+.ladder__label {
+  grid-row: 3;
+  align-self: start;
+  padding-block-start: var(--space-tight);
+  color: var(--ladder-label-todo);
+  font-size: calc((var(--fs-small) - 1px) * var(--k-text));
+  line-height: var(--lh-small);
+  overflow-wrap: break-word;
+  hyphens: manual;
+}
+.ladder__label .icon { display: none; }
+
+.ladder__step.is-done .ladder__block,
+.ladder__step.is-current .ladder__block {
+  position: relative;
+  z-index: 1;
+  background: var(--ladder-fill);
+  border-color: var(--ladder-fill);
+}
+.ladder__step.is-done .ladder__label,
+.ladder__step.is-current .ladder__label { color: var(--ladder-label); }
+.ladder__step.is-done .ladder__label .icon { display: inline-block; vertical-align: -3px; }
+.ladder__step.is-current .ladder__label { font-weight: var(--fw-strong); }
+/* The step that is reached now rises into place (200 ms, brief 6.2). */
+.ladder__step.is-rising .ladder__block { animation: ladder-rise var(--motion-fill); }
+@keyframes ladder-rise {
+  from { transform: scaleY(0.15); }
+  to { transform: scaleY(1); }
+}
+
+/* Off the ladder: the step falls below the line and names what happened. */
+.ladder__step.is-dropped .ladder__block {
+  border-style: dashed;
+  border-color: var(--ladder-todo);
+}
+.ladder__step.is-dropped .ladder__drop {
+  display: block;
+  height: var(--ladder-unit);
+  margin-top: 2px;
+  background: var(--drop-colour, var(--c-laterite));
+}
+.ladder__step.is-dropped .ladder__label {
+  color: var(--ladder-label);
+  font-weight: var(--fw-strong);
+}
+.ladder__step.is-dropped.drop--brick { --drop-colour: var(--c-brick); }
+.ladder__step.is-dropped.drop--ink { --drop-colour: var(--c-ink-2); }
+
+.ladder-next {
+  margin-block-start: var(--space-snug);
+}
+
+/* On the band (the day plan in the dashboard rail). */
+.ladder--on-band {
+  --ladder-fill: var(--c-band-note);
+  --ladder-todo: var(--c-band-note);
+  --ladder-line: var(--c-band-note);
+  --ladder-label: var(--c-on-band);
+  --ladder-label-todo: var(--c-band-note);
+  --ladder-unit: 10px;
+}
+.ladder--three .ladder__step { grid-template-rows: calc(var(--ladder-unit) * 3 + 2px) var(--ladder-unit) auto; }
+
+/* === Section 16: Data table === */
+.table-wrap { overflow-x: auto; }
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--c-surface);
+  font-size: calc(var(--fs-small) * var(--k-text) + 1px);
+}
+.table caption {
+  text-align: start;
+  padding-block-end: var(--space-snug);
+  font-family: var(--font-head);
+  font-size: calc(var(--fs-heading) * var(--k-head));
+  font-weight: var(--fw-strong);
+  line-height: var(--lh-heading);
+}
+.table th,
+.table td {
+  padding: var(--control-pad) var(--space-snug);
+  text-align: start;
+  vertical-align: top;
+  border-bottom: var(--border) solid var(--c-rule);
+}
+.table thead th {
+  font-family: var(--font-inscription);
+  font-weight: var(--fw-regular);
+  font-size: var(--fs-caption);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border-bottom: var(--border-base) solid var(--c-ink);
+  white-space: nowrap;
+  vertical-align: bottom;
+}
+.table tbody th { font-weight: var(--fw-strong); }
+.table .is-numeric { text-align: end; }
+.table td.num,
+.table .nowrap { white-space: nowrap; }
+.table tbody tr:hover { background: var(--c-row-hover); }
+.sort {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-hair);
+  min-height: var(--icon);
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+.table__ref {
+  min-height: var(--icon);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--c-brand);
+  font: inherit;
+  font-weight: var(--fw-strong);
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+/* === Section 17: Coordinator navigation === */
+.nav__list {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.nav__link {
+  display: flex;
+  align-items: center;
+  min-height: var(--nav-height);
+  padding: 0 var(--space-snug);
+  color: var(--c-on-band);
+  text-decoration: none;
+  font-size: calc(var(--fs-small) * var(--k-text) + 1px);
+  border-bottom: var(--border-rule) solid transparent;
+  border-top: var(--border-rule) solid transparent;
+}
+.nav__link:visited { color: var(--c-on-band); }
+.nav__link:hover { border-bottom-color: var(--c-band-note); }
+/* Current page: bold, a white bar beneath and aria-current (not colour). */
+.nav__link[aria-current="page"] {
+  font-weight: var(--fw-strong);
+  border-bottom-color: var(--c-on-band);
+}
+
+/* === Section 18: Tiles === */
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-snug);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.tile {
+  display: grid;
+  grid-template-rows: auto auto 1fr;
+  gap: var(--space-tight);
+  height: 100%;
+  padding: var(--space-snug) var(--space-base) var(--space-base);
+  background: var(--c-surface);
+  border: var(--border) solid var(--c-rule);
+  border-top: var(--border-rule) solid var(--tile-rule, var(--c-ink));
+  border-radius: var(--radius);
+  color: var(--c-ink);
+  text-decoration: none;
+}
+.tile:visited { color: var(--c-ink); }
+.tile:hover { border-color: var(--c-edge); border-top-color: var(--tile-rule, var(--c-ink)); }
+.tile__name { display: flex; align-items: center; gap: var(--space-tight); color: var(--c-ink); }
+.tile__count { display: flex; align-items: baseline; gap: var(--space-tight); }
+.tile__detail { color: var(--c-ink-2); font-size: calc(var(--fs-small) * var(--k-text)); }
+.tile--attention { --tile-rule: var(--c-laterite); }
+.tile--attention .tile__name .glyph { color: var(--c-laterite); }
+.tile--proposed { --tile-rule: var(--c-slate); }
+.tile--proposed .tile__name .glyph { color: var(--c-slate); }
+.tile--late { --tile-rule: var(--c-ink-2); }
+.tile--trips { --tile-rule: var(--c-ink); }
+
+/* === Section 19: Day timeline === */
+/* Time runs across (7:00 am to 6:30 pm), vans run down (Marey's principle
+   via research.md 2.2, drawn in this direction's own grammar). Positions
+   come from minutes after 7:00 am, set on each mark as --m, --s and --e. */
+.timeline {
+  --tl-span: 690;                 /* minutes from 7:00 am to 6:30 pm */
+  --tl-head: 120px;               /* width of the van names */
+  --tl-row: 96px;                 /* height of a van row */
+  --tl-block: 40px;               /* height of a booking block */
+  --tl-caption: var(--fs-caption);            /* axis and reference text */
+  position: relative;
+  background: var(--c-surface);
+  border: var(--border) solid var(--c-rule);
+  border-radius: var(--radius);
+  padding: var(--space-snug) var(--space-base) var(--space-base) 0;
+}
+.tl-axis,
+.tl-row {
+  display: grid;
+  grid-template-columns: var(--tl-head) 1fr;
+}
+.tl-axis__track { position: relative; height: 48px; }
+.tl-tick {
+  position: absolute;
+  left: calc(var(--m) / var(--tl-span) * 100%);
+  bottom: var(--space-hair);
+  transform: translateX(-50%);
+  font-size: var(--tl-caption);
+  color: var(--c-ink-2);
+  white-space: nowrap;
+}
+.tl-body { position: relative; }
+.tl-lines {
+  position: absolute;
+  inset: 0 0 0 var(--tl-head);
+  pointer-events: none;
+}
+.tl-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--m) / var(--tl-span) * 100%);
+  border-left: var(--border) solid var(--c-rule);
+}
+/* Edge of the working day (6:00 pm, BRL-06): a solid ink line, labelled. */
+.tl-line--edge { border-left: var(--border-base) solid var(--c-ink); z-index: 2; }
+/* Now (7:05 am, US-22 AC-1): a band line, labelled on the axis. */
+.tl-line--now { border-left: var(--border-base) solid var(--c-band); z-index: 2; }
+.tl-now-label,
+.tl-edge-label {
+  position: absolute;
+  top: 0;
+  left: calc(var(--m) / var(--tl-span) * 100%);
+  padding: 0 var(--gap-icon);
+  font-size: var(--tl-caption);
+  font-weight: var(--fw-strong);
+  line-height: 20px;
+  white-space: nowrap;
+  border-radius: var(--radius);
+}
+.tl-now-label { background: var(--c-band); color: var(--c-on-band); }
+/* "End of hours" sits to the left of its line, inside the timeline. */
+.tl-edge-label { transform: translateX(-100%); border-right: var(--border-base) solid var(--c-ink); border-radius: 0; }
+.tl-row { border-top: var(--border) solid var(--c-rule); }
+.tl-row__head {
+  padding: var(--space-snug) var(--space-snug) var(--space-snug) var(--space-base);
+  font-size: calc(var(--fs-small) * var(--k-text));
+  line-height: 1.35;
+  color: var(--c-ink-2);
+}
+.tl-row__name { display: block; font-weight: var(--fw-strong); font-size: calc(var(--fs-body) * var(--k-text)); color: var(--c-ink); }
+.tl-row__track { position: relative; min-height: var(--tl-row); }
+/* Outside working hours the track shows lime-wash; inside it is white. */
+.tl-after {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--m) / var(--tl-span) * 100%);
+  right: 0;
+  background: var(--c-ground);
+}
+/* Waiting between the legs of one booking (the van is free): a dashed line. */
+.tl-wait {
+  position: absolute;
+  top: calc(var(--space-snug) + var(--tl-block) / 2);
+  left: calc(var(--s) / var(--tl-span) * 100%);
+  width: calc((var(--e) - var(--s)) / var(--tl-span) * 100%);
+  border-top: var(--border-base) dashed var(--c-ink-2);
+}
+/* A booking block: the ladder glyph is its status shape (never colour
+   alone); its reference and flag icons sit just below it. */
+.tl-block {
+  position: absolute;
+  top: var(--space-snug);
+  left: calc(var(--s) / var(--tl-span) * 100%);
+  width: calc((var(--e) - var(--s)) / var(--tl-span) * 100%);
+  min-width: 26px;               /* room for the 16 px glyph on short legs */
+  height: var(--tl-block);
+  display: flex;
+  align-items: center;
+  padding: 0 0 0 var(--space-hair);
+  background: var(--blk-tint);
+  color: var(--c-ink);
+  border: var(--border) solid var(--blk-colour);
+  border-inline-start: var(--border-rule) solid var(--blk-colour);
+  border-radius: var(--radius);
+  font-size: var(--tl-caption);
+  line-height: 1.1;
+  cursor: pointer;
+  z-index: 3;   /* above the now and end-of-hours lines it may cross */
+}
+.tl-block .glyph { color: var(--blk-colour); }
+.tl-block__ref {
+  position: absolute;
+  top: calc(100% + 3px);
+  padding: 0 2px;
+  background: var(--c-surface);   /* stays readable where a line crosses */
+  left: 50%;
+  transform: translateX(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums lining-nums;
+  color: var(--c-ink);
+}
+.tl-block__ref .icon { width: var(--icon-xs); height: var(--icon-xs); color: var(--c-ink-2); }
+/* Wide blocks keep their words inside. */
+.tl-block--wide .tl-block__ref {
+  position: static;
+  transform: none;
+  margin-inline-start: var(--gap-icon);
+  font-weight: var(--fw-strong);
+}
+.tl-block:hover { background: var(--c-surface); }
+.tl-block--proposed { --blk-colour: var(--c-slate); --blk-tint: var(--c-slate-tint); }
+.tl-block--confirmed { --blk-colour: var(--c-leaf); --blk-tint: var(--c-leaf-tint); }
+.tl-block--attention { --blk-colour: var(--c-laterite); --blk-tint: var(--c-laterite-tint); }
+/* Not in the plan yet (a route was found but a coordinator must check it,
+   or not placed at all): a dashed edge, a second signal beside the glyph. */
+.tl-block--tentative { border-style: dashed; border-inline-start-style: dashed; }
+/* The booking open in the detail panel: a heavier ink edge and its
+   reference in bold and underlined (weight and line, not colour). */
+.tl-block[aria-current="true"] {
+  border: var(--border-base) solid var(--c-ink);
+  border-inline-start: var(--border-rule) solid var(--c-ink);
+}
+.tl-block[aria-current="true"] .tl-block__ref { font-weight: var(--fw-strong); text-decoration: underline; text-underline-offset: 2px; }
+/* A shared run: one outline holding the bookings that share it. */
+.tl-run {
+  position: absolute;
+  top: var(--space-hair);
+  height: calc(var(--tl-block) * 2 - 4px);
+  left: calc(var(--s) / var(--tl-span) * 100%);
+  width: calc((var(--e) - var(--s)) / var(--tl-span) * 100%);
+  border: var(--border) solid var(--c-ink-2);
+  border-radius: var(--radius);
+}
+.tl-run .tl-block {
+  height: calc(var(--tl-block) - 8px);
+  min-width: 0;
+  left: calc((var(--bs) - var(--s)) / (var(--e) - var(--s)) * 100%);
+  width: calc((var(--be) - var(--bs)) / (var(--e) - var(--s)) * 100%);
+}
+.tl-run .tl-block:first-of-type { top: 2px; }
+.tl-run .tl-block:nth-of-type(2) { top: calc(var(--tl-block) - 4px); }
+.tl-run__label {
+  position: absolute;
+  top: calc(100% + 3px);
+  left: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-hair);
+  font-size: var(--tl-caption);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+.tl-run__label .icon { width: var(--icon-xs); height: var(--icon-xs); color: var(--c-ink-2); }
+.tl-run:has([aria-current="true"]) .tl-run__label { font-weight: var(--fw-strong); }
+
+.tl-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-tight) var(--space-base);
+  margin: var(--space-snug) 0 0;
+  padding: var(--space-snug) 0 0 var(--space-base);
+  list-style: none;
+  border-top: var(--border) solid var(--c-rule);
+  font-size: calc(var(--fs-small) * var(--k-text));
+}
+.tl-legend li { display: inline-flex; align-items: center; gap: var(--gap-icon); }
+.tl-legend .icon { width: var(--icon-sm); height: var(--icon-sm); }
+.legend-swatch {
+  display: inline-block;
+  width: 28px;
+  height: 14px;
+  border: var(--border) solid var(--c-ink-2);
+  border-inline-start-width: var(--border-rule);
+}
+.legend-swatch--dashed { border-style: dashed; }
+.legend-swatch--wait { height: 0; border: 0; border-top: var(--border-base) dashed var(--c-ink-2); }
+.legend-swatch--now { width: 0; height: 18px; border: 0; border-left: var(--border-base) solid var(--c-band); }
+.legend-swatch--edge { width: 0; height: 18px; border: 0; border-left: var(--border-base) solid var(--c-ink); }
+.legend-swatch--after { background: var(--c-ground); border-style: solid; border-width: 1px; }
+
+/* === Section 20: Detail panel === */
+.panel {
+  background: var(--c-surface);
+  border: var(--border) solid var(--c-rule);
+  border-top: var(--border-rule) solid var(--c-band);
+  border-radius: var(--radius);
+  padding: var(--space-base) var(--space-loose) var(--space-loose);
+}
+.panel.is-entering { animation: panel-in var(--motion-fade); }
+@keyframes panel-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.panel__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-tight) var(--space-snug);
+}
+.panel__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: var(--space-loose);
+  margin-block-start: var(--space-base);
+}
+.facts {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: var(--gap-icon) var(--space-base);
+}
+.facts dt { color: var(--c-ink-2); }
+.facts dd { margin: 0; }
+.explain {
+  margin-block-start: var(--space-base);
+  padding-inline-start: var(--space-snug);
+  border-inline-start: var(--border-base) solid var(--c-rule);
+}
+.explain__lines { list-style: none; margin: var(--space-tight) 0 0; padding: 0; }
+.explain__lines li + li { margin-block-start: 2px; }
+.seats {
+  display: inline-flex;
+  gap: 2px;
+  vertical-align: middle;
+  margin-inline-start: var(--space-tight);
+}
+.seats i {
+  display: block;
+  width: 8px;
+  height: 14px;
+  border: var(--border) solid var(--c-ink-2);
+}
+.seats i.is-taken { background: var(--c-ink); border-color: var(--c-ink); }
+.panel__ladder { max-width: 30rem; margin-block: var(--space-base) var(--space-tight); }
+.run-table td:nth-child(3) { white-space: nowrap; }
+.run-table caption { font-size: calc(var(--fs-body) * var(--k-text) + 1px); }
+.audit {
+  margin-block-start: var(--space-base);
+  color: var(--c-ink-2);
+  font-size: calc(var(--fs-small) * var(--k-text));
+}
+
+/* === Section 21: Dialog === */
+/* The backdrop is the band itself, solid: no transparency over content
+   (brief 3.2); the dialog is the lit opening in it. */
+.dialog {
+  max-width: 34rem;
+  width: calc(100% - 2 * var(--page-margin));
+  padding: var(--space-loose);
+  border: 0;
+  border-top: var(--rule-heavy) solid var(--c-brand);
+  border-radius: var(--radius);
+  background: var(--c-surface);
+  color: var(--c-ink);
+}
+.dialog::backdrop { background: var(--c-band); }
+.dialog__text { margin-block-start: var(--space-snug); }
+.dialog__actions { margin-block-start: var(--space-base); }
+
+/* === Section 22: Toast (status with Undo) === */
+.toast {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-tight) var(--space-snug);
+  padding: var(--space-tight) var(--space-tight) var(--space-tight) var(--space-snug);
+  background: var(--c-surface);
+  border: var(--border) solid var(--c-edge);
+  border-inline-start: var(--border-rule) solid var(--c-leaf);
+  border-radius: var(--radius);
+}
+.toast > .icon { color: var(--c-leaf); }
+.toast { color: var(--c-ink); }
+.band .toast :focus-visible { outline-color: var(--c-focus); }
+.toast__text { flex: 1 1 12rem; }
+
+
+/* === Section 23: Driver stops === */
+/* Each stop reads top to bottom: its time first (the next thing a driver
+   looks for), then the place, what to do, who to call, and the actions. */
+.stops { list-style: none; margin: 0; padding: 0; }
+.stop {
+  padding-block: var(--space-base);
+  border-top: var(--border) solid var(--c-rule);
+}
+.stop__time {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 var(--space-tight);
+  font-family: var(--font-head);
+  font-weight: var(--fw-strong);
+  font-size: calc(var(--fs-heading) * var(--k-text));
+  line-height: 1.25;
+}
+.stop__time small {
+  font-size: calc(var(--fs-small) * var(--k-text));
+  font-weight: var(--fw-regular);
+  color: var(--c-ink-2);
+}
+.stop__place { font-weight: var(--fw-strong); font-size: calc(var(--fs-body) * var(--k-text)); }
+.stop__body { margin-block-start: var(--space-hair); }
+.stop__body > * + * { margin-block-start: var(--gap-icon); }
+.stop__what { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-hair) var(--space-tight); }
+.stop__what .icon { color: var(--c-ink); }
+/* Keep "1 passenger" and phone numbers whole. */
+.pax { display: inline-flex; align-items: center; gap: var(--space-hair); white-space: nowrap; }
+.contact .num { white-space: nowrap; }
+.stop__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-snug);
+  margin-block-start: var(--space-snug);
+}
+.stop__actions .btn {
+  min-height: var(--target);
+  flex: 1 1 auto;
+  padding-inline: var(--space-snug);
+}
+/* The next stop: one action per row, Done the largest (brief 5.4). */
+.next-stop .stop__actions .btn { flex-basis: 100%; }
+.next-stop .stop__actions .btn--done { min-height: var(--target-large); }
+.stop.is-done { padding-block: var(--space-snug); }
+.stop.is-done .stop__time { font-size: calc(var(--fs-body) * var(--k-text)); }
+.stop__done {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gap-icon);
+  font-weight: var(--fw-strong);
+  color: var(--c-leaf);
+}
+.stop__done--noshow { color: var(--c-brick); }
+.stop__done span { color: var(--c-ink); }
+.contact {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--gap-icon) var(--space-snug);
+}
+.call-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gap-icon);
+  min-height: var(--target-min);
+  padding: 0 var(--space-snug);
+  border: var(--border-base) solid var(--c-brand);
+  border-radius: var(--radius);
+  font-weight: var(--fw-strong);
+  text-decoration: none;
+}
+.call-link:hover { background: var(--c-selected); }
+.nav-note:empty { display: none; }
+.nav-note { margin-block-start: var(--space-tight); color: var(--c-ink); }
+.confirm-box {
+  margin-block-start: var(--space-snug);
+  padding: var(--space-snug);
+  background: var(--c-brick-tint);
+  border-inline-start: var(--border-rule) solid var(--c-brick);
+}
+.confirm-box p { font-weight: var(--fw-strong); }
+.confirm-box .btn { flex-basis: 100%; }
+
+/* === Section 24: Prototype controls === */
+/* Deliberately plain (system font, dashed grey) so it is not the design;
+   its sizes are set here on purpose, outside the direction's tokens. */
+.proto {
+  margin: var(--space-room) auto 0;
+  padding: 12px 16px 16px;
+  max-width: var(--phone-column);
+  border: 2px dashed var(--c-proto-edge);
+  background: var(--c-surface);
+  color: var(--c-proto-ink);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 14px;
+  line-height: 1.4;
+  font-style: normal;
+}
+.proto--wide { max-width: none; margin-inline: var(--space-loose); }
+.proto h2 { font-size: 14px; font-weight: 700; margin-bottom: 8px; }
+.proto__buttons { display: flex; flex-wrap: wrap; gap: 8px; }
+.proto button {
+  min-height: 44px;
+  padding: 6px 12px;
+  border: 1px solid var(--c-proto-button-edge);
+  border-radius: 3px;
+  background: var(--c-proto-button);
+  color: var(--c-proto-ink);
+  font: inherit;
+  cursor: pointer;
+}
+.proto button:focus-visible { outline: 3px solid var(--c-proto-ink); outline-offset: 2px; }
+
+/* === Section 25: Utilities === */
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+.stack > * + * { margin-block-start: var(--space-snug); }
+.mt-0 { margin-block-start: 0 !important; }
+.mt-tight { margin-block-start: var(--space-tight); }
+.mt-snug { margin-block-start: var(--space-snug); }
+.mt-base { margin-block-start: var(--space-base); }
+.mt-loose { margin-block-start: var(--space-loose); }
+.pt-snug { padding-block-start: var(--space-snug); }
+.plain-list { list-style: none; margin: 0; padding: 0; }
+.bullets { padding-inline-start: 1.2em; }
+.measure { max-width: 40rem; }
+/* Specimen helper: shows the focus state without focusing (index.html). */
+.is-focus { outline: var(--focus-width) solid var(--c-focus); outline-offset: var(--focus-offset); }
+.stack-tight > * + * { margin-block-start: var(--space-tight); }
+.inline { display: inline-flex; align-items: center; gap: var(--gap-icon); }
+.js-only { display: none; }
+.has-js .js-only { display: revert; }
+.has-js .no-js-only { display: none; }
+
+/* === Section 26: Forced colours (Windows contrast themes) === */
+@media (forced-colors: active) {
+  .radio,
+  .check { appearance: auto; -webkit-appearance: auto; box-shadow: none; }
+  .badge,
+  .alert,
+  .tl-block,
+  .tile { border: 1px solid CanvasText; }
+  .ladder__step.is-done .ladder__block,
+  .ladder__step.is-current .ladder__block,
+  .ladder__step.is-dropped .ladder__drop { background: CanvasText; }
+  .seats i.is-taken { background: CanvasText; }
+}
+
+/* === Section 27: Reduced motion === */
+/* Brief 3.7: no movement at all, only instant changes. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
