@@ -26,6 +26,7 @@ their code.
   day, a full van, the safety buffer to the minute (BRL-13, BRL-14, BRL-02,
   BRL-06).
 - **Time** is frozen in tests, in `Asia/Colombo`.
+- Document tests as "Code documentation" in `CLAUDE.md` requires.
 - **Roles and links.** Each role sees and does only what FR-51 allows; an
   altered self-service or driver link shows no booking data (US-32 AC-4,
   US-52 AC-4).

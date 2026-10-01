@@ -39,8 +39,8 @@ and the routing ADRs in `docs/adr/`.
   reason, and every rejected van the rule that blocked it (FR-19, US-16).
 - **Performance** (NFR-05): one request planned in 5 seconds or less, Optimise
   day in 60 seconds or less, at 20 vans and 200 stops a day. Measure it.
-- Cite the rule ID wherever code enforces a rule. Write tests for each rule,
-  including the worked example in section 8.
+- Document your code as "Code documentation" in `CLAUDE.md` requires. Write
+  tests for each rule, including the worked example in section 8.
 
 ## Skills
 

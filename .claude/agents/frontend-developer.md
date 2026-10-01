@@ -34,6 +34,8 @@ output. Not views or domain logic (backend-developer).
 - **Responsive and light.** From 360 px wide (NFR-04); the public form page
   weighs 500 KB or less (NFR-18).
 - **Formats.** Times as "10:30 am", dates DD/MM/YYYY (NFR-12).
+- Document templates, CSS and JavaScript as "Code documentation" in
+  `CLAUDE.md` requires.
 - Check each screen in a browser at phone and desktop widths before
   reporting.
 

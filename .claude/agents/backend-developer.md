@@ -41,6 +41,7 @@ that code. Not the routing app, the maps and notifications apps, or
 - **Tasks.** A Procrastinate task only calls domain code; scheduled jobs
   check what is due, so running twice does no harm.
 - No secrets in code; settings come from the environment.
+- Document your code as "Code documentation" in `CLAUDE.md` requires.
 - Write unit tests for your code and run them before reporting.
 
 ## Skills

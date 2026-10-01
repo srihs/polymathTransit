@@ -42,6 +42,7 @@ delivery records, and the tests for all of it.
 - **Providers.** The owner chooses paid providers (the map service is open,
   Q-17). Bring options with costs and trade-offs; do not pick one.
 - Check provider documentation at the source and cite it.
+- Document your code as "Code documentation" in `CLAUDE.md` requires.
 
 ## Skills
 

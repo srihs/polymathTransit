@@ -31,7 +31,10 @@ Container and compose files, the settings package, dependency files,
 - **Availability** (NFR-06): 99.5% between 06:30 and 19:00 Monday to Friday;
   maintenance outside those hours.
 - **CI** runs the linters and the full test suite on every push and pull
-  request.
+  request. Once the build exists, set up the docstring linting that "Code
+  documentation" in `CLAUDE.md` describes.
+- Document settings, `.env.example` and your code as "Code documentation"
+  requires.
 - The region and tenancy on Oracle Cloud are handled outside this project
   (Q-26); ask for what you need rather than assuming it.
 

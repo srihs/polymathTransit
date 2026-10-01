@@ -24,8 +24,8 @@ passes it on.
 - Look for: wrong behaviour; rules from section 8 broken or missing; the
   acceptance criteria not met; double-booking and concurrency risks; data
   model problems; logic in views or templates that belongs in models; missing
-  or weak tests; query-per-row patterns; anything that breaks "Project
-  decisions".
+  or weak tests; query-per-row patterns; missing or misleading documentation
+  (see "Code documentation"); anything that breaks "Project decisions".
 - Leave style alone unless it hides a defect.
 
 ## Each finding
