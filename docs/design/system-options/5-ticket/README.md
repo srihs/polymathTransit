@@ -40,7 +40,9 @@ read in IBM Plex Sans Condensed and Yaldevi.**
   used.
 - **Two languages (FR-65, D-09).** English and Sinhala on the form and the
   driver page; short Sinhala labels can be three times as wide.
-- **Weight (NFR-18).** The form must load in 500 KB or less on slow data.
+- **Weight (NFR-18).** The form must transfer 500,000 bytes or less on a
+  first visit with an empty cache, in English and in Sinhala separately
+  (the method agreed in OQ-02, `docs/requirements/open-questions.md`).
 
 ## 3. Options considered (choices the brief left open)
 
@@ -56,6 +58,7 @@ read in IBM Plex Sans Condensed and Yaldevi.**
 | How the driver's page is headed (review 5.2) | (a) group headings "Next stop" and "Later stops" over the stops; (b) one `h2` per stop | **(b)**. The next stop moves down the list as stops are done and undone, and done stubs stay in place, folded, so group headings would need stubs moved between lists. One `h2` per stop keeps the levels in order in every state, with or without JavaScript. The next stop's `h2` begins "Next stop:" for screen readers (from `driver.next`), so it can be found in the headings list, and the visible strip title is hidden from them so it is not read twice. No new string, no visual change. |
 | How the "Show as list" toggle shows its state (review 5.3) | (a) one fixed label with `aria-pressed`; (b) a label that changes ("Show as timeline") without `aria-pressed` | **(a)**. The brief names it the "Show as list" toggle (3.3, 5.3), and a fixed name is easier to find and to say to voice control. Changing the label as well as the pressed state made a screen reader say "Show as timeline, pressed", as if the timeline were showing. Pressed is shown the way the current language is: a tick in place of the list icon, the purple tint (brand on it 7.46:1) and a 3 px bar, so it reads without colour. |
 | How a button shows it is busy (review 5.5) | (a) a spinner that turns; (b) a static mark with the words "Sending…" | **(b)**. The busy state is the system's busy component, so it must not depend on motion: a spinner that stops after a set time looks finished while the wait goes on, and one that keeps turning breaks the motion rule (brief 3.7). The label becomes "Sending…" ("යවමින්…", draft for D-09) and a static three-dot mark, drawn with the icon set's round ends, stands before it. A frozen ring was rejected because it reads as "stuck"; the hourglass already means Proposed. The button keeps its colours, so busy is never mistaken for disabled, and `aria-disabled` (not `disabled`) keeps focus on it so a screen reader hears the new label. |
+| How the dashboard's four counts are drawn (review C6) | (a) stat cards: icon, label, big number, coloured top rule; (b) count sentences; (c) small tickets in the plan's grammar | **(c)**. The counts sit beside the plan ticket, so they are tickets too, and the signature carries through the dashboard. Each has the same fixed places: the name and its icon on the strip, the count at the strip's right in the stencil (where a ticket prints its reference, because it is the part said aloud), one "Bookings" slot, and "Open list" at the foot. The strip stays unfilled with its dashed foot: purple means Confirmed only, so a count ticket never turns purple, even after the plan is approved. Needs attention has a 2 px dashed edge in its colour, as its tickets have on the timeline. The coloured top rule is gone. Order, wording, counts, the links to the filtered lists and the refreshing counts (`data-count`, US-22 AC-4) are unchanged, except that "Cancelled and declined not counted" now reads "All except cancelled and declined" under "Bookings". |
 | How strong Done is on later stops | Every stop's Done filled purple, or only the next | Only the **next** stop's Done is filled; later stops have an outline Done. One strong button per screen, and the wrong stop is less likely to be marked. |
 | How quiet No-show is | Red outline, or quieter | Thin grey edge, regular weight, red only in the word and icon: always quieter than Done (brief 5.4). |
 | Choice layout at 320 px | Always two columns, or let them fall to one | Two columns while each is at least 140 px, one column below: the Sinhala "Thursday" (බ්‍රහස්පතින්දා) cannot wrap and would hit the edge. |
@@ -111,11 +114,27 @@ From [research.md](../research.md) 2.3 and 3, principles only:
 
 ## 6. Trade-offs (what this direction is worse at)
 
-- **Weight.** The request page loads 409.1 KB with the Sinhala font
-  (387.6 KB in English): inside the 500 KB budget but above the 300 KB aim.
-  Yaldevi's Sinhala file is 99 KB, Stick No Bills adds 10 to 22 KB, and the
-  one shared, fully documented `script.js` is 86 KB. A production build
-  would split the script per page and minify it.
+- **Weight.** Measured on 01/10/2026 after review C6 by the method agreed
+  in OQ-02: bytes transferred on a first visit with an empty cache, every
+  resource loaded before the person does anything, English and Sinhala
+  separately, against 500,000 bytes. Headless Edge 154 at 360 px; Google
+  Fonts counted as transferred (with compression and headers); local files
+  counted at full size on disk, because `file://` has no transfer, so these
+  are upper bounds.
+
+  | Page | English | Sinhala | Spare under 500,000 (Sinhala) |
+  |---|---:|---:|---:|
+  | `request.html` | 402,784 | 425,454 | 74,546 |
+  | `driver.html` | 393,848 | 416,522 | 83,478 |
+
+  The largest items are Yaldevi (102,225 bytes, loaded on both languages'
+  pages because the language switch is written in Sinhala, plus a 22,677
+  byte subset on Sinhala pages), the one shared, fully documented
+  `script.js` (91,191) and `request.html` (70,254). Stick No Bills (10,880)
+  loads on the driver page; on the request page it loads only once the
+  confirmation shows. A production build would split the script per page,
+  minify it and compress everything, which leaves more room for the CSRF
+  field, real place lists and the address lookup.
 - **Length on the driver's phone.** Every later stop keeps Navigate, Done
   and No-show (brief 5.4), so the route is long to scroll. The next stop is
   clearly the biggest thing, but stops far ahead could be lighter.
@@ -169,7 +188,7 @@ All calculated with the WCAG 2.2 formula (also listed on index.html).
 | `#3D4044` on white / on desk | 10.42:1 / 9.28:1 | Secondary text, punched holes |
 | `#63666B` on `#EEF0F3` | 5.05:1 | Closed date, disabled controls |
 | `#7D8086` on `#F7E6FB` | 3.33:1 | Option edge on a selected ground (UI) |
-| Status colours on the desk `#F3F1F4` | ok 6.07, attention 4.87, danger 6.38, info 7.64 | Stamps and tile labels on the desk |
+| Status colours on the desk `#F3F1F4` | ok 6.07, attention 4.87, danger 6.38, info 7.64 | Stamps on the desk; the dashed edge of the Needs attention count ticket (attention, 4.87) |
 | White on `#000000` | 21:1 | "Now 7:05 am" label |
 | `#DCDEE1` on white | 1.35:1 | Hairlines only (never a control's edge) |
 

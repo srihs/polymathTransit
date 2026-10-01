@@ -138,28 +138,33 @@
       <div class="plan__done" id="plan-done" role="status"></div>
     </article>
 
-    <a class="tile tile--attention" href="#list-view" data-filter="attention">
-      <span class="tile__label"><svg class="icon icon--20" aria-hidden="true"><use href="#i-warning"/></svg>Needs attention</span>
-      <span class="tile__count num" data-count="attention">2</span>
-      <span class="tile__refs">PT-2026-0147, PT-2026-0149</span>
+    <!-- Count tickets (review C6). Each count is a small ticket, drawn like
+         the plan beside it, with every fact in a fixed place: the name on
+         the strip with its icon, the count at the strip's right in the
+         stencil (the part said aloud), the bookings in one slot, and "Open
+         list" at the foot. The strip is never filled: purple means
+         Confirmed only. Needs attention has a dashed edge, as on the
+         timeline. The whole ticket is one link that opens its filtered
+         list (US-22 AC-1); data-count marks the counts that refresh
+         (US-22 AC-4). -->
+    <a class="tile ticket tile--attention" href="#list-view" data-filter="attention">
+      <span class="ticket__strip tile__strip"><span class="tile__label"><svg class="icon icon--20" aria-hidden="true"><use href="#i-warning"/></svg>Needs attention</span><span class="tile__count num" data-count="attention">2</span></span>
+      <span class="tile__slot"><span class="slot__label">Bookings</span><span class="slot__value tile__refs">PT-2026-0147, PT-2026-0149</span></span>
       <span class="tile__go">Open list<svg class="icon icon--16" aria-hidden="true"><use href="#i-chevron"/></svg></span>
     </a>
-    <a class="tile tile--proposed" href="#list-view" data-filter="proposed">
-      <span class="tile__label"><svg class="icon icon--20" aria-hidden="true"><use href="#i-hourglass"/></svg>Awaiting approval</span>
-      <span class="tile__count num" data-count="proposed">7</span>
-      <span class="tile__refs" data-count-refs="proposed">PT-2026-0119, 0140, 0142, 0145, 0150, 0151, 0153</span>
+    <a class="tile ticket tile--proposed" href="#list-view" data-filter="proposed">
+      <span class="ticket__strip tile__strip"><span class="tile__label"><svg class="icon icon--20" aria-hidden="true"><use href="#i-hourglass"/></svg>Awaiting approval</span><span class="tile__count num" data-count="proposed">7</span></span>
+      <span class="tile__slot"><span class="slot__label">Bookings</span><span class="slot__value tile__refs" data-count-refs="proposed">PT-2026-0119, 0140, 0142, 0145, 0150, 0151, 0153</span></span>
       <span class="tile__go">Open list<svg class="icon icon--16" aria-hidden="true"><use href="#i-chevron"/></svg></span>
     </a>
-    <a class="tile tile--ink" href="#list-view" data-filter="late">
-      <span class="tile__label"><svg class="icon icon--20" aria-hidden="true"><use href="#i-late"/></svg>Late exceptions</span>
-      <span class="tile__count num">1</span>
-      <span class="tile__refs">PT-2026-0153</span>
+    <a class="tile ticket tile--ink" href="#list-view" data-filter="late">
+      <span class="ticket__strip tile__strip"><span class="tile__label"><svg class="icon icon--20" aria-hidden="true"><use href="#i-late"/></svg>Late exceptions</span><span class="tile__count num">1</span></span>
+      <span class="tile__slot"><span class="slot__label">Bookings</span><span class="slot__value tile__refs">PT-2026-0153</span></span>
       <span class="tile__go">Open list<svg class="icon icon--16" aria-hidden="true"><use href="#i-chevron"/></svg></span>
     </a>
-    <a class="tile tile--ink" href="#list-view" data-filter="all">
-      <span class="tile__label"><svg class="icon icon--20" aria-hidden="true"><use href="#i-van"/></svg>Today's trips</span>
-      <span class="tile__count num">10</span>
-      <span class="tile__refs">Cancelled and declined not counted</span>
+    <a class="tile ticket tile--ink" href="#list-view" data-filter="all">
+      <span class="ticket__strip tile__strip"><span class="tile__label"><svg class="icon icon--20" aria-hidden="true"><use href="#i-van"/></svg>Today's trips</span><span class="tile__count num">10</span></span>
+      <span class="tile__slot"><span class="slot__label">Bookings</span><span class="slot__value tile__refs">All except cancelled and declined</span></span>
       <span class="tile__go">Open list<svg class="icon icon--16" aria-hidden="true"><use href="#i-chevron"/></svg></span>
     </a>
   </section>

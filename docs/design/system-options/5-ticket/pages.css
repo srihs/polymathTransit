@@ -468,16 +468,16 @@
   margin: 0 var(--space-3) var(--space-3);
 }
 
+/* Count tickets (review C6): the four counts beside the plan are small
+   tickets in the same grammar as the plan, not stat cards. Fixed places:
+   name and icon on the strip, the count at the strip's right in the
+   stencil, the bookings in one slot, "Open list" at the foot. The strip
+   keeps its unfilled, dashed foot: purple means Confirmed only (brief 6.5).
+   Status is told by the word and its icon; colour only repeats it. No
+   coloured top rule (the stat-card mark the review found). */
 .tile {
-  position: relative;
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
-  padding: var(--space-3) var(--space-3) var(--space-3);
-  background: var(--c-ticket);
-  border: var(--border-edge) solid var(--c-ticket-edge);
-  border-top-width: var(--bar-nav);
-  border-radius: var(--radius-ticket);
   color: var(--c-value);
   text-decoration: none;
 }
@@ -491,50 +491,57 @@
   color: var(--c-value);
 }
 
+.tile__strip {
+  flex-wrap: nowrap;
+  align-items: center;
+}
+
+/* Needs attention: a dashed edge, as its tickets have on the timeline
+   ("not in the plan yet"), so it reads without colour. */
 .tile--attention {
-  border-top-color: var(--c-attention);
+  border: var(--border-stamp) dashed var(--c-attention);
 }
 
 .tile--attention .tile__label {
   color: var(--c-attention);
 }
 
-.tile--proposed {
-  border-top-color: var(--c-info);
-}
-
 .tile--proposed .tile__label {
   color: var(--c-info);
-}
-
-.tile--ink {
-  border-top-color: var(--c-value);
 }
 
 .tile__label {
   display: flex;
   align-items: center;
   gap: var(--space-2);
+  min-width: 0;
   font-weight: var(--weight-strong);
   line-height: 1.25;
 }
 
+/* The count is what is said aloud, so it is printed like a reference. */
 .tile__count {
+  flex: none;
   font-size: var(--fs-count);
   line-height: 1;
 }
 
+.tile__slot {
+  display: block;
+  flex: 1;
+  padding: var(--space-2) var(--space-3) var(--space-3);
+}
+
 .tile__refs {
-  color: var(--c-text-strong-2);
-  font-size: calc(var(--fs-small) * var(--script-factor));
-  line-height: 1.35;
+  font-variant-numeric: tabular-nums;
 }
 
 .tile__go {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   gap: var(--space-1);
-  margin-top: auto;
+  padding: var(--space-2) var(--space-3) var(--space-3);
+  border-top: var(--border-edge) solid var(--c-rule);
   color: var(--c-brand);
   font-weight: var(--weight-strong);
   text-decoration: underline;
