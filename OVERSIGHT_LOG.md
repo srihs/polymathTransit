@@ -13,3 +13,4 @@ authoritative.
 | Date | Commit | Type | Stage | Source | What looked right but was not | What was done | Durable |
 |------|--------|------|-------|--------|-------------------------------|---------------|---------|
 | 2026-10-01 | cbf0357 | correctness | in-loop | agent-critique | The routing-engineer's Skills table mapped performance tuning to performance-profiling, an Apple-platform skill that cannot serve a Python routing engine. | Removed the row and left a line telling the agent to check the installed skills list for one that fits. | yes |
+| 2026-10-01 | 0f2791d | design | in-loop | agent-critique | The CLAUDE.md rule that every JavaScript function has JSDoc did not say whether inline callbacks count, so the five builders applied it differently. | Added the owner's ruling on callbacks to the Code documentation section of CLAUDE.md. | yes |
