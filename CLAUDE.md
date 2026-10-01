@@ -110,7 +110,13 @@ Properly documented means:
   its purpose, the context it expects and the blocks it defines or fills.
 - **CSS and JavaScript.** Every file starts with a header comment saying what
   it is for, and marks its sections. Every JavaScript function has a JSDoc
-  comment.
+  comment. The owner ruled on callbacks on 2026-10-01 (review finding C4 in
+  `docs/reviews/2026-10-01-design-system-options.md`): JSDoc is required for
+  every named function, for every function stored in a variable or object
+  property, and for any callback that holds a business rule or more than about
+  three statements. Short anonymous callbacks passed straight to `forEach`,
+  `map`, `addEventListener` and similar are exempt; the documented function
+  that contains them covers them.
 - **Tests.** Every test has a docstring naming the acceptance criterion
   (TC-US-nn-n) or rule it pins.
 - **Settings** are commented, and every variable in `.env.example` says what
