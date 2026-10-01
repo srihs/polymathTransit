@@ -64,7 +64,12 @@ C4 (two undocumented function-valued properties) and C5 (no footer landmark on
   saves about 109 KB. Separately, ask the requirements-analyst to state the
   unit NFR-18 means (1,000 or 1,024 bytes), so every page is measured the
   same way.
-- **Owner's decision:** pending
+- **Owner's decision:** Overrule – right but not worth acting on (direction
+  not chosen). Direction 5, Ticket, is the base; direction 2 is kept as a
+  record and will not be developed further, so its font weight will not be
+  reduced. The question this finding raises, which unit NFR-18's 500 KB means
+  (1,000 or 1,024 bytes), still goes to the requirements-analyst, because it
+  decides how Ticket's pages are measured too. (2026-10-01)
 
 ### 2.2 Two swatch labels on the foundations page fail text contrast
 
@@ -79,7 +84,9 @@ C4 (two undocumented function-valued properties) and C5 (no footer landmark on
 - **Confidence:** verified (computed from rendered styles).
 - **Suggested direction:** Put the label below the chip, on the page ground, as
   the other swatches do.
-- **Owner's decision:** pending
+- **Owner's decision:** Overrule – right but not worth acting on (direction
+  not chosen). Direction 2's foundations page is kept as a record and will not
+  be developed further. (2026-10-01)
 
 Also applies: C1, C3, C4 (one undocumented function-valued property), C5
 (no footer landmark on `request.html`, `dashboard.html` or `driver.html`).
@@ -109,7 +116,9 @@ Also applies: C1, C3, C4 (one undocumented function-valued property), C5
   union).
 - **Suggested direction:** Make the whole row the label, with padding that
   gives at least 44 px of height. Keep the 32 px circle as the drawing.
-- **Owner's decision:** pending
+- **Owner's decision:** Overrule – right but not worth acting on (direction
+  not chosen). Direction 3 is kept as a record and will not be developed
+  further. (2026-10-01)
 
 ### 3.2 The return leg of PT-2026-0142 is announced as "shared"
 
@@ -127,7 +136,9 @@ Also applies: C1, C3, C4 (one undocumented function-valued property), C5
 - **Confidence:** verified (accessible names read from the DOM).
 - **Suggested direction:** Hold flags per leg, or leave "shared" off blocks
   that are not part of a shared run.
-- **Owner's decision:** pending
+- **Owner's decision:** Overrule – right but not worth acting on (direction
+  not chosen). Direction 3 is kept as a record and will not be developed
+  further. (2026-10-01)
 
 Also applies: C1, C3 (the skip link stays English in Sinhala), C6.
 Direction 3 already gives its inline callbacks their own JSDoc, so C4 hardly
@@ -156,7 +167,9 @@ touches it.
 - **Confidence:** verified (name read before and after Approve).
 - **Suggested direction:** Put each booking's own status in the name, for
   example "PT-2026-0140 Proposed, PT-2026-0142 Confirmed".
-- **Owner's decision:** pending
+- **Owner's decision:** Overrule – right but not worth acting on (direction
+  not chosen). Direction 4 is kept as a record and will not be developed
+  further. (2026-10-01)
 
 ### 4.2 Board times still read "7: 10 am" and "10: 00 am"
 
@@ -177,7 +190,10 @@ touches it.
 - **Suggested direction:** Tighten the colon cell further (about 0.3 em on each
   side) or set the colon in B612 rather than B612 Mono. Then correct the
   README.
-- **Owner's decision:** pending
+- **Owner's decision:** Overrule – right but not worth acting on (direction
+  not chosen). Direction 4 is kept as a record and will not be developed
+  further, so neither the colon nor its README will be corrected.
+  (2026-10-01)
 
 ### 4.3 Passenger counts on the driver page are an icon and a number only
 
@@ -192,7 +208,10 @@ touches it.
   ("icons always sit next to words").
 - **Confidence:** verified.
 - **Suggested direction:** Show the word, with a singular form (see C3).
-- **Owner's decision:** pending
+- **Owner's decision:** Overrule – right but not worth acting on (direction
+  not chosen). Direction 4 is kept as a record and will not be developed
+  further. The singular passenger string itself is covered for Ticket by C3.
+  (2026-10-01)
 
 ### 4.4 The No-show button's edge is 2.62:1 on the next-stop card
 
@@ -209,7 +228,9 @@ touches it.
 - **Confidence:** verified (computed).
 - **Suggested direction:** Use `--c-edge` (grey-450 or darker) on the purple
   card, and report the pair.
-- **Owner's decision:** pending
+- **Owner's decision:** Overrule – right but not worth acting on (direction
+  not chosen). Direction 4 is kept as a record and will not be developed
+  further. (2026-10-01)
 
 Also applies: C1, C3 (skip link and map note stay English in Sinhala), C4
 (14 undocumented `check`/`when` functions in the validation table), C6.
@@ -241,7 +262,9 @@ Also applies: C1, C3 (skip link and map note stay English in Sinhala), C4
   way, give the received stamp a neutral treatment: no Confirmed colour and no
   tick. The brief's wording ("on submit the ticket is issued") contributes;
   the ux-designer should settle it in the brief.
-- **Owner's decision:** pending
+- **Owner's decision:** Accept. Direction 5, Ticket, is the base, and a
+  requester must not be shown the Confirmed mark for a request that is only
+  Submitted. To be fixed in the Ticket design. (2026-10-01)
 
 ### 5.2 The driver page jumps from h1 to h3
 
@@ -256,7 +279,8 @@ Also applies: C1, C3 (skip link and map note stay English in Sinhala), C4
 - **Confidence:** verified.
 - **Suggested direction:** Make "Next stop" and "Later stops" `h2` headings, as
   direction 3 does.
-- **Owner's decision:** pending
+- **Owner's decision:** Accept. Ticket is the base, and its driver page needs
+  headings in order. To be fixed in the Ticket design. (2026-10-01)
 
 ### 5.3 The list toggle changes its label and its pressed state together
 
@@ -271,7 +295,9 @@ Also applies: C1, C3 (skip link and map note stay English in Sinhala), C4
 - **Confidence:** verified.
 - **Suggested direction:** Keep the label "Show as list" with `aria-pressed`,
   as directions 1 to 4 do, or change the label and drop `aria-pressed`.
-- **Owner's decision:** pending
+- **Owner's decision:** Accept. Ticket is the base, and the toggle must not
+  announce a contradictory state. To be fixed in the Ticket design.
+  (2026-10-01)
 
 ### 5.4 Driver: Escape does not dismiss the no-show question, and Undo leaves stale status text
 
@@ -289,7 +315,9 @@ Also applies: C1, C3 (skip link and map note stay English in Sinhala), C4
 - **Confidence:** verified.
 - **Suggested direction:** Handle Escape as "Go back". Clear or replace the
   status text when Undo runs.
-- **Owner's decision:** pending
+- **Owner's decision:** Accept. Ticket is the base, and its driver page must
+  close the no-show question on Escape and clear stale status text on Undo.
+  To be fixed in the Ticket design. (2026-10-01)
 
 ### 5.5 The busy spinner turns for 1.4 seconds
 
@@ -303,7 +331,9 @@ Also applies: C1, C3 (skip link and map note stay English in Sinhala), C4
 - **Requirement or rule:** brief 3.7.
 - **Confidence:** verified (reduced motion turns it off correctly).
 - **Suggested direction:** Use a static busy mark with the word "Sending…".
-- **Owner's decision:** pending
+- **Owner's decision:** Accept. Ticket is the base, and its busy spinner would
+  become the system's busy component. To be fixed in the Ticket design.
+  (2026-10-01)
 
 Also applies: C3 ("transport office" in the footer and the skip link stay
 English in Sinhala; no busy state on the form), C4, C6. Direction 5 is the only
@@ -333,7 +363,10 @@ one that rejects a typed date of today (see C1).
 - **Suggested direction:** Apply the cutoff to typed dates as direction 5 does,
   with the shared `cutoff.today.closed` string. The brief's validation table
   should gain this row.
-- **Owner's decision:** pending
+- **Owner's decision:** Overrule – right but not worth acting on (direction
+  not chosen). The defect is only in directions 1 to 4, which are kept as a
+  record and will not be developed further. Direction 5, Ticket, the chosen
+  base, already applies the cutoff to typed dates. (2026-10-01)
 
 ### C2 Weekend dates are accepted (question for the requirements)
 
@@ -352,7 +385,9 @@ one that rejects a typed date of today (see C1).
   and flag the request for the coordinator, as the out-of-hours warning does.
   (c) Leave it. Recommendation: (b), because it matches how out-of-hours
   times are treated (`hours.warning`) and does not block real exceptions.
-- **Owner's decision:** pending
+- **Owner's decision:** Accept. Ticket accepts weekend dates too, and the
+  requirements do not settle the rule. It goes to the requirements-analyst as
+  a requirements question. (2026-10-01)
 
 ### C3 Shared strings are missing, and builders filled the gaps differently
 
@@ -387,7 +422,8 @@ one that rejects a typed date of today (see C1).
   `busy.sending`, `skip`, and `remark.*`. Every extra Sinhala string in the
   chosen direction then goes onto the D-09 review list. The builders'
   workarounds are sound as stopgaps.
-- **Owner's decision:** pending
+- **Owner's decision:** Accept. The missing shared strings are to be added to
+  the brief, and Ticket then uses them. (2026-10-01)
 
 ### C4 "Every JavaScript function has a JSDoc comment": a ruling is needed for callbacks
 
@@ -416,7 +452,9 @@ one that rejects a typed date of today (see C1).
   process-steward records the ruling in `CLAUDE.md`, and the devops-engineer
   configures the JS lint rule to match. Under this ruling, only the
   function-valued properties listed above need fixing.
-- **Owner's decision:** pending
+- **Owner's decision:** Accept. The ruling recommended above is to be
+  recorded in `CLAUDE.md` (the process-steward's change), and Ticket's
+  script follows it. (2026-10-01)
 
 ### C5 Footer landmark missing on four pages
 
@@ -430,7 +468,10 @@ one that rejects a typed date of today (see C1).
 - **Confidence:** verified.
 - **Suggested direction:** Add the footer, holding the transport office line
   and the prototype links.
-- **Owner's decision:** pending
+- **Owner's decision:** Overrule – right but not worth acting on (direction
+  not chosen). The four pages it names are all in directions 1 and 2, which
+  are kept as a record and will not be developed further. Ticket's pages
+  already have a footer, so Ticket needs no change. (2026-10-01)
 
 ### C6 The owner's "not AI-generated" bar: what the evidence shows
 
@@ -466,7 +507,9 @@ one that rejects a typed date of today (see C1).
 - **Suggested direction:** If tiles matter in the choice, the chosen direction
   should draw them in its own grammar: plates in 1, ladder rail in 2, board
   header cells in 4, small tickets in 5. No change needed otherwise.
-- **Owner's decision:** pending
+- **Owner's decision:** Accept. Ticket's four count tiles are to be reworked
+  as tickets rather than template stat cards, so the direction's signature
+  carries through the dashboard. (2026-10-01)
 
 ### C7 The gallery footer is out of date
 
@@ -480,7 +523,8 @@ one that rejects a typed date of today (see C1).
 - **Confidence:** verified.
 - **Suggested direction:** Remove the sentence or replace it with the build
   date.
-- **Owner's decision:** pending
+- **Owner's decision:** Accept. The gallery footer is to be corrected so it no
+  longer reads as incomplete. (2026-10-01)
 
 ---
 
@@ -488,14 +532,14 @@ one that rejects a typed date of today (see C1).
 
 | # | Deviation | Verdict | Reason | Owner's decision |
 |---|---|---|---|---|
-| D-a | Direction 1 puts "+ Add a stop" on the spine above "Going to" (brief 5.2 says "under it") | Sound | A new stop goes before the destination, so the button sits where the stop will appear (FR-54). Tab order is pick up, add stop, going to, and focus moves to the new stop's place. The behaviour is unchanged, including without JavaScript. | pending |
-| D-b | Direction 2 moves the navigation into a top arm of the band (brief 6.2 puts it in the rail) | Sound | It keeps header and navigation first in reading and focus order (US-22 AC-1), keeps the plan inside `<main>`, and it is still one band. | pending |
-| D-c | Direction 2 puts the driver's Undo in the page flow above the next stop, not as a fixed bar | Sound | A fixed bar could cover the focused button (WCAG 2.4.11). Verified: Undo appears, focus goes to "Next stop", and Undo goes after 10 seconds. | pending |
-| D-d | Direction 5 puts the live ticket above "Send request" under "Check your request" (brief 6.5 says "at the top") | Sound for use, with a side effect | The form now opens on its first question (research.md 4), and the check happens at the moment of sending. But direction 5's signature now sits in the same place, under the same heading (`summary.title`), as direction 3's sentence. The two options look more alike at the point the owner compares them. The README asks the owner (question 1). | pending |
-| D-e | Sinhala strings added beyond brief 4.9 (directions 2, 3, 4) | Sound as drafts | Each is marked for D-09, and none changes a shared string. They must join the D-09 list (C3). | pending |
-| D-f | Missing shared strings reported: "Other places", "Submitted", "Sending…", "seats", the three date remarks | Reports are correct | "Other places" and the remarks are needed now (C3). "Submitted" matters because its absence led to 5.1. "Sending…" is needed in production, not for these prototypes. "seats" appears only on the English-only dashboard, so it needs no Sinhala yet. | pending |
-| D-g | Direction 4's confirmation lists the trip as key-value rows, not a single line | Sound | The content is identical to brief 5.2 (verified in both languages); only the layout differs, which is the point of the comparison. | pending |
-| D-h | Directions 2 and 3 disable today's date natively and show the reason; directions 1, 4 and 5 keep it focusable with `aria-disabled` | Both sound | Brief 5.2 asks for the explanation "if focused". A natively disabled option cannot take focus, so directions 2 and 3 show the reason as visible text, which every user can read. | pending |
+| D-a | Direction 1 puts "+ Add a stop" on the spine above "Going to" (brief 5.2 says "under it") | Sound | A new stop goes before the destination, so the button sits where the stop will appear (FR-54). Tab order is pick up, add stop, going to, and focus moves to the new stop's place. The behaviour is unchanged, including without JavaScript. | No action. Direction 1 is not chosen and will not be developed further. (2026-10-01) |
+| D-b | Direction 2 moves the navigation into a top arm of the band (brief 6.2 puts it in the rail) | Sound | It keeps header and navigation first in reading and focus order (US-22 AC-1), keeps the plan inside `<main>`, and it is still one band. | No action. Direction 2 is not chosen and will not be developed further. (2026-10-01) |
+| D-c | Direction 2 puts the driver's Undo in the page flow above the next stop, not as a fixed bar | Sound | A fixed bar could cover the focused button (WCAG 2.4.11). Verified: Undo appears, focus goes to "Next stop", and Undo goes after 10 seconds. | No action. Direction 2 is not chosen and will not be developed further. (2026-10-01) |
+| D-d | Direction 5 puts the live ticket above "Send request" under "Check your request" (brief 6.5 says "at the top") | Sound for use, with a side effect | The form now opens on its first question (research.md 4), and the check happens at the moment of sending. But direction 5's signature now sits in the same place, under the same heading (`summary.title`), as direction 3's sentence. The two options look more alike at the point the owner compares them. The README asks the owner (question 1). | Accept, as built. Ticket's live ticket stays above "Send request", not at the top of the form; this answers the README's question 1. (2026-10-01) |
+| D-e | Sinhala strings added beyond brief 4.9 (directions 2, 3, 4) | Sound as drafts | Each is marked for D-09, and none changes a shared string. They must join the D-09 list (C3). | Handled through C3 (accepted): the extra Sinhala strings join the D-09 review list. (2026-10-01) |
+| D-f | Missing shared strings reported: "Other places", "Submitted", "Sending…", "seats", the three date remarks | Reports are correct | "Other places" and the remarks are needed now (C3). "Submitted" matters because its absence led to 5.1. "Sending…" is needed in production, not for these prototypes. "seats" appears only on the English-only dashboard, so it needs no Sinhala yet. | Handled through C3 (accepted): the missing shared strings are added to the brief. (2026-10-01) |
+| D-g | Direction 4's confirmation lists the trip as key-value rows, not a single line | Sound | The content is identical to brief 5.2 (verified in both languages); only the layout differs, which is the point of the comparison. | No action. Direction 4 is not chosen and will not be developed further. (2026-10-01) |
+| D-h | Directions 2 and 3 disable today's date natively and show the reason; directions 1, 4 and 5 keep it focusable with `aria-disabled` | Both sound | Brief 5.2 asks for the explanation "if focused". A natively disabled option cannot take focus, so directions 2 and 3 show the reason as visible text, which every user can read. | No action. Both approaches are sound. (2026-10-01) |
 
 ---
 
@@ -626,5 +670,38 @@ reference material was added and later hidden.
 
 ## Owner's adjudication
 
-To be recorded here, finding by finding, when the main session passes the
-owner's decisions on.
+Recorded on 01/10/2026 from the owner's decisions, passed on by the main
+session. Each finding's own "Owner's decision" line and the deviations table
+carry the decision and its reason; this section summarises them.
+
+**Base design chosen: direction 5, Ticket.** Directions 1 to 4 are kept as a
+record and will not be developed further.
+
+**Accept** (to be fixed in the Ticket design; each is recorded as its own
+oversight episode):
+
+| Finding | What follows |
+|---|---|
+| 5.1 | The requester's confirmation stops using the Confirmed mark for a Submitted request. |
+| 5.2 | Ticket's driver page gets headings in order. |
+| 5.3 | The list toggle stops announcing a contradictory state. |
+| 5.4 | Escape closes the no-show question; Undo clears the stale status text. |
+| 5.5 | The busy spinner is replaced. |
+| C2 | Goes to the requirements-analyst as a requirements question (weekend dates). |
+| C3 | The missing shared strings are added to the brief. |
+| C4 | The JSDoc ruling for callbacks recommended in this review is adopted into `CLAUDE.md`. |
+| C6 | Ticket's count tiles are reworked as tickets rather than template cards. |
+| C7 | The gallery footer is corrected. |
+
+**Overrule – right but not worth acting on (direction not chosen):** C1, C5,
+2.1, 2.2, 3.1, 3.2, 4.1, 4.2, 4.3 and 4.4. Each concerns only directions that
+were not chosen. C1 does not affect Ticket, which already applies the cutoff
+to typed dates. C5 does not affect Ticket either, whose pages already have a
+footer. The question 2.1 raises, which unit NFR-18's 500 KB means (1,000
+or 1,024 bytes), still goes to the requirements-analyst, because it matters
+for Ticket too.
+
+**Deviations:** D-d is accepted as built: Ticket's live ticket stays above
+"Send request", not at the top of the form. D-e and D-f are handled through
+C3. D-h: both approaches are sound, no action. D-a, D-b, D-c and D-g concern
+directions not chosen: no action.
