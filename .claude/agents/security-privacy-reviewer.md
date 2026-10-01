@@ -48,4 +48,6 @@ and "Owner's decision: pending".
 
 ## Skills
 
-None required.
+| Task | Skill |
+|------|-------|
+| Checking consent: the WhatsApp opt-in and the privacy notice | `ai-alignment-reasoning:consent-and-agency` |

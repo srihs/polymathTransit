@@ -125,6 +125,32 @@ Properly documented means:
   docstring linting in CI (ruff's pydocstyle `D` rules with the Google
   convention), so missing Python docstrings fail the build.
 
+## Using installed skills (project rule)
+
+Decided by the owner on 2026-10-01: "There are installed skills in Claude.
+The subagents must use them where required."
+
+That means:
+
+- **Required, not optional.** Where an installed skill applies to a task, the
+  agent uses it.
+- **The Skills table.** Each agent definition has a Skills table mapping that
+  agent's task types to installed skills. When a task matches a row, the agent
+  loads that skill with the Skill tool before doing the work.
+- **Beyond the table.** The table is not the limit. Before starting, the agent
+  also checks the installed skills list for any other skill that fits the
+  task, and uses it.
+- **Not used:** skills or commands that start their own agents, because
+  nothing runs on general agents (see "Agent workflow").
+- **Reported.** The agent's report names every skill it used. Where an
+  installed skill could have applied to the task but was not used, the report
+  says why.
+- **Checked.** The main session names the applicable skills in each
+  delegation and checks the report. A report that skips an applicable skill
+  without a reason is sent back to the agent.
+- **New skills.** When a skill is installed, the process-steward adds it to
+  the Skills tables of the agents whose tasks it serves.
+
 ## Agent workflow (project rule)
 
 Every task runs through one of this project's subagents in `.claude/agents/`.
@@ -141,9 +167,8 @@ project work.
   and check their results.
 - It owns git: it creates branches from `PROD`, makes every commit, merges
   with the owner's approval, and runs `/oversight`.
-- Each delegation names the requirement IDs, the files in scope and the skills
-  from the agent's Skills table that apply. The main session checks that the
-  agent's report lists the skills it used.
+- Each delegation names the requirement IDs and the files in scope, and
+  handles skills as "Using installed skills" says.
 - If no agent fits a task, it asks the owner and has the process-steward
   create or extend an agent. It never falls back to a general agent.
 - Bootstrap exception: the first agent definitions and this section were
@@ -197,10 +222,9 @@ project work.
   in your report; do not make it.
 - If the requirements are silent, ambiguous or contradict each other, stop and
   report the question with options and a recommendation. Do not guess.
-- Before a task that matches your Skills table, load that skill with the Skill
-  tool. Do not use skills or commands that start their own agents.
+- Use installed skills as "Using installed skills" says.
 - Write in British English and plain language.
 - End with a report: (1) outcome: done, partly done or blocked; (2) files
-  created or changed; (3) requirement IDs covered; (4) skills used, or "none";
-  (5) checks run, with results exactly as they came out; (6) questions,
-  assumptions and anything left undone.
+  created or changed; (3) requirement IDs covered; (4) skills, as "Using
+  installed skills" says; (5) checks run, with results exactly as they came
+  out; (6) questions, assumptions and anything left undone.

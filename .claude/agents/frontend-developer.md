@@ -49,3 +49,6 @@ output. Not views or domain logic (backend-developer).
 | Checking responsive behaviour | `ui-design:responsive-audit`, `adaptive-interfaces:responsive-review` |
 | Self-check for accessibility | `design-systems:accessibility-audit` |
 | Loading and progress states | `interaction-design:loading-states` |
+| Status messages and live updates (confirmations, live dashboard counts) | `inclusive-interaction:feedback-and-status` |
+| Form labels, instructions and errors linked to fields | `accessible-content:form-labelling` |
+| Data tables | `accessible-content:table-accessibility` |

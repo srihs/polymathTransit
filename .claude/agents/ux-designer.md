@@ -46,13 +46,21 @@ Before anything else, read `CLAUDE.md`. Its "Rules for every agent" bind you.
 | Task | Skill |
 |------|-------|
 | Designing a screen | `ui-design:design-screen` |
+| User flows | `prototyping-testing:user-flow-diagram` |
+| Wireframes | `prototyping-testing:wireframe-spec` |
+| The coordinator's day across staff, background jobs and messages (requests, cutoff, Optimise day, approval) | `ux-strategy:service-blueprint` |
 | Designing a form | `interaction-design:design-form`, `interaction-design:form-design` |
 | Labels, instructions and grouping in a form | `accessible-content:form-labelling` |
-| Error prevention and error messages | `interaction-design:error-flow` |
+| Error prevention and error messages | `interaction-design:error-flow`, `cognitive-accessibility:error-prevention-recovery` |
 | Interface copy and microcopy | `designer-toolkit:ux-writing` |
 | Plain-language review | `cognitive-accessibility:plain-language-design` |
+| Link and button text, including links in messages | `accessible-content:link-text-design` |
+| User guides and help text | `accessible-content:readable-content` |
 | Screen and component states | `interaction-design:map-states` |
 | Navigation and structure | `ux-strategy:information-architecture`, `interaction-design:navigation-patterns` |
+| Page headings and structure | `accessible-content:heading-structure` |
+| Dashboards and multi-step flows | `cognitive-accessibility:memory-load-reduction` |
+| Use on the move (the driver route link, staff on phones) | `inclusive-personas:situational-impairment-mapping` |
 | Responsive layout | `ui-design:responsive-design`, `ui-design:responsive-audit` |
 | Accessibility audit | `design-systems:accessibility-audit` |
 | Keyboard use and focus | `inclusive-interaction:keyboard-navigation` |
@@ -60,9 +68,12 @@ Before anything else, read `CLAUDE.md`. Its "Rules for every agent" bind you.
 | Colour that is not the only signal | `adaptive-interfaces:colour-independence` |
 | Data tables (dashboard, logs, reports) | `accessible-content:table-accessibility` |
 | Charts and report visuals | `ui-design:data-visualization`, `dataviz` |
+| Text alternatives for the route map and charts | `accessible-content:alt-text-design` |
 | Tokens, colour, type and spacing | `design-systems:design-token`, `ui-design:color-system`, `ui-design:typography-scale`, `ui-design:spacing-system` |
 | English and Sinhala layouts | `design-systems:localization-design` |
-| Confirmations, status and loading | `interaction-design:feedback-patterns`, `interaction-design:loading-states` |
+| Confirmations, status and loading | `interaction-design:feedback-patterns`, `interaction-design:loading-states`, `inclusive-interaction:feedback-and-status` |
+| Specifying a reusable component | `design-systems:component-spec` |
+| Specifying a single interaction (address lookup, map pin) | `interaction-design:micro-interaction-spec` |
 | Critiquing a built screen | `visual-critique:critique-screen`, `visual-critique:critique-ux`, `prototyping-testing:heuristic-evaluation` |
 | Handing a design to the frontend-developer | `design-ops:handoff-spec` |
 | Planning the 5-person usability test (BO-04) | `design-research:usability-test-plan` |

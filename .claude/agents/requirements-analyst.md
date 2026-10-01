@@ -57,4 +57,7 @@ Before anything else, read `CLAUDE.md`. Its "Rules for every agent" bind you.
 | Analysing requirements, writing or refining user stories | `it-business-analyst` |
 | Writing acceptance criteria that cover people of all abilities | `inclusive-personas:inclusive-user-stories` |
 | Finding edge cases for a slice | `inclusive-personas:edge-case-identification` |
+| Saying what is in and out of a slice | `program-planning:scoping-framework` |
+| Dependencies on other slices and services | `program-planning:dependency-map` |
+| Tracing a business objective to how it is measured (BO-01 to BO-07) | `ux-strategy:metrics-definition` |
 | Recording decisions and open questions | `cross-functional-alignment:decision-log` |

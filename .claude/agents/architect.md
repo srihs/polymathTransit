@@ -60,5 +60,6 @@ providers that cost money (for example the map service, Q-17).
 |------|-------|
 | Designing a lifecycle or other state machine | `interaction-design:state-machine` |
 | Structuring navigation and URL space | `ux-strategy:information-architecture` |
+| Weighing an accessibility trade-off | `accessibility-decisions:tradeoff-analysis` |
 | Recording an accessibility trade-off | `accessibility-decisions:decision-documentation` |
 | Keeping a decision log | `cross-functional-alignment:decision-log` |

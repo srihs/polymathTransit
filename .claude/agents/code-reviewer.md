@@ -49,3 +49,4 @@ A review with no findings says so and lists what was checked.
 | Task | Skill |
 |------|-------|
 | Reviewing templates for accessibility | `design-systems:accessibility-audit` |
+| Reviewing keyboard use and focus in templates | `inclusive-interaction:keyboard-review` |
