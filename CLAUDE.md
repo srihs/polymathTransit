@@ -63,6 +63,16 @@ Decided by the owner on 2026-10-01.
 - **Front end.** HTML5 templates rendered by Django, with plain JavaScript
   added on top. Pages work without JavaScript; scripts enhance them (address
   lookup, map pin, live dashboard counts, the driver's offline route).
+- **Base design.** "lets go with 5-ticket design": direction 5, Ticket, is
+  the base design for the whole product. Rationale in
+  `docs/design/system-options/5-ticket/README.md`, specification in
+  `docs/design/system-options/brief.md` section 6.5. Every trip is a ticket
+  with each fact in a fixed slot; the purple strip means only "confirmed";
+  the driver punches each stop. All new screens follow it. The other four
+  directions (Stop by Stop, Inscription, Plain Words, Departures) stay in
+  `docs/design/system-options/` as a record only and are not developed
+  further. The owner's adjudication, including the changes accepted for
+  Ticket, is in `docs/reviews/2026-10-01-design-system-options.md`.
 - **Database.** PostgreSQL (the managed service on Oracle Cloud
   Infrastructure in production).
 - **Background jobs.** Procrastinate, using the same PostgreSQL database, so
