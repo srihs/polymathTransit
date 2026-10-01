@@ -1,0 +1,259 @@
+/* ==========================================================================
+   PolymathTransit – Direction 4 "Departures" – design tokens
+   --------------------------------------------------------------------------
+   What this file is for:
+     Every value the components use, as CSS custom properties. Global tokens
+     hold raw values (scales taken from research.md 1.4 and 1.5 and the
+     verified colour tables in brief.md 6.4). Semantic aliases name the job a
+     value does. Components (components.css, pages.css) only ever use the
+     semantic aliases, never raw values.
+
+     Two themes share one set of semantic names:
+       - Light (default): phone pages and light areas, for sunlight (NFR-04).
+       - Board (.board): the dark departure board – the coordinator dashboard
+         and the single board strip at the top of each phone page.
+     Putting class="board" on any element re-maps the aliases inside it, so the
+     same component (for example the remark slot) works on both grounds.
+
+   Contrast (WCAG 2.2 AA, NFR-03) is written beside each colour alias:
+     the ratio of that colour against the ground it is used on. Ratios were
+     calculated with the WCAG relative-luminance formula.
+
+   Sections:
+     1. Global: colour scales
+     2. Global: type families, sizes, weights
+     3. Global: spacing, size, border, radius, motion, layers
+     4. Semantic aliases: light theme (default)
+     5. Semantic aliases: board theme (.board)
+     6. Context: phone and desktop type sizes (.ctx-phone, .ctx-desk)
+     7. Script: Sinhala size factor (:lang(si))
+   ========================================================================== */
+
+/* === Section 1: Global – colour scales === */
+:root {
+  /* Purple scale built at the crest hue (research.md 1.4). 700 is the brand. */
+  --purple-50:  #FCF4FD;
+  --purple-100: #F7E6FB;
+  --purple-200: #EDCEF4;
+  --purple-300: #DCADE7;
+  --purple-400: #C586D4;
+  --purple-500: #AA61BB;
+  --purple-600: #9043A1;
+  --purple-700: #722A82; /* Crest purple, the brand colour (brief 3.1) */
+  --purple-800: #581D65;
+  --purple-900: #3F1448;
+  --purple-950: #280A2F;
+
+  /* Neutral scale on the wordmark grey's hue (research.md 1.5). */
+  --grey-50:  #F5F7F9;
+  --grey-100: #EEF0F3;
+  --grey-200: #DCDEE1;
+  --grey-400: #8F9298;
+  --grey-450: #7D8086;
+  --grey-500: #63666B; /* Wordmark grey from the logo */
+  --grey-700: #3D4044;
+  --grey-900: #181B1F;
+
+  --black: #000000; /* Tagline black from the logo */
+  --white: #FFFFFF;
+
+  /* Board raw values (brief 6.4, board table). Purple-tinted near-black so the
+     board belongs to the brand rather than to an airport. */
+  --board-950: #140C17;
+  --board-900: #1F1523;
+  --board-edge: #6F6574;
+  --board-text-2: #B9AFBC;
+  --board-accent: #DBA9E6;
+
+  /* Signal colours. Each one has a job (a status); none is decoration. */
+  --signal-ok-light: #0F6A31;
+  --signal-attention-light: #915B02;
+  --signal-danger-light: #B01E25;
+  --signal-info-light: #005E8D;
+  --signal-ok-board: #6ED889;
+  --signal-attention-board: #FDBE45;
+  --signal-danger-board: #F97770;
+  --signal-info-board: #79C0F1;
+}
+
+/* === Section 2: Global – type families, sizes, weights === */
+:root {
+  /* Order: Latin face, then Sinhala face, then fallbacks (brief 3.6). The
+     browser picks Gemunu Libre for Sinhala characters because B612 has none. */
+  --font-sinhala-fallback: "Noto Sans Sinhala", "Nirmala UI", "Iskoola Pota", "Sinhala Sangam MN";
+  --font-text: "B612", "Gemunu Libre", system-ui, -apple-system, "Segoe UI", Roboto, var(--font-sinhala-fallback), sans-serif;
+  --font-mono: "B612 Mono", "Gemunu Libre", ui-monospace, "Cascadia Mono", Consolas, var(--font-sinhala-fallback), monospace;
+
+  --weight-regular: 400;
+  --weight-bold: 700;
+
+  /* Type scale (brief 6.4). Phone and desktop values; section 6 picks one. */
+  --size-board-time-phone: 2.5rem;   /* 40 px */
+  --size-board-time-desk: 2rem;      /* 32 px */
+  --size-title-phone: 1.625rem;      /* 26 px */
+  --size-title-desk: 1.75rem;        /* 28 px */
+  --size-row-phone: 1.125rem;        /* 18 px */
+  --size-row-desk: 1rem;             /* 16 px */
+  --size-body-phone: 1.0625rem;      /* 17 px */
+  --size-body-desk: 0.9375rem;       /* 15 px */
+  --size-remark-phone: 0.875rem;     /* 14 px */
+  --size-remark-desk: 0.8125rem;     /* 13 px */
+  --size-small-phone: 0.875rem;      /* 14 px */
+  --size-small-desk: 0.8125rem;      /* 13 px */
+
+  --leading-board-time: 1;
+  --leading-title: 1.2;
+  --leading-row: 1.35;
+  --leading-body: 1.5;
+  --leading-remark: 1.2;
+  --leading-small: 1.4;
+  /* Sinhala vowel signs reach far above and below the letter (research.md 3.2). */
+  --leading-row-si: 1.6;
+  --leading-body-si: 1.65;
+
+  --tracking-remark: 0.06em;
+}
+
+/* === Section 3: Global – spacing, size, border, radius, motion, layers === */
+:root {
+  /* 8 px base with half steps where a board cell needs them (brief 6.4). */
+  --space-1: 0.25rem; /*  4 px */
+  --space-2: 0.5rem;  /*  8 px */
+  --space-3: 0.75rem; /* 12 px */
+  --space-4: 1rem;    /* 16 px */
+  --space-5: 1.5rem;  /* 24 px */
+  --space-6: 2rem;    /* 32 px */
+  --space-7: 3rem;    /* 48 px */
+
+  /* Board rows: 40 px on the desktop board, 56 px on phones (brief 6.4). */
+  --row-desk: 2.5rem;
+  --row-phone: 3.5rem;
+  /* Touch targets: 44 px minimum on phones; Done and No-show 48 px or more. */
+  --target-min: 2.75rem;
+  --target-driver: 3.5rem;
+  --target-desk: 2rem;
+
+  --border-hair: 1px;
+  --border-control: 2px;
+  --border-strong: 3px;
+  --radius: 2px; /* The board is flat and square; 2 px only softens pixels. */
+
+  --icon-sm: 1rem;
+  --icon-md: 1.25rem;
+  --icon-lg: 1.5rem;
+  --glyph: 0.75rem;
+
+  /* Motion: only to explain a change (brief 3.7). */
+  --duration-flip: 150ms;
+  --ease-out: cubic-bezier(0.2, 0.7, 0.3, 1);
+
+  --layer-sticky: 10;
+  --layer-dialog: 100;
+
+  --measure: 34em;
+  --phone-column: 30rem; /* 480 px: phone pages centre in this column */
+  --drawer-width: 26.25rem; /* 420 px detail drawer on the dashboard */
+  --page-max: 90rem; /* 1440 px */
+}
+
+/* === Section 4: Semantic aliases – light theme (default) === */
+:root {
+  --c-ground: var(--white);
+  --c-raised: var(--grey-50);          /* Quiet panel; ink-2 on it 5.37:1 */
+  --c-sunken: var(--grey-100);         /* Disabled fill; ink-2 on it 5.05:1 */
+  --c-ink: var(--black);               /* Text: 21:1 on white */
+  --c-ink-2: var(--grey-500);          /* Secondary text: 5.76:1 on white */
+  --c-edge: var(--grey-500);           /* Control borders, 2 px: 5.76:1 */
+  --c-edge-quiet: var(--grey-400);     /* Disabled borders: 3.12:1 */
+  --c-rule: var(--grey-200);           /* Decorative row rules only */
+  --c-rule-strong: var(--black);       /* Board header rules */
+
+  --c-brand: var(--purple-700);        /* 8.86:1 on white; white on it 8.86:1 */
+  --c-action: var(--purple-700);       /* Primary button fill */
+  --c-on-action: var(--white);
+  --c-action-hover: var(--purple-800); /* White on it 11.81:1 */
+  --c-action-pressed: var(--purple-900);
+  --c-selected: var(--purple-100);     /* Selected option ground: brand 7.46:1, ink 17.67:1 */
+  --c-selected-edge: var(--purple-700);
+  --c-link: var(--purple-700);
+  --c-link-visited: var(--purple-800); /* 11.81:1 */
+  --c-focus: var(--board-950);         /* 3 px outline: 19.18:1 on white, 16.14:1 on purple-100 */
+
+  --c-ok: var(--signal-ok-light);              /* 6.72:1 on white */
+  --c-attention: var(--signal-attention-light);/* 5.67:1 on white */
+  --c-danger: var(--signal-danger-light);      /* 6.87:1 on white; 5.78:1 on purple-100 */
+  --c-info: var(--signal-info-light);          /* 7.03:1 on white */
+  --c-quiet-status: var(--grey-500);           /* Submitted, Cancelled: 5.76:1 */
+
+  --remark-border: var(--border-control); /* Light pages: 2 px frame (brief 6.4) */
+}
+
+/* === Section 5: Semantic aliases – board theme (.board) === */
+.board {
+  --c-ground: var(--board-950);
+  --c-raised: var(--board-900);
+  --c-sunken: var(--board-950);
+  --c-ink: var(--white);               /* 19.18:1 on board; 17.65:1 on panel */
+  --c-ink-2: var(--board-text-2);      /* 9.06:1 on board; 8.34:1 on panel */
+  --c-edge: var(--board-edge);         /* 3.46:1 on board; 3.19:1 on panel */
+  --c-edge-quiet: var(--board-edge);
+  --c-rule: var(--board-edge);
+  --c-rule-strong: var(--board-text-2);
+
+  /* The brand purple is never text on the board (2.16:1 fails). It appears
+     only as a fill behind white text (8.86:1): the selected row or block. */
+  --c-brand: var(--board-accent);      /* 9.89:1 on board; 9.10:1 on panel */
+  --c-action: var(--board-accent);     /* Primary fill with board text: 9.89:1 */
+  --c-on-action: var(--board-950);
+  --c-action-hover: var(--white);      /* Board text on white: 19.18:1 */
+  --c-action-pressed: var(--purple-400); /* Board text on it: 7.07:1 */
+  --c-selected: var(--purple-700);     /* Selected fill; white text 8.86:1 */
+  --c-selected-edge: var(--white);
+  --c-link: var(--board-accent);
+  --c-link-visited: var(--purple-200);
+  --c-focus: var(--white);             /* 19.18:1 on board; 8.86:1 on purple */
+
+  --c-ok: var(--signal-ok-board);              /* 10.82:1 board; 9.96:1 panel */
+  --c-attention: var(--signal-attention-board);/* 11.54:1 board; 10.61:1 panel */
+  --c-danger: var(--signal-danger-board);      /* 7.22:1 board; 6.64:1 panel */
+  --c-info: var(--signal-info-board);          /* 9.70:1 board; 8.93:1 panel */
+  --c-quiet-status: var(--board-text-2);       /* 9.06:1 board */
+
+  --remark-border: var(--border-hair); /* Board: 1 px framed cell (brief 6.4) */
+
+  color: var(--c-ink);
+  background-color: var(--c-ground);
+}
+
+/* === Section 6: Context – phone and desktop type sizes === */
+/* Phone pages use the phone column of the type table; the dashboard and the
+   foundations page use the desktop column. A specimen can switch context. */
+.ctx-phone {
+  --fs-board-time: var(--size-board-time-phone);
+  --fs-title: var(--size-title-phone);
+  --fs-row: var(--size-row-phone);
+  --fs-body: var(--size-body-phone);
+  --fs-remark: var(--size-remark-phone);
+  --fs-small: var(--size-small-phone);
+  --row-height: var(--row-phone);
+  --target: var(--target-min);
+}
+.ctx-desk {
+  --fs-board-time: var(--size-board-time-desk);
+  --fs-title: var(--size-title-desk);
+  --fs-row: var(--size-row-desk);
+  --fs-body: var(--size-body-desk);
+  --fs-remark: var(--size-remark-desk);
+  --fs-small: var(--size-small-desk);
+  --row-height: var(--row-desk);
+  --target: var(--target-desk);
+}
+
+/* === Section 7: Script – Sinhala size factor === */
+/* Gemunu Libre draws Sinhala at about 0.83 of B612's apparent size, so Sinhala
+   text is set 1.2 times larger (brief 6.4, research.md 3.1). Components
+   multiply their size by --k; Latin data inside Sinhala pages (place names,
+   references) carries lang="en" and so keeps --k: 1. */
+:root { --k: 1; --lh-row: var(--leading-row); --lh-body: var(--leading-body); }
+:lang(si) { --k: 1.2; --lh-row: var(--leading-row-si); --lh-body: var(--leading-body-si); }
+:lang(en) { --k: 1; --lh-row: var(--leading-row); --lh-body: var(--leading-body); }

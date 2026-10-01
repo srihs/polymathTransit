@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<!--
+  Purpose:  Foundations of design direction 4, "Departures": concept,
+            logo, colour and contrast, type (English and Sinhala), spacing,
+            grids, icons, every component state, signature, motion.
+  Reqs:     NFR-03, NFR-04, NFR-12, FR-02, FR-07, FR-29, FR-65, D-09.
+  Uses:     tokens.css, components.css, pages.css, script.js (motion demo
+            only), ../assets/*.png, Google Fonts (B612, B612 Mono, Gemunu
+            Libre).
+  Sections: sprite, header, 1 About, 2 Logo, 3 Colour, 4 Type, 5 Spacing
+            and grid, 6 Icons, 7 Components, 8 Signature, 9 Motion, footer.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Departures – foundations – PolymathTransit design direction 4</title>
+  <link rel="icon" href="../assets/crest.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=B612:wght@400;700&amp;family=B612+Mono:wght@400;700&amp;family=Gemunu+Libre:wght@400;700&amp;display=swap">
+  <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="components.css">
+  <link rel="stylesheet" href="pages.css">
+  <script src="script.js" defer></script>
+</head>
+<body class="ctx-desk page-doc" data-page="foundations">
+
+  <!-- === Section: Icon sprite (the full Departures set) === -->
+  <svg class="sprite" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+    <symbol id="i-van" viewBox="0 0 24 24"><path d="M5 17H2V6h12l4 5h4v6h-3M9 17h6M14 6v5h4"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></symbol>
+    <symbol id="i-pax" viewBox="0 0 24 24"><circle cx="9" cy="7" r="3"/><path d="M3 20v-3l3-3h6l3 3v3"/><path d="M16 4a3 3 0 0 1 0 6M18 14l3 3v3"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5h4"/></symbol>
+    <symbol id="i-calendar" viewBox="0 0 24 24"><path d="M3 5h18v16H3ZM3 10h18M8 3v4M16 3v4"/></symbol>
+    <symbol id="i-pickup" viewBox="0 0 24 24"><path d="M12 18V5M6 11l6-6 6 6M4 21h16"/></symbol>
+    <symbol id="i-dropoff" viewBox="0 0 24 24"><path d="M12 3v13M6 10l6 6 6-6M4 21h16"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 22L5.5 13A7.5 7.5 0 1 1 18.5 13Z"/><circle cx="12" cy="9.3" r="2.5"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24"><path d="M7 2h10v20H7ZM11 18h2"/></symbol>
+    <symbol id="i-navigate" viewBox="0 0 24 24"><path d="M3 11l18-8-8 18-2-8Z"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></symbol>
+    <symbol id="i-cross" viewBox="0 0 24 24"><path d="M5 5l14 14M19 5L5 19"/></symbol>
+    <symbol id="i-warning" viewBox="0 0 24 24"><path d="M12 3l10 18H2Z"/><path d="M12 10v4M12 17v1"/></symbol>
+    <symbol id="i-repeat" viewBox="0 0 24 24"><path d="M4 11V7h14M15 4l3 3-3 3M20 13v4H6M9 20l-3-3 3-3"/></symbol>
+    <symbol id="i-shared" viewBox="0 0 24 24"><path d="M3 6l6 6h11M3 18l6-6M17 9l3 3-3 3"/></symbol>
+    <symbol id="i-gap" viewBox="0 0 24 24"><path d="M3 5v14M21 5v14M3 12h4M17 12h4"/><path d="M8 9h8v6H8Z"/></symbol>
+    <symbol id="i-outofhours" viewBox="0 0 24 24"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z"/></symbol>
+    <symbol id="i-newreq" viewBox="0 0 24 24"><circle cx="9" cy="7" r="3"/><path d="M3 20v-3l3-3h6l3 3v3M19 8v6M16 11h6"/></symbol>
+    <symbol id="i-late" viewBox="0 0 24 24"><path d="M6 3h12M6 21h12M7 3v3l5 6 5-6V3M7 21v-3l5-6 5 6v3"/></symbol>
+    <symbol id="i-wheelchair" viewBox="0 0 24 24"><circle cx="10" cy="4" r="2"/><path d="M10 8v7h6l3 6M10 11h5"/><path d="M7 11.6A5 5 0 1 0 14.8 18"/></symbol>
+    <symbol id="i-equipment" viewBox="0 0 24 24"><path d="M3 8h18v12H3ZM3 12h18M9 8V5h6v3"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7v1"/></symbol>
+    <symbol id="i-undo" viewBox="0 0 24 24"><path d="M8 5L3 10l5 5M3 10h12a5 5 0 0 1 0 10h-4"/></symbol>
+    <symbol id="i-offline" viewBox="0 0 24 24"><path d="M4 20v-2M9 20v-5M14 20v-8M19 20V8M3 3l18 18"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+    <symbol id="i-chevron" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
+    <symbol id="i-error" viewBox="0 0 24 24"><path d="M3 3h18v18H3ZM8 8l8 8M16 8l-8 8"/></symbol>
+    <symbol id="i-sort" viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6"/></symbol>
+    <symbol id="i-list" viewBox="0 0 24 24"><path d="M3 6h2M9 6h12M3 12h2M9 12h12M3 18h2M9 18h12"/></symbol>
+    <symbol id="i-end" viewBox="0 0 24 24"><path d="M3 12h14M17 5v14M21 5v14"/></symbol>
+    <symbol id="i-unconfirmed" viewBox="0 0 24 24"><path d="M4 12l5 5L20 6" stroke-dasharray="3 2.5"/></symbol>
+    <symbol id="g-submitted" viewBox="0 0 12 12"><circle cx="6" cy="6" r="4.4" stroke-dasharray="2 1.6"/></symbol>
+    <symbol id="g-proposed" viewBox="0 0 12 12"><circle cx="6" cy="6" r="4.4"/></symbol>
+    <symbol id="g-attention" viewBox="0 0 12 12"><path d="M6 1l5.5 10H.5Z" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="g-confirmed" viewBox="0 0 12 12"><circle cx="6" cy="6" r="5" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="g-declined" viewBox="0 0 12 12"><path d="M2 2l8 8M10 2l-8 8" stroke-width="2.2"/></symbol>
+    <symbol id="g-cancelled" viewBox="0 0 12 12"><path d="M1 6h10" stroke-width="2.5"/></symbol>
+    <symbol id="g-completed" viewBox="0 0 12 12"><rect x="1" y="1" width="10" height="10" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="g-noshow" viewBox="0 0 12 12"><rect x="1.9" y="1.9" width="8.2" height="8.2"/></symbol>
+  </svg>
+
+  <a class="skip" href="#main">Skip to main content</a>
+
+  <!-- === Section: Header (board strip) === -->
+  <header class="doc-head board">
+    <div class="doc-head__in">
+      <img src="../assets/crest-keyline.png" alt="Polymath College" width="37" height="40">
+      <span class="product">PolymathTransit</span>
+      <span class="colhead">Design direction 4 · Departures</span>
+      <nav aria-label="This direction">
+        <ul>
+          <li><a href="request.html">Request form</a></li>
+          <li><a href="dashboard.html">Dashboard</a></li>
+          <li><a href="driver.html">Driver's route</a></li>
+          <li><a href="../index.html">All five directions</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="doc">
+    <h1>Departures</h1>
+    <p class="doc-lede">Time is the backbone. Every list reads like a departure board: one line per trip, fixed columns, and the status as a short word in the remarks slot. The coordinator's dashboard is a dark board for the 7:05 am approval; the phone pages stay light for sunlight, with one dark board strip for the most important line.</p>
+
+    <nav class="toc" aria-label="On this page">
+      <ol>
+        <li><a href="#about"><span class="mono">01</span><span>About this direction</span></a></li>
+        <li><a href="#logo"><span class="mono">02</span><span>Logo</span></a></li>
+        <li><a href="#colour"><span class="mono">03</span><span>Colour</span></a></li>
+        <li><a href="#type"><span class="mono">04</span><span>Type</span></a></li>
+        <li><a href="#space"><span class="mono">05</span><span>Spacing and grid</span></a></li>
+        <li><a href="#icons"><span class="mono">06</span><span>Icons</span></a></li>
+        <li><a href="#components"><span class="mono">07</span><span>Components</span></a></li>
+        <li><a href="#signature"><span class="mono">08</span><span>Signature: the board row and the now line</span></a></li>
+        <li><a href="#motion"><span class="mono">09</span><span>Motion</span></a></li>
+      </ol>
+    </nav>
+
+    <!-- === Section 1: About this direction === -->
+    <section class="dsec" id="about" aria-labelledby="about-h">
+      <h2 id="about-h"><span class="fsec__num">1</span>About this direction</h2>
+      <div class="grid12">
+        <div class="span-7">
+          <p>Departures borrows the one idea that fifty years of station and airport boards have proved: people find their trip fastest when every trip is a single line, the time comes first, the columns never move, and the status is a short word in its own slot. PolymathTransit uses that line everywhere a trip appears, so a teacher choosing a date, a coordinator approving the day and a driver checking the next stop all read the same shape.</p>
+          <p>The only dark surface is the board. It earns its place on the coordinator's desktop at 7:05 am, when the day must be checked at a glance. Phones stay light for sunlight and carry a single board strip for the line that matters most: the reference, or the next stop.</p>
+        </div>
+        <div class="span-5">
+          <h3>Principles</h3>
+          <ol class="prose">
+            <li><strong>Time leads every line.</strong></li>
+            <li><strong>One line per trip; the same columns everywhere.</strong></li>
+            <li><strong>Status is a remark:</strong> one or two words in its own slot, with a shape.</li>
+            <li><strong>Glance first, read second.</strong></li>
+          </ol>
+          <h3>Pages</h3>
+          <ul class="prose">
+            <li><a href="request.html">Request a van (phone, English and Sinhala)</a></li>
+            <li><a href="dashboard.html">Coordinator dashboard (desktop)</a></li>
+            <li><a href="driver.html">Driver's route (phone, English and Sinhala)</a></li>
+            <li><a href="README.md">Design rationale (README)</a></li>
+            <li><a href="../index.html">Back to all five directions</a></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- === Section 2: Logo === -->
+    <section class="dsec" id="logo" aria-labelledby="logo-h">
+      <h2 id="logo-h"><span class="fsec__num">2</span>Logo</h2>
+      <div class="grid12">
+        <div class="span-5">
+          <h3>Full logo</h3>
+          <p>The full logo carries its own white ground. Use it at 240 px wide or more so the tagline stays readable. Here it is at 360 px on white, its intended background.</p>
+          <p class="specimen" style="margin-top: var(--space-3)"><img class="logo-full" src="../assets/logo.png" alt="Polymath College – Vivere Disce, Learn to Live" width="360" height="128"></p>
+        </div>
+        <div class="span-7">
+          <h3>Crest on each ground</h3>
+          <div class="plates">
+            <div class="plate plate--light"><img src="../assets/crest.png" alt="Crest on white" width="88" height="96"><small>crest.png on white and light grounds</small></div>
+            <div class="plate plate--dark"><img src="../assets/crest-keyline.png" alt="Keyline crest on the board" width="89" height="96"><small>crest-keyline.png on the board (#140C17)</small></div>
+            <div class="plate plate--purple"><img src="../assets/crest-keyline.png" alt="Keyline crest on purple" width="89" height="96"><small>crest-keyline.png on purple (#722A82)</small></div>
+          </div>
+        </div>
+      </div>
+      <div class="grid12">
+        <div class="span-6">
+          <h3>Clear space and smallest sizes</h3>
+          <p class="clearspace"><img src="../assets/crest.png" alt="Crest with its clear space marked" width="88" height="96"></p>
+          <ul class="prose">
+            <li>Clear space on every side: one quarter of the crest's height (the dashed frame above: 24 px around a 96 px crest).</li>
+            <li>Crest: 24 px tall at the smallest. In this direction it is 36 px in phone headers and 32 px on the dashboard.</li>
+            <li>Full logo: 240 px wide at the smallest.</li>
+          </ul>
+        </div>
+        <div class="span-6">
+          <h3>Two things not to do</h3>
+          <ul class="prose">
+            <li><strong>Do not put the plain crest on the dark board or on purple.</strong> Its purple shield disappears (purple on the board is 2.16:1). Use the keyline crest there.</li>
+            <li><strong>Do not set "Polymath College" in B612 or any font as a logo.</strong> The college's name appears only through the logo artwork; the product name "PolymathTransit" is set in B612 Bold beside the crest.</li>
+          </ul>
+          <p>Never recolour, stretch, rotate, outline, shadow or animate the logo or crest.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- === Section 3: Colour === -->
+    <section class="dsec" id="colour" aria-labelledby="colour-h">
+      <h2 id="colour-h"><span class="fsec__num">3</span>Colour</h2>
+      <p>Two themes share one set of semantic names. Light is for phones and sunlight; the board is for the coordinator's desktop and the single strip at the top of each phone page. Every colour other than the brand purple, the logo grey, black, white and the neutrals has a job: a status. Ratios use the WCAG formula; AA needs 4.5:1 for text and 3:1 for large text and parts of controls; AAA needs 7:1 for text.</p>
+
+      <h3>Board theme</h3>
+      <div class="specimen board">
+        <table class="swatches">
+          <caption class="vh">Board colour tokens with their contrast</caption>
+          <thead><tr><th scope="col">Swatch</th><th scope="col">Token</th><th scope="col">Hex</th><th scope="col">Role</th><th scope="col">Contrast</th></tr></thead>
+          <tbody>
+            <tr><td><span class="sw" style="background:#140C17"></span></td><th scope="row"><code>--c-board</code> (ground)</th><td class="mono">#140C17</td><td>Board background, purple-tinted near-black</td><td><span class="aa">AAA 19.18:1</span> white on it</td></tr>
+            <tr><td><span class="sw" style="background:#1F1523"></span></td><th scope="row"><code>--c-board-panel</code> (raised)</th><td class="mono">#1F1523</td><td>Tracks, tiles, drawer</td><td><span class="aa">AAA 17.65:1</span> white on it</td></tr>
+            <tr><td><span class="sw" style="background:#6F6574"></span></td><th scope="row"><code>--c-board-edge</code></th><td class="mono">#6F6574</td><td>Cell lines and control edges</td><td><span class="aa">AA 3.46:1</span> on board; 3.19:1 on panel (parts of controls)</td></tr>
+            <tr><td><span class="sw" style="background:#FFFFFF"></span></td><th scope="row"><code>--c-board-text</code></th><td class="mono">#FFFFFF</td><td>Text</td><td><span class="aa">AAA 19.18:1</span></td></tr>
+            <tr><td><span class="sw" style="background:#B9AFBC"></span></td><th scope="row"><code>--c-board-text-2</code></th><td class="mono">#B9AFBC</td><td>Secondary text, column heads</td><td><span class="aa">AAA 9.06:1</span>; 8.34:1 on panel</td></tr>
+            <tr><td><span class="sw" style="background:#DBA9E6"></span></td><th scope="row"><code>--c-board-accent</code></th><td class="mono">#DBA9E6</td><td>Brand on dark: links, primary button fill (board text on it)</td><td><span class="aa">AAA 9.89:1</span>; 9.10:1 on panel</td></tr>
+            <tr><td><span class="sw" style="background:#C586D4"></span></td><th scope="row"><code>purple-400</code> (pressed)</th><td class="mono">#C586D4</td><td>Primary button pressed on the board</td><td><span class="aa">AAA 7.07:1</span> board text on it</td></tr>
+            <tr><td><span class="sw" style="background:#722A82"></span></td><th scope="row"><code>purple-700</code> (selected)</th><td class="mono">#722A82</td><td>The selected trip: a fill behind white text, always with a white edge</td><td><span class="aa">AAA 8.86:1</span> white on it; only 1.99:1 against the panel, so the white edge (17.65:1) carries the selection</td></tr>
+            <tr><td><span class="sw" style="background:#6ED889"></span></td><th scope="row"><code>--c-board-ok</code></th><td class="mono">#6ED889</td><td>Confirmed, Completed</td><td><span class="aa">AAA 10.82:1</span>; 9.96:1 on panel; 5.00:1 on purple</td></tr>
+            <tr><td><span class="sw" style="background:#FDBE45"></span></td><th scope="row"><code>--c-board-attention</code></th><td class="mono">#FDBE45</td><td>Needs attention, Late</td><td><span class="aa">AAA 11.54:1</span>; 10.61:1 on panel; 5.33:1 on purple</td></tr>
+            <tr><td><span class="sw" style="background:#F97770"></span></td><th scope="row"><code>--c-board-danger</code></th><td class="mono">#F97770</td><td>Declined, No-show, errors</td><td><span class="aa">AAA 7.22:1</span>; AA 6.64:1 on panel</td></tr>
+            <tr><td><span class="sw" style="background:#79C0F1"></span></td><th scope="row"><code>--c-board-info</code></th><td class="mono">#79C0F1</td><td>Proposed, information</td><td><span class="aa">AAA 9.70:1</span>; 8.93:1 on panel; 4.48:1 on purple</td></tr>
+            <tr><td><span class="sw" style="background:#FFFFFF"></span></td><th scope="row">Focus on the board</th><td class="mono">#FFFFFF</td><td>3 px outline, 2 px offset</td><td><span class="aa">AAA 19.18:1</span>; 8.86:1 on purple</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Light theme</h3>
+      <table class="swatches">
+        <caption class="vh">Light colour tokens with their contrast on white</caption>
+        <thead><tr><th scope="col">Swatch</th><th scope="col">Token</th><th scope="col">Hex</th><th scope="col">Role</th><th scope="col">Contrast</th></tr></thead>
+        <tbody>
+          <tr><td><span class="sw" style="background:#722A82"></span></td><th scope="row"><code>--c-brand</code></th><td class="mono">#722A82</td><td>Primary buttons, links, selected</td><td><span class="aa">AAA 8.86:1</span>; white on it 8.86:1</td></tr>
+          <tr><td><span class="sw" style="background:#581D65"></span></td><th scope="row"><code>purple-800</code></th><td class="mono">#581D65</td><td>Hover on primary, visited links</td><td><span class="aa">AAA 11.81:1</span></td></tr>
+          <tr><td><span class="sw" style="background:#F7E6FB"></span></td><th scope="row"><code>purple-100</code> (selected)</th><td class="mono">#F7E6FB</td><td>Selected option ground, next stop</td><td>brand on it <span class="aa">AAA 7.46:1</span>; black 17.67:1; error red 5.78:1</td></tr>
+          <tr><td><span class="sw" style="background:#000000"></span></td><th scope="row"><code>--c-ink</code></th><td class="mono">#000000</td><td>Text (the tagline black)</td><td><span class="aa">AAA 21:1</span></td></tr>
+          <tr><td><span class="sw" style="background:#63666B"></span></td><th scope="row"><code>--c-ink-2</code> and <code>--c-edge</code></th><td class="mono">#63666B</td><td>Secondary text; 2 px control borders (the wordmark grey)</td><td><span class="aa">AA 5.76:1</span>; 5.37:1 on grey-50; 5.05:1 on grey-100</td></tr>
+          <tr><td><span class="sw" style="background:#F5F7F9"></span></td><th scope="row"><code>grey-50</code> (raised)</th><td class="mono">#F5F7F9</td><td>Quiet panels</td><td>ink 20.2:1</td></tr>
+          <tr><td><span class="sw" style="background:#EEF0F3"></span></td><th scope="row"><code>grey-100</code> (sunken)</th><td class="mono">#EEF0F3</td><td>Disabled and closed rows</td><td>ink-2 <span class="aa">AA 5.05:1</span></td></tr>
+          <tr><td><span class="sw" style="background:#8F9298"></span></td><th scope="row"><code>grey-400</code></th><td class="mono">#8F9298</td><td>Disabled edges (dashed)</td><td><span class="aa">AA 3.12:1</span> (parts of controls)</td></tr>
+          <tr><td><span class="sw" style="background:#DCDEE1"></span></td><th scope="row"><code>grey-200</code> (rule)</th><td class="mono">#DCDEE1</td><td>Row rules only, never a control edge</td><td>1.35:1, decorative</td></tr>
+          <tr><td><span class="sw" style="background:#0F6A31"></span></td><th scope="row"><code>--c-ok</code></th><td class="mono">#0F6A31</td><td>Confirmed, Done, Open</td><td><span class="aa">AA 6.72:1</span></td></tr>
+          <tr><td><span class="sw" style="background:#915B02"></span></td><th scope="row"><code>--c-attention</code></th><td class="mono">#915B02</td><td>Needs attention, warnings, "Closes …"</td><td><span class="aa">AA 5.67:1</span></td></tr>
+          <tr><td><span class="sw" style="background:#B01E25"></span></td><th scope="row"><code>--c-danger</code></th><td class="mono">#B01E25</td><td>Errors, No-show, Declined</td><td><span class="aa">AA 6.87:1</span></td></tr>
+          <tr><td><span class="sw" style="background:#005E8D"></span></td><th scope="row"><code>--c-info</code></th><td class="mono">#005E8D</td><td>Proposed, information</td><td><span class="aa">AAA 7.03:1</span></td></tr>
+          <tr><td><span class="sw" style="background:#140C17"></span></td><th scope="row">Focus on light</th><td class="mono">#140C17</td><td>3 px outline, 2 px offset</td><td><span class="aa">AAA 19.18:1</span>; 16.14:1 on purple-100</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Purple scale (crest hue) on white</h3>
+      <div class="scale-row" role="list" aria-label="Purple scale with contrast on white">
+        <div class="chip" role="listitem" style="background:#FCF4FD">50<br>#FCF4FD<br>1.08</div>
+        <div class="chip" role="listitem" style="background:#F7E6FB">100<br>#F7E6FB<br>1.19</div>
+        <div class="chip" role="listitem" style="background:#EDCEF4">200<br>#EDCEF4<br>1.43</div>
+        <div class="chip" role="listitem" style="background:#DCADE7">300<br>#DCADE7<br>1.88</div>
+        <div class="chip" role="listitem" style="background:#C586D4">400<br>#C586D4<br>2.72</div>
+        <div class="chip" role="listitem" style="background:#AA61BB">500<br>#AA61BB<br>4.09</div>
+        <div class="chip" role="listitem" style="background:#9043A1;color:#FFFFFF">600<br>#9043A1<br>5.99</div>
+        <div class="chip" role="listitem" style="background:#722A82;color:#FFFFFF">700 brand<br>#722A82<br>8.86</div>
+        <div class="chip" role="listitem" style="background:#581D65;color:#FFFFFF">800<br>#581D65<br>11.81</div>
+        <div class="chip" role="listitem" style="background:#3F1448;color:#FFFFFF">900<br>#3F1448<br>14.95</div>
+        <div class="chip" role="listitem" style="background:#280A2F;color:#FFFFFF">950<br>#280A2F<br>17.88</div>
+      </div>
+      <p class="specimen__cap" style="margin-top: var(--space-2)">Each chip: step, hex, contrast of that colour on white. Text on 50 to 500 is black (at least 5.14:1); on 600 to 950 it is white (at least 5.99:1).</p>
+      <h3>Neutral scale (wordmark grey hue) on white</h3>
+      <div class="scale-row scale-row--grey" role="list" aria-label="Neutral scale with contrast on white">
+        <div class="chip" role="listitem" style="background:#F5F7F9">50<br>#F5F7F9<br>1.07</div>
+        <div class="chip" role="listitem" style="background:#EEF0F3">100<br>#EEF0F3<br>1.15</div>
+        <div class="chip" role="listitem" style="background:#DCDEE1">200<br>#DCDEE1<br>1.35</div>
+        <div class="chip" role="listitem" style="background:#8F9298">400<br>#8F9298<br>3.12</div>
+        <div class="chip" role="listitem" style="background:#7D8086">450<br>#7D8086<br>3.96</div>
+        <div class="chip" role="listitem" style="background:#63666B;color:#FFFFFF">500 logo<br>#63666B<br>5.76</div>
+        <div class="chip" role="listitem" style="background:#3D4044;color:#FFFFFF">700<br>#3D4044<br>10.42</div>
+        <div class="chip" role="listitem" style="background:#181B1F;color:#FFFFFF">900<br>#181B1F<br>17.28</div>
+      </div>
+    </section>
+
+    <!-- === Section 4: Type === -->
+    <section class="dsec" id="type" aria-labelledby="type-h">
+      <h2 id="type-h"><span class="fsec__num">4</span>Type</h2>
+      <p>B612 and B612 Mono were drawn for aircraft cockpit screens and tested in degraded conditions; capitals, figures and abbreviations stay distinct, which matters for references such as PT-2026-0142 and phone numbers. All times, counts and references are set in B612 Mono, so they line up in columns like a board. Sinhala is set in Gemunu Libre (Mooniak), whose smooth, squared edge sits with B612's instrument shapes.</p>
+      <h3>Scale</h3>
+      <div class="typerow"><p class="typerow__meta">Board time · 40 / 32 px · 1.0 · B612 Mono 700 · next stop's time, tile counts, the reference</p><p class="board-time" style="font-size: var(--size-board-time-phone)">10<span class="colon">:</span>00<span class="per">&nbsp;am</span></p></div>
+      <div class="typerow"><p class="typerow__meta">Title · 26 / 28 px · 1.2 · B612 700 · the h1</p><p style="font-size: var(--size-title-desk); font-weight:700; line-height:1.2">Request a van</p></div>
+      <div class="typerow"><p class="typerow__meta">Row · 18 / 16 px · 1.35 (Sinhala 1.6) · B612 400, times in Mono · board rows and list rows</p><p style="font-size: var(--size-row-phone)"><span class="mono" style="font-weight:700">8:40 am</span> Branch B → Sports Centre · Van 2</p></div>
+      <div class="typerow"><p class="typerow__meta">Body · 17 / 15 px · 1.5 (Sinhala 1.65) · B612 400 · text, inputs</p><p style="font-size: var(--size-body-phone)">It takes about 2 minutes. We'll send you a text when a coordinator confirms your trip.</p></div>
+      <div class="typerow"><p class="typerow__meta">Remark · 14 / 13 px · 1.2 · B612 Mono 700, capitals by CSS, +0.06 em</p><p><span class="remark remark--proposed"><svg class="glyph" aria-hidden="true"><use href="#g-proposed"/></svg><span>Proposed</span></span></p></div>
+      <div class="typerow"><p class="typerow__meta">Small · 14 / 13 px · 1.4 · B612 400 · metadata, hints on the desktop</p><p style="font-size: var(--size-small-phone)">Planned by the system at 5:00 pm on 12/10/2026 (Optimise day).</p></div>
+
+      <h3>English and Sinhala, side by side (phone sizes)</h3>
+      <div class="pair ctx-phone">
+        <div class="specimen">
+          <span class="specimen__cap">English · B612</span>
+          <p style="font-size: calc(var(--fs-title) * var(--k)); font-weight:700; line-height:1.2">Request a van</p>
+          <div class="field is-error" style="margin-top: var(--space-4)">
+            <label class="label" for="ty-en">Your phone number</label>
+            <span class="hint" id="ty-en-hint">For example, 077 123 4567</span>
+            <p class="error-msg" id="ty-en-err"><svg class="icon" aria-hidden="true"><use href="#i-error"/></svg><span>Enter a phone number like 077 123 4567</span></p>
+            <input class="input" id="ty-en" type="tel" value="077 123" aria-invalid="true" aria-describedby="ty-en-err ty-en-hint">
+          </div>
+        </div>
+        <div class="specimen" lang="si">
+          <span class="specimen__cap" lang="en">Sinhala · Gemunu Libre, size factor 1.2 (draft text, D-09)</span>
+          <p style="font-size: calc(var(--fs-title) * var(--k)); font-weight:700; line-height:1.3">වෑන් රථයක් ඉල්ලන්න</p>
+          <div class="field is-error" style="margin-top: var(--space-4)">
+            <label class="label" for="ty-si">ඔබේ දුරකථන අංකය</label>
+            <span class="hint" id="ty-si-hint">උදාහරණය: <span class="latin">077 123 4567</span></span>
+            <p class="error-msg" id="ty-si-err"><svg class="icon" aria-hidden="true"><use href="#i-error"/></svg><span>දුරකථන අංකය <span class="latin">077 123 4567</span> ආකාරයට ඇතුළත් කරන්න</span></p>
+            <input class="input" id="ty-si" type="tel" value="077 123" aria-invalid="true" aria-describedby="ty-si-err ty-si-hint">
+          </div>
+        </div>
+      </div>
+      <h3>The Sinhala size factor at work</h3>
+      <div class="pair ctx-phone">
+        <div class="specimen" lang="si" style="--k: 1">
+          <span class="specimen__cap" lang="en">Without the factor (1.0): the Sinhala reads a size smaller than the English beside it</span>
+          <p><span class="label" style="display:inline">ගමනේ දිනය</span> <span lang="en" style="font-size: var(--fs-body); font-weight:700">Date of trip</span></p>
+          <p style="margin-top: var(--space-2)"><span style="font-size: calc(var(--fs-body) * var(--k))">ප්‍රවාහන කාර්යාලයට අමතන්න.</span> <span lang="en" style="font-size: var(--fs-body)">Call the transport office.</span></p>
+        </div>
+        <div class="specimen" lang="si">
+          <span class="specimen__cap" lang="en">With the factor (1.2, set under :lang(si)): both scripts read at one size</span>
+          <p><span class="label" style="display:inline">ගමනේ දිනය</span> <span lang="en" style="font-size: var(--fs-body); font-weight:700">Date of trip</span></p>
+          <p style="margin-top: var(--space-2)"><span style="font-size: calc(var(--fs-body) * var(--k))">ප්‍රවාහන කාර්යාලයට අමතන්න.</span> <span lang="en" style="font-size: var(--fs-body)">Call the transport office.</span></p>
+        </div>
+      </div>
+      <p style="margin-top: var(--space-3)">Sinhala remarks are not set in capitals (Sinhala has no case) and use Gemunu Libre Bold. Dates and times keep one size in both languages: digits are Latin, so they are not scaled.</p>
+    </section>
+
+    <!-- === Section 5: Spacing and grid === -->
+    <section class="dsec" id="space" aria-labelledby="space-h">
+      <h2 id="space-h"><span class="fsec__num">5</span>Spacing and grid</h2>
+      <div class="grid12">
+        <div class="span-5">
+          <h3>Spacing scale (8 px base)</h3>
+          <ul class="spacebars">
+            <li><span>--space-1 · 4</span><span class="bar" style="width:4px"></span></li>
+            <li><span>--space-2 · 8</span><span class="bar" style="width:8px"></span></li>
+            <li><span>--space-3 · 12</span><span class="bar" style="width:12px"></span></li>
+            <li><span>--space-4 · 16</span><span class="bar" style="width:16px"></span></li>
+            <li><span>--space-5 · 24</span><span class="bar" style="width:24px"></span></li>
+            <li><span>--space-6 · 32</span><span class="bar" style="width:32px"></span></li>
+            <li><span>--space-7 · 48</span><span class="bar" style="width:48px"></span></li>
+          </ul>
+          <p style="margin-top: var(--space-4)">Board rows are 40 px on the desktop and 56 px or more on phones. Corners are 2 px. There are no shadows: the board is flat, and cells are divided by 1 px board lines.</p>
+        </div>
+        <div class="span-7">
+          <h3>Phone: one column, 16 px margins, 480 px at most</h3>
+          <div class="gridpic gridpic--phone" aria-hidden="true"><span></span></div>
+          <p style="margin-top: var(--space-2)">One board strip at the top; the form or route below on white.</p>
+          <h3>Desktop: 12 columns, 24 px gutters, and a 420 px drawer</h3>
+          <div class="gridpic gridpic--desk" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span class="drawerpic"></span></div>
+          <p style="margin-top: var(--space-2)">Full width up to 1440 px. Tiles form the board's top strip; the day chart sits below; the detail drawer is the right-hand column. Board list columns: Time (7 ch) · Ref (12 ch) · From → To (flexible) · Van (6 ch) · Pax (4 ch) · Remarks (14 ch) · Flags.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- === Section 6: Icons === -->
+    <section class="dsec" id="icons" aria-labelledby="icons-h">
+      <h2 id="icons-h"><span class="fsec__num">6</span>Icons</h2>
+      <p>Drawn for this direction like instrument symbols: 24 px grid, 2 px stroke, square ends and mitred joins, geometric shapes only, arrows at 45° and 90°. Icons always sit next to a word. Status glyphs (section 7) are a separate, smaller set of filled and open shapes.</p>
+      <ul class="icons" style="margin-top: var(--space-4)">
+        <li><svg class="icon" aria-hidden="true"><use href="#i-van"/></svg>van</li>
+        <li><svg class="icon" aria-hidden="true"><use href="#i-pax"/></svg>passengers</li>
+        <li><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg>clock, early trip</li>
+        <li><svg class="icon" aria-hidden="true"><use href="#i-calendar"/></svg>calendar</li>
+        <li><svg class="icon" aria-hidden="true"><use href="#i-pickup"/></svg>pick up</li>
+        <li><svg class="icon" aria-hidden="true"><use href="#i-dropoff"/></svg>drop off</li>
+        <li><svg class="icon" aria-hidden="true"><use href="#i-pin"/></svg>map pin</li>
+        <li><svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg>phone</li>
+        <li><svg class="icon" aria-hidden="true"><use href="#i-navigate"/></svg>navigate</li>
+        <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>check</li>
+        <li><svg class="icon" aria-hidden="true"><use href="#i-cross"/></svg>cross</li>
+        <li><svg class="icon" aria-hidden="true"><use href="#i-warning"/></svg>warning</li>
+        <li><svg class="icon" aria-hidden="true"><use href="#i-repeat"/></svg>repeat (fixed trip)</li>
+        <li><svg class="icon" aria-hidden="true"><use href="#i-shared"/></svg>shared</li>
+        <li><svg class="icon" aria-hidden="true"><use href="#i-gap"/></svg>gap job</li>
+        <li><svg class="icon" aria-hidden="true"><use href="#i-outofhours"/></svg>out of hours</li>
+        <li><svg class="icon" aria-hidden="true"><use href="#i-newreq"/></svg>new requester</li>
+        <li><svg class="icon" aria-hidden="true"><use href="#i-late"/></svg>late</li>
+        <li><svg class="icon" aria-hidden="true"><use href="#i-wheelchair"/></svg>wheelchair</li>
+        <li><svg class="icon" aria-hidden="true"><use href="#i-equipment"/></svg>large equipment</li>
+        <li><svg class="icon" aria-hidden="true"><use href="#i-info"/></svg>information</li>
+        <li><svg class="icon" aria-hidden="true"><use href="#i-undo"/></svg>undo</li>
+        <li><svg class="icon" aria-hidden="true"><use href="#i-offline"/></svg>offline</li>
+        <li><svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg>plus</li>
+        <li><svg class="icon" aria-hidden="true"><use href="#i-minus"/></svg>minus</li>
+        <li><svg class="icon" aria-hidden="true"><use href="#i-chevron"/></svg>chevron</li>
+        <li><svg class="icon" aria-hidden="true"><use href="#i-menu"/></svg>menu</li>
+        <li><svg class="icon" aria-hidden="true"><use href="#i-error"/></svg>error</li>
+        <li><svg class="icon" aria-hidden="true"><use href="#i-unconfirmed"/></svg>completion not confirmed</li>
+        <li><svg class="icon" aria-hidden="true"><use href="#i-sort"/></svg>sorted</li>
+        <li><svg class="icon" aria-hidden="true"><use href="#i-list"/></svg>list view</li>
+        <li><svg class="icon" aria-hidden="true"><use href="#i-end"/></svg>end of day</li>
+      </ul>
+    </section>
+
+    <!-- === Section 7: Components === -->
+    <section class="dsec" id="components" aria-labelledby="comp-h">
+      <h2 id="comp-h"><span class="fsec__num">7</span>Components</h2>
+      <p>Every component in each of its states. States that need a pointer or a key are frozen here with a class, so they can be compared side by side.</p>
+
+      <!-- 7a. Buttons -->
+      <h3>Buttons</h3>
+      <div class="state-grid ctx-phone">
+        <div class="state"><span class="state__name">primary · default</span><button type="button" class="btn btn--primary">Send request</button></div>
+        <div class="state"><span class="state__name">hover</span><button type="button" class="btn btn--primary is-hover">Send request</button></div>
+        <div class="state"><span class="state__name">focus</span><button type="button" class="btn btn--primary is-focus">Send request</button></div>
+        <div class="state"><span class="state__name">pressed</span><button type="button" class="btn btn--primary is-pressed">Send request</button></div>
+        <div class="state"><span class="state__name">disabled</span><button type="button" class="btn btn--primary" disabled>Send request</button></div>
+        <div class="state"><span class="state__name">busy</span><button type="button" class="btn btn--primary" aria-busy="true"><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg>Sending…</button></div>
+
+        <div class="state"><span class="state__name">secondary · default</span><button type="button" class="btn btn--secondary">Navigate</button></div>
+        <div class="state"><span class="state__name">hover</span><button type="button" class="btn btn--secondary is-hover">Navigate</button></div>
+        <div class="state"><span class="state__name">focus</span><button type="button" class="btn btn--secondary is-focus">Navigate</button></div>
+        <div class="state"><span class="state__name">pressed</span><button type="button" class="btn btn--secondary is-pressed">Navigate</button></div>
+        <div class="state"><span class="state__name">disabled</span><button type="button" class="btn btn--secondary" disabled>Navigate</button></div>
+        <div class="state"><span class="state__name">busy</span><button type="button" class="btn btn--secondary" aria-busy="true"><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg>Sending…</button></div>
+
+        <div class="state"><span class="state__name">quiet · default</span><button type="button" class="btn btn--quiet">+ Add a stop</button></div>
+        <div class="state"><span class="state__name">hover</span><button type="button" class="btn btn--quiet is-hover">+ Add a stop</button></div>
+        <div class="state"><span class="state__name">focus</span><button type="button" class="btn btn--quiet is-focus">+ Add a stop</button></div>
+        <div class="state"><span class="state__name">pressed</span><button type="button" class="btn btn--quiet is-pressed">+ Add a stop</button></div>
+        <div class="state"><span class="state__name">disabled</span><button type="button" class="btn btn--quiet" disabled>+ Add a stop</button></div>
+        <div class="state"><span class="state__name">busy</span><button type="button" class="btn btn--quiet" aria-busy="true"><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg>Sending…</button></div>
+
+        <div class="state"><span class="state__name">destructive · default</span><button type="button" class="btn btn--danger">Decline</button></div>
+        <div class="state"><span class="state__name">hover</span><button type="button" class="btn btn--danger is-hover">Decline</button></div>
+        <div class="state"><span class="state__name">focus</span><button type="button" class="btn btn--danger is-focus">Decline</button></div>
+        <div class="state"><span class="state__name">pressed</span><button type="button" class="btn btn--danger is-pressed">Decline</button></div>
+        <div class="state"><span class="state__name">disabled</span><button type="button" class="btn btn--danger" disabled>Decline</button></div>
+        <div class="state"><span class="state__name">busy</span><button type="button" class="btn btn--danger" aria-busy="true"><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg>Sending…</button></div>
+      </div>
+      <h4 style="margin-top: var(--space-5)">On the board</h4>
+      <div class="specimen board">
+        <div class="state-grid">
+          <div class="state"><span class="state__name">primary</span><button type="button" class="btn btn--primary">Approve</button></div>
+          <div class="state"><span class="state__name">primary · hover</span><button type="button" class="btn btn--primary is-hover">Approve</button></div>
+          <div class="state"><span class="state__name">primary · focus</span><button type="button" class="btn btn--primary is-focus">Approve</button></div>
+          <div class="state"><span class="state__name">primary · pressed</span><button type="button" class="btn btn--primary is-pressed">Approve</button></div>
+          <div class="state"><span class="state__name">secondary</span><button type="button" class="btn btn--secondary">Change</button></div>
+          <div class="state"><span class="state__name">destructive</span><button type="button" class="btn btn--danger">Decline</button></div>
+          <div class="state"><span class="state__name">disabled</span><button type="button" class="btn btn--primary" disabled>Approve</button></div>
+        </div>
+      </div>
+
+      <!-- 7b. Text field -->
+      <h3>Text field</h3>
+      <div class="state-grid state-grid--wide ctx-phone">
+        <div class="state field"><span class="state__name">default</span><label class="label" for="tf-1">Your name</label><input class="input" id="tf-1" type="text"></div>
+        <div class="state field"><span class="state__name">focus</span><label class="label" for="tf-2">Your name</label><input class="input is-focus" id="tf-2" type="text"></div>
+        <div class="state field"><span class="state__name">filled</span><label class="label" for="tf-3">Your name</label><input class="input" id="tf-3" type="text" value="Kasun Jayasinghe"></div>
+        <div class="state field"><span class="state__name">with hint</span><label class="label" for="tf-4">Your phone number</label><span class="hint" id="tf-4-hint">For example, 077 123 4567</span><input class="input" id="tf-4" type="tel" aria-describedby="tf-4-hint"></div>
+        <div class="state field is-error"><span class="state__name">error</span><label class="label" for="tf-5">Your name</label><p class="error-msg" id="tf-5-err"><svg class="icon" aria-hidden="true"><use href="#i-error"/></svg><span>Please enter your name</span></p><input class="input" id="tf-5" type="text" aria-invalid="true" aria-describedby="tf-5-err"></div>
+        <div class="state field"><span class="state__name">disabled</span><label class="label" for="tf-6">Your name</label><input class="input" id="tf-6" type="text" value="Kasun Jayasinghe" disabled></div>
+      </div>
+
+      <!-- 7c. Radio rows (trip purpose) -->
+      <h3>Radio rows: trip purpose</h3>
+      <div class="state-grid state-grid--wide ctx-phone">
+        <fieldset class="group state"><legend class="state__name">default, hover (Sport), focus (Staff errand)</legend>
+          <div class="rows">
+            <label class="opt" for="rp-1"><input class="ctl" type="radio" name="rp-a" id="rp-1"><span>Class trip</span></label>
+            <label class="opt is-hover" for="rp-2"><input class="ctl" type="radio" name="rp-a" id="rp-2"><span>Sport</span></label>
+            <label class="opt is-focus" for="rp-3"><input class="ctl" type="radio" name="rp-a" id="rp-3"><span>Staff errand</span></label>
+            <label class="opt" for="rp-4"><input class="ctl" type="radio" name="rp-a" id="rp-4"><span>Meeting or event</span></label>
+            <label class="opt" for="rp-5"><input class="ctl" type="radio" name="rp-a" id="rp-5"><span>Other</span></label>
+          </div>
+        </fieldset>
+        <fieldset class="group state"><legend class="state__name">selected (Sport)</legend>
+          <div class="rows">
+            <label class="opt" for="rp-6"><input class="ctl" type="radio" name="rp-b" id="rp-6"><span>Class trip</span></label>
+            <label class="opt" for="rp-7"><input class="ctl" type="radio" name="rp-b" id="rp-7" checked><span>Sport</span></label>
+            <label class="opt" for="rp-8"><input class="ctl" type="radio" name="rp-b" id="rp-8"><span>Staff errand</span></label>
+            <label class="opt" for="rp-9"><input class="ctl" type="radio" name="rp-b" id="rp-9"><span>Meeting or event</span></label>
+            <label class="opt" for="rp-10"><input class="ctl" type="radio" name="rp-b" id="rp-10"><span>Other</span></label>
+          </div>
+        </fieldset>
+        <fieldset class="group state is-error" aria-describedby="rp-err"><legend class="state__name">error</legend>
+          <p class="error-msg" id="rp-err"><svg class="icon" aria-hidden="true"><use href="#i-error"/></svg><span>Choose what the trip is for</span></p>
+          <div class="rows">
+            <label class="opt" for="rp-11"><input class="ctl" type="radio" name="rp-c" id="rp-11" aria-invalid="true"><span>Class trip</span></label>
+            <label class="opt" for="rp-12"><input class="ctl" type="radio" name="rp-c" id="rp-12" aria-invalid="true"><span>Sport</span></label>
+            <label class="opt" for="rp-13"><input class="ctl" type="radio" name="rp-c" id="rp-13" aria-invalid="true"><span>Staff errand</span></label>
+            <label class="opt" for="rp-14"><input class="ctl" type="radio" name="rp-c" id="rp-14" aria-invalid="true"><span>Meeting or event</span></label>
+            <label class="opt" for="rp-15"><input class="ctl" type="radio" name="rp-c" id="rp-15" aria-invalid="true"><span>Other</span></label>
+          </div>
+        </fieldset>
+      </div>
+
+      <!-- 7d. Date and time choice -->
+      <h3>Date choice (a departures list) and time choice</h3>
+      <div class="state-grid state-grid--wide ctx-phone">
+        <fieldset class="group state"><legend class="state__name">default, selected, closed date</legend>
+          <div class="rows">
+            <label class="opt opt--date is-closed" for="dc-0"><input class="ctl" type="radio" name="dc-a" id="dc-0" disabled><span class="when"><span><span class="when__date">12/10/2026</span><span class="when__day">Today, Monday</span></span><span class="remark remark--closed"><svg class="glyph" aria-hidden="true"><use href="#g-cancelled"/></svg><span>Closed</span></span></span></label>
+            <label class="opt opt--date" for="dc-1"><input class="ctl" type="radio" name="dc-a" id="dc-1" checked><span class="when"><span><span class="when__date">13/10/2026</span><span class="when__day">Tomorrow, Tuesday</span></span><span class="remark remark--closes"><svg class="icon icon--sm" aria-hidden="true"><use href="#i-clock"/></svg><span>Closes 5:00 pm today</span></span></span></label>
+            <label class="opt opt--date" for="dc-2"><input class="ctl" type="radio" name="dc-a" id="dc-2"><span class="when"><span><span class="when__date">14/10/2026</span><span class="when__day">Wednesday</span></span><span class="remark remark--open"><svg class="icon icon--sm" aria-hidden="true"><use href="#i-check"/></svg><span>Open</span></span></span></label>
+          </div>
+        </fieldset>
+        <fieldset class="group state is-error" aria-describedby="dc-err"><legend class="state__name">error</legend>
+          <p class="error-msg" id="dc-err"><svg class="icon" aria-hidden="true"><use href="#i-error"/></svg><span>Choose the date of the trip</span></p>
+          <div class="rows">
+            <label class="opt opt--date" for="dc-3"><input class="ctl" type="radio" name="dc-b" id="dc-3" aria-invalid="true"><span class="when"><span><span class="when__date">13/10/2026</span><span class="when__day">Tomorrow, Tuesday</span></span><span class="remark remark--closes"><svg class="icon icon--sm" aria-hidden="true"><use href="#i-clock"/></svg><span>Closes 5:00 pm today</span></span></span></label>
+            <label class="opt opt--date" for="dc-4"><input class="ctl" type="radio" name="dc-b" id="dc-4" aria-invalid="true"><span class="when"><span><span class="when__date">19/10/2026</span><span class="when__day">Monday</span></span><span class="remark remark--closes"><svg class="icon icon--sm" aria-hidden="true"><use href="#i-clock"/></svg><span>Closes 7:00 am on Monday</span></span></span></label>
+          </div>
+        </fieldset>
+        <div class="state">
+          <span class="state__name">time · default, selected, error</span>
+          <div class="field"><label class="label" for="tc-1">Pickup time</label><div class="select-wrap"><select class="select" id="tc-1"><option>Choose a time</option><option>8:45 am</option></select><svg class="icon" aria-hidden="true"><use href="#i-chevron"/></svg></div></div>
+          <div class="field"><label class="label" for="tc-2">Pickup time</label><div class="select-wrap"><select class="select" id="tc-2"><option>Choose a time</option><option selected>8:45 am</option></select><svg class="icon" aria-hidden="true"><use href="#i-chevron"/></svg></div></div>
+          <div class="field is-error"><label class="label" for="tc-3">Pickup time</label><p class="error-msg" id="tc-3-err"><svg class="icon" aria-hidden="true"><use href="#i-error"/></svg><span>Enter a pickup time</span></p><div class="select-wrap"><select class="select" id="tc-3" aria-invalid="true" aria-describedby="tc-3-err"><option>Choose a time</option><option>8:45 am</option></select><svg class="icon" aria-hidden="true"><use href="#i-chevron"/></svg></div></div>
+        </div>
+      </div>
+
+      <!-- 7e. Passenger stepper -->
+      <h3>Passenger stepper</h3>
+      <div class="state-grid state-grid--wide ctx-phone">
+        <div class="state field"><span class="state__name">default (empty)</span><label class="label" for="ps-1">How many passengers (not counting the driver)?</label><div class="stepper"><button type="button" class="btn btn--secondary" aria-disabled="true"><svg class="icon" aria-hidden="true"><use href="#i-minus"/></svg><span class="vh">One fewer passenger</span></button><input class="input" id="ps-1" type="text" inputmode="numeric"><button type="button" class="btn btn--secondary"><svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg><span class="vh">One more passenger</span></button></div></div>
+        <div class="state field"><span class="state__name">at minimum (1)</span><label class="label" for="ps-2">How many passengers (not counting the driver)?</label><div class="stepper"><button type="button" class="btn btn--secondary" aria-disabled="true"><svg class="icon" aria-hidden="true"><use href="#i-minus"/></svg><span class="vh">One fewer passenger</span></button><input class="input" id="ps-2" type="text" inputmode="numeric" value="1"><button type="button" class="btn btn--secondary"><svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg><span class="vh">One more passenger</span></button></div></div>
+        <div class="state field"><span class="state__name">above 12</span><label class="label" for="ps-3">How many passengers (not counting the driver)?</label><div class="stepper"><button type="button" class="btn btn--secondary"><svg class="icon" aria-hidden="true"><use href="#i-minus"/></svg><span class="vh">One fewer passenger</span></button><input class="input" id="ps-3" type="text" inputmode="numeric" value="15"><button type="button" class="btn btn--secondary"><svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg><span class="vh">One more passenger</span></button></div>
+          <div class="alert alert--info"><div class="alert__icon"><svg class="icon" aria-hidden="true"><use href="#i-pax"/></svg></div><p class="alert__body">This group needs more than one van – we'll arrange this.</p></div></div>
+        <div class="state field is-error"><span class="state__name">error</span><label class="label" for="ps-4">How many passengers (not counting the driver)?</label><p class="error-msg" id="ps-4-err"><svg class="icon" aria-hidden="true"><use href="#i-error"/></svg><span>Please enter a number between 1 and 99</span></p><div class="stepper"><button type="button" class="btn btn--secondary" aria-disabled="true"><svg class="icon" aria-hidden="true"><use href="#i-minus"/></svg><span class="vh">One fewer passenger</span></button><input class="input" id="ps-4" type="text" inputmode="numeric" value="0" aria-invalid="true" aria-describedby="ps-4-err"><button type="button" class="btn btn--secondary"><svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg><span class="vh">One more passenger</span></button></div></div>
+      </div>
+
+      <!-- 7f. Checkboxes -->
+      <h3>Checkboxes</h3>
+      <div class="state-grid ctx-phone">
+        <div class="state"><span class="state__name">unchecked</span><label class="check" for="cb-1"><input class="ctl" type="checkbox" id="cb-1"><span>Wheelchair access needed</span></label></div>
+        <div class="state"><span class="state__name">checked</span><label class="check" for="cb-2"><input class="ctl" type="checkbox" id="cb-2" checked><span>Wheelchair access needed</span></label></div>
+        <div class="state"><span class="state__name">focus</span><label class="check" for="cb-3"><input class="ctl is-focus" type="checkbox" id="cb-3"><span>Large equipment</span></label></div>
+        <div class="state"><span class="state__name">disabled</span><label class="check is-disabled" for="cb-4"><input class="ctl" type="checkbox" id="cb-4" disabled><span>Large equipment</span></label></div>
+      </div>
+
+      <!-- 7g. Remarks (status) and flags -->
+      <h3>Remarks: the eight statuses, and the flags</h3>
+      <p>Each status is a word with its own shape: <svg class="glyph" aria-hidden="true" style="display:inline-block;vertical-align:-0.05em"><use href="#g-submitted"/></svg> dotted ring, <svg class="glyph" aria-hidden="true" style="display:inline-block;vertical-align:-0.05em"><use href="#g-proposed"/></svg> ring, <svg class="glyph" aria-hidden="true" style="display:inline-block;vertical-align:-0.05em"><use href="#g-attention"/></svg> triangle, <svg class="glyph" aria-hidden="true" style="display:inline-block;vertical-align:-0.05em"><use href="#g-confirmed"/></svg> disc, <svg class="glyph" aria-hidden="true" style="display:inline-block;vertical-align:-0.05em"><use href="#g-declined"/></svg> cross, <svg class="glyph" aria-hidden="true" style="display:inline-block;vertical-align:-0.05em"><use href="#g-cancelled"/></svg> bar, <svg class="glyph" aria-hidden="true" style="display:inline-block;vertical-align:-0.05em"><use href="#g-completed"/></svg> square, <svg class="glyph" aria-hidden="true" style="display:inline-block;vertical-align:-0.05em"><use href="#g-noshow"/></svg> open square. The greyscale copy below each row proves they still read without colour.</p>
+      <div class="specimen" style="margin-top: var(--space-3)">
+        <span class="specimen__cap">Light pages (2 px frame)</span>
+        <div class="row-of" id="badges-light">
+          <span class="remark remark--submitted"><svg class="glyph" aria-hidden="true"><use href="#g-submitted"/></svg><span>Submitted</span></span>
+          <span class="remark remark--proposed"><svg class="glyph" aria-hidden="true"><use href="#g-proposed"/></svg><span>Proposed</span></span>
+          <span class="remark remark--attention"><svg class="glyph" aria-hidden="true"><use href="#g-attention"/></svg><span>Needs attention</span></span>
+          <span class="remark remark--confirmed"><svg class="glyph" aria-hidden="true"><use href="#g-confirmed"/></svg><span>Confirmed</span></span>
+          <span class="remark remark--declined"><svg class="glyph" aria-hidden="true"><use href="#g-declined"/></svg><span>Declined</span></span>
+          <span class="remark remark--cancelled"><svg class="glyph" aria-hidden="true"><use href="#g-cancelled"/></svg><span>Cancelled</span></span>
+          <span class="remark remark--completed"><svg class="glyph" aria-hidden="true"><use href="#g-completed"/></svg><span>Completed</span></span>
+          <span class="remark remark--noshow"><svg class="glyph" aria-hidden="true"><use href="#g-noshow"/></svg><span>No-show</span></span>
+        </div>
+        <div class="row-of greyscale" aria-hidden="true" style="margin-top: var(--space-3)">
+          <span class="remark remark--submitted"><svg class="glyph"><use href="#g-submitted"/></svg><span>Submitted</span></span>
+          <span class="remark remark--proposed"><svg class="glyph"><use href="#g-proposed"/></svg><span>Proposed</span></span>
+          <span class="remark remark--attention"><svg class="glyph"><use href="#g-attention"/></svg><span>Needs attention</span></span>
+          <span class="remark remark--confirmed"><svg class="glyph"><use href="#g-confirmed"/></svg><span>Confirmed</span></span>
+          <span class="remark remark--declined"><svg class="glyph"><use href="#g-declined"/></svg><span>Declined</span></span>
+          <span class="remark remark--cancelled"><svg class="glyph"><use href="#g-cancelled"/></svg><span>Cancelled</span></span>
+          <span class="remark remark--completed"><svg class="glyph"><use href="#g-completed"/></svg><span>Completed</span></span>
+          <span class="remark remark--noshow"><svg class="glyph"><use href="#g-noshow"/></svg><span>No-show</span></span>
+        </div>
+      </div>
+      <div class="specimen board" style="margin-top: var(--space-3)">
+        <span class="specimen__cap">The board (1 px frame)</span>
+        <div class="row-of">
+          <span class="remark remark--submitted"><svg class="glyph" aria-hidden="true"><use href="#g-submitted"/></svg><span>Submitted</span></span>
+          <span class="remark remark--proposed"><svg class="glyph" aria-hidden="true"><use href="#g-proposed"/></svg><span>Proposed</span></span>
+          <span class="remark remark--attention"><svg class="glyph" aria-hidden="true"><use href="#g-attention"/></svg><span>Needs attention</span></span>
+          <span class="remark remark--confirmed"><svg class="glyph" aria-hidden="true"><use href="#g-confirmed"/></svg><span>Confirmed</span></span>
+          <span class="remark remark--declined"><svg class="glyph" aria-hidden="true"><use href="#g-declined"/></svg><span>Declined</span></span>
+          <span class="remark remark--cancelled"><svg class="glyph" aria-hidden="true"><use href="#g-cancelled"/></svg><span>Cancelled</span></span>
+          <span class="remark remark--completed"><svg class="glyph" aria-hidden="true"><use href="#g-completed"/></svg><span>Completed</span></span>
+          <span class="remark remark--noshow"><svg class="glyph" aria-hidden="true"><use href="#g-noshow"/></svg><span>No-show</span></span>
+        </div>
+        <div class="row-of greyscale" aria-hidden="true" style="margin-top: var(--space-3)">
+          <span class="remark remark--submitted"><svg class="glyph"><use href="#g-submitted"/></svg><span>Submitted</span></span>
+          <span class="remark remark--proposed"><svg class="glyph"><use href="#g-proposed"/></svg><span>Proposed</span></span>
+          <span class="remark remark--attention"><svg class="glyph"><use href="#g-attention"/></svg><span>Needs attention</span></span>
+          <span class="remark remark--confirmed"><svg class="glyph"><use href="#g-confirmed"/></svg><span>Confirmed</span></span>
+          <span class="remark remark--declined"><svg class="glyph"><use href="#g-declined"/></svg><span>Declined</span></span>
+          <span class="remark remark--cancelled"><svg class="glyph"><use href="#g-cancelled"/></svg><span>Cancelled</span></span>
+          <span class="remark remark--completed"><svg class="glyph"><use href="#g-completed"/></svg><span>Completed</span></span>
+          <span class="remark remark--noshow"><svg class="glyph"><use href="#g-noshow"/></svg><span>No-show</span></span>
+        </div>
+      </div>
+      <div class="specimen" style="margin-top: var(--space-3)">
+        <span class="specimen__cap">Flags: a short word after the remark, with an icon</span>
+        <ul class="flags">
+          <li class="flag"><svg class="icon" aria-hidden="true"><use href="#i-late"/></svg>Late (exception)</li>
+          <li class="flag"><svg class="icon" aria-hidden="true"><use href="#i-shared"/></svg>Shared</li>
+          <li class="flag"><svg class="icon" aria-hidden="true"><use href="#i-gap"/></svg>Gap job</li>
+          <li class="flag"><svg class="icon" aria-hidden="true"><use href="#i-outofhours"/></svg>Out of hours</li>
+          <li class="flag"><svg class="icon" aria-hidden="true"><use href="#i-newreq"/></svg>New requester</li>
+          <li class="flag"><svg class="icon" aria-hidden="true"><use href="#i-repeat"/></svg>Fixed trip</li>
+          <li class="flag"><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg>Early trip</li>
+          <li class="flag"><svg class="icon" aria-hidden="true"><use href="#i-unconfirmed"/></svg>Completion not confirmed</li>
+        </ul>
+        <ul class="flags greyscale" aria-hidden="true" style="margin-top: var(--space-2)">
+          <li class="flag"><svg class="icon"><use href="#i-late"/></svg>Late (exception)</li>
+          <li class="flag"><svg class="icon"><use href="#i-shared"/></svg>Shared</li>
+          <li class="flag"><svg class="icon"><use href="#i-gap"/></svg>Gap job</li>
+          <li class="flag"><svg class="icon"><use href="#i-outofhours"/></svg>Out of hours</li>
+          <li class="flag"><svg class="icon"><use href="#i-newreq"/></svg>New requester</li>
+          <li class="flag"><svg class="icon"><use href="#i-repeat"/></svg>Fixed trip</li>
+          <li class="flag"><svg class="icon"><use href="#i-clock"/></svg>Early trip</li>
+          <li class="flag"><svg class="icon"><use href="#i-unconfirmed"/></svg>Completion not confirmed</li>
+        </ul>
+      </div>
+      <div class="specimen board" style="margin-top: var(--space-3)">
+        <table class="btable">
+          <caption>Statuses outside the trip day, as board rows</caption>
+          <thead><tr><th scope="col">Date</th><th scope="col">Ref</th><th scope="col">Remarks</th><th scope="col">Flags</th></tr></thead>
+          <tbody>
+            <tr><td class="t">14/10/2026</td><th scope="row" class="ref">PT-2026-0155</th><td><span class="remark remark--submitted"><svg class="glyph" aria-hidden="true"><use href="#g-submitted"/></svg><span>Submitted</span></span></td><td>Being planned now</td></tr>
+            <tr><td class="t">12/10/2026</td><th scope="row" class="ref">PT-2026-0121</th><td><span class="remark remark--completed"><svg class="glyph" aria-hidden="true"><use href="#g-completed"/></svg><span>Completed</span></span></td><td></td></tr>
+            <tr><td class="t">12/10/2026</td><th scope="row" class="ref">PT-2026-0124</th><td><span class="remark remark--noshow"><svg class="glyph" aria-hidden="true"><use href="#g-noshow"/></svg><span>No-show</span></span></td><td></td></tr>
+            <tr><td class="t">12/10/2026</td><th scope="row" class="ref">PT-2026-0126</th><td><span class="remark remark--completed"><svg class="glyph" aria-hidden="true"><use href="#g-completed"/></svg><span>Completed</span></span></td><td><ul class="flags"><li class="flag"><svg class="icon" aria-hidden="true"><use href="#i-unconfirmed"/></svg>Completion not confirmed</li></ul></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 7h. Alerts -->
+      <h3>Alerts: messages in the board's own cell format</h3>
+      <div class="state-grid state-grid--wide ctx-phone">
+        <div class="state"><span class="state__name">information (cutoff)</span>
+          <div class="alert alert--info"><div class="alert__icon"><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg></div><p class="alert__body"><strong>Requests for tomorrow close at 5:00 pm today.</strong></p></div></div>
+        <div class="state"><span class="state__name">success (request received)</span>
+          <div class="alert alert--success"><div class="alert__icon"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></div><div class="alert__body"><p class="alert__title"><strong>Request received</strong></p><p>Your reference is <span class="mono"><strong>PT-2026-0142</strong></span></p></div></div></div>
+        <div class="state"><span class="state__name">warning (out of hours)</span>
+          <div class="alert alert--warning"><div class="alert__icon"><svg class="icon" aria-hidden="true"><use href="#i-warning"/></svg></div><p class="alert__body">Trips after 6:00 pm are outside our normal hours. A coordinator will check your request.</p></div></div>
+        <div class="state"><span class="state__name">error (summary with two linked errors)</span>
+          <div class="alert alert--error"><div class="alert__icon"><svg class="icon" aria-hidden="true"><use href="#i-error"/></svg></div><div class="alert__body"><p class="alert__title"><strong>There is a problem</strong></p><ul><li><a href="#tf-5">Please enter your name</a></li><li><a href="#ps-4">Please enter a number between 1 and 99</a></li></ul></div></div></div>
+      </div>
+
+      <!-- 7i. Data table -->
+      <h3>Data table: today's trips</h3>
+      <div class="specimen board">
+        <div class="table-wrap">
+          <table class="btable">
+            <caption>Today's trips, Tuesday 13/10/2026: 10 trips, in pickup time order</caption>
+            <thead>
+              <tr>
+                <th scope="col" aria-sort="ascending">Time<svg class="icon icon--sm" aria-hidden="true"><use href="#i-sort"/></svg></th>
+                <th scope="col">Ref</th>
+                <th scope="col">From → To</th>
+                <th scope="col">Van</th>
+                <th scope="col" class="n">Pax</th>
+                <th scope="col">Remarks</th>
+                <th scope="col">Flags</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr data-ref="PT-2026-0131">
+                <td class="t">7:30 am</td>
+                <th scope="row" class="ref">PT-2026-0131</th>
+                <td>Branch A → Branch C</td>
+                <td>Van 1</td>
+                <td class="n">2</td>
+                <td><span class="remark remark--confirmed"><svg class="glyph" aria-hidden="true"><use href="#g-confirmed"/></svg><span>Confirmed</span></span></td>
+                <td><ul class="flags"><li class="flag"><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg>Early trip</li></ul></td>
+              </tr>
+              <tr data-ref="PT-2026-0140">
+                <td class="t">8:25 am</td>
+                <th scope="row" class="ref">PT-2026-0140</th>
+                <td>Branch A → Branch C</td>
+                <td>Van 2</td>
+                <td class="n">3</td>
+                <td><span class="remark remark--proposed"><svg class="glyph" aria-hidden="true"><use href="#g-proposed"/></svg><span>Proposed</span></span></td>
+                <td><ul class="flags"><li class="flag"><svg class="icon" aria-hidden="true"><use href="#i-shared"/></svg>Shared</li></ul></td>
+              </tr>
+              <tr data-ref="PT-2026-0142">
+                <td class="t">8:40 am</td>
+                <th scope="row" class="ref">PT-2026-0142</th>
+                <td>Branch B → Sports Centre</td>
+                <td>Van 2</td>
+                <td class="n">4</td>
+                <td><span class="remark remark--proposed"><svg class="glyph" aria-hidden="true"><use href="#g-proposed"/></svg><span>Proposed</span></span></td>
+                <td><ul class="flags"><li class="flag"><svg class="icon" aria-hidden="true"><use href="#i-shared"/></svg>Shared</li></ul></td>
+              </tr>
+              <tr data-ref="PT-2026-0119">
+                <td class="t">9:05 am</td>
+                <th scope="row" class="ref">PT-2026-0119</th>
+                <td>Branch A → Aquatic Centre</td>
+                <td>Van 1</td>
+                <td class="n">11</td>
+                <td><span class="remark remark--proposed"><svg class="glyph" aria-hidden="true"><use href="#g-proposed"/></svg><span>Proposed</span></span></td>
+                <td><ul class="flags"><li class="flag"><svg class="icon" aria-hidden="true"><use href="#i-repeat"/></svg>Fixed trip</li></ul></td>
+              </tr>
+              <tr data-ref="PT-2026-0145">
+                <td class="t">10:00 am</td>
+                <th scope="row" class="ref">PT-2026-0145</th>
+                <td>Branch B → Stationery supplier → Branch B</td>
+                <td>Van 1</td>
+                <td class="n">1</td>
+                <td><span class="remark remark--proposed"><svg class="glyph" aria-hidden="true"><use href="#g-proposed"/></svg><span>Proposed</span></span></td>
+                <td><ul class="flags"><li class="flag"><svg class="icon" aria-hidden="true"><use href="#i-gap"/></svg>Gap job</li></ul></td>
+              </tr>
+              <tr data-ref="PT-2026-0147">
+                <td class="t">11:20 am</td>
+                <th scope="row" class="ref">PT-2026-0147</th>
+                <td>Branch C → pin "Opposite the temple, 2nd lane"</td>
+                <td>Van 2</td>
+                <td class="n">3</td>
+                <td><span class="remark remark--attention"><svg class="glyph" aria-hidden="true"><use href="#g-attention"/></svg><span>Needs attention</span></span></td>
+                <td><ul class="flags"><li class="flag"><svg class="icon" aria-hidden="true"><use href="#i-newreq"/></svg>New requester</li></ul></td>
+              </tr>
+              <tr data-ref="PT-2026-0149">
+                <td class="t">1:00 pm</td>
+                <th scope="row" class="ref">PT-2026-0149</th>
+                <td>Branch A → Sports Centre</td>
+                <td>Not placed</td>
+                <td class="n">20</td>
+                <td><span class="remark remark--attention"><svg class="glyph" aria-hidden="true"><use href="#g-attention"/></svg><span>Needs attention</span></span></td>
+                <td></td>
+              </tr>
+              <tr data-ref="PT-2026-0150">
+                <td class="t">1:30 pm</td>
+                <th scope="row" class="ref">PT-2026-0150</th>
+                <td>Branch A → Branch B</td>
+                <td>Van 1</td>
+                <td class="n">6</td>
+                <td><span class="remark remark--proposed"><svg class="glyph" aria-hidden="true"><use href="#g-proposed"/></svg><span>Proposed</span></span></td>
+                <td></td>
+              </tr>
+              <tr data-ref="PT-2026-0153">
+                <td class="t">2:15 pm</td>
+                <th scope="row" class="ref">PT-2026-0153</th>
+                <td>Branch C → Branch A</td>
+                <td>Van 2</td>
+                <td class="n">2</td>
+                <td><span class="remark remark--proposed"><svg class="glyph" aria-hidden="true"><use href="#g-proposed"/></svg><span>Proposed</span></span></td>
+                <td><ul class="flags"><li class="flag"><svg class="icon" aria-hidden="true"><use href="#i-late"/></svg>Late (exception)</li></ul></td>
+              </tr>
+              <tr data-ref="PT-2026-0151">
+                <td class="t">5:45 pm</td>
+                <th scope="row" class="ref">PT-2026-0151</th>
+                <td>Branch B → Branch A</td>
+                <td>Van 2</td>
+                <td class="n">7</td>
+                <td><span class="remark remark--proposed"><svg class="glyph" aria-hidden="true"><use href="#g-proposed"/></svg><span>Proposed</span></span></td>
+                <td><ul class="flags"><li class="flag"><svg class="icon" aria-hidden="true"><use href="#i-outofhours"/></svg>Out of hours</li></ul></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 7j. Navigation -->
+      <h3>Navigation</h3>
+      <div class="specimen board">
+        <span class="specimen__cap">Coordinator navigation: the current page has a purple bar under it and bold type</span>
+        <nav class="nav-coord" aria-label="Coordinator (specimen)">
+          <ul>
+            <li><a href="dashboard.html" aria-current="page">Dashboard</a></li>
+            <li><a href="#components">Calendar</a></li>
+            <li><a href="#components">Requests</a></li>
+            <li><a href="#components">Fixed trips</a></li>
+            <li><a href="#components">Vans and drivers</a></li>
+            <li><a href="#components">Places</a></li>
+            <li><a href="#components">Reports</a></li>
+            <li><a href="#components">Settings</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="specimen specimen--phone ctx-phone" style="margin-top: var(--space-3); padding: 0">
+        <div class="ph board">
+          <div class="ph__brand"><img src="../assets/crest-keyline.png" alt="Polymath College" width="33" height="36"><span class="product">PolymathTransit</span></div>
+          <div class="ph__lang">
+            <span id="ls-label">Language</span>
+            <div class="lang" role="group" aria-labelledby="ls-label">
+              <button type="button" class="lang__btn" lang="en" aria-pressed="true"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>English</button>
+              <button type="button" class="lang__btn" lang="si" aria-pressed="false">සිංහල</button>
+            </div>
+          </div>
+          <p class="ph__note">This Sinhala text is a draft for review by native speakers (D-09).</p>
+        </div>
+      </div>
+      <p class="specimen__cap" style="margin-top: var(--space-2)">Phone header with the language switch: each language named in its own script; the current one is filled and carries a tick.</p>
+    </section>
+
+    <!-- === Section 8: Signature element === -->
+    <section class="dsec" id="signature" aria-labelledby="sig-h">
+      <h2 id="sig-h"><span class="fsec__num">8</span>Signature: the board row and the now line</h2>
+      <div class="specimen board">
+        <table class="btable">
+          <caption>One trip, one line</caption>
+          <thead><tr><th scope="col">Time</th><th scope="col">Ref</th><th scope="col">From → To</th><th scope="col">Van</th><th scope="col" class="n">Pax</th><th scope="col">Remarks</th><th scope="col">Flags</th></tr></thead>
+          <tbody><tr><td class="t">8:40 am</td><th scope="row" class="ref">PT-2026-0142</th><td>Branch B → Sports Centre</td><td>Van 2</td><td class="n">4</td><td><span class="remark remark--proposed"><svg class="glyph" aria-hidden="true"><use href="#g-proposed"/></svg><span>Proposed</span></span></td><td><ul class="flags"><li class="flag"><svg class="icon" aria-hidden="true"><use href="#i-shared"/></svg>Shared</li></ul></td></tr></tbody>
+        </table>
+      </div>
+      <div class="grid12" style="margin-top: var(--space-4)">
+        <div class="span-7">
+          <p>One row format is used wherever a trip appears: the time first in mono, then the places, the van, the passengers and the remark slot. On the dashboard the same rows form the list view, the tiles are the board's header strip, and the day chart carries a vertical "now" line at 7:05 am that every run reads against. On the request form the date choice is a small departures list: each date is a row with its remark ("Closed", "Closes 5:00 pm today", "Open"), so the cutoff is part of the choice itself (FR-07). On the driver's phone the dark strip at the top is the next stop's row, with the time large and "in 20 min". Its job: make time and status readable at a glance, in the same place, on every screen.</p>
+        </div>
+        <div class="span-5 ctx-phone">
+          <div class="rows">
+            <label class="opt opt--date" for="sig-1"><input class="ctl" type="radio" name="sig" id="sig-1" checked><span class="when"><span><span class="when__date">13/10/2026</span><span class="when__day">Tomorrow, Tuesday</span></span><span class="remark remark--closes"><svg class="icon icon--sm" aria-hidden="true"><use href="#i-clock"/></svg><span>Closes 5:00 pm today</span></span></span></label>
+          </div>
+          <div class="board nextboard" style="margin-top: var(--space-3); padding: var(--space-3) var(--space-4)">
+            <p class="colhead">Next stop · Stop 5</p>
+            <div class="nextrow__line"><p class="board-time">10<span class="colon">:</span>00<span class="per">&nbsp;am</span></p><p class="nextrow__in">in 20 min</p></div>
+            <p class="nextrow__place">Branch B</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- === Section 9: Motion === -->
+    <section class="dsec" id="motion" aria-labelledby="motion-h">
+      <h2 id="motion-h"><span class="fsec__num">9</span>Motion</h2>
+      <table class="swatches motion-table">
+        <caption class="vh">What moves, for how long, and what happens with reduced motion</caption>
+        <thead><tr><th scope="col">What moves</th><th scope="col">How</th><th scope="col">Duration and easing</th><th scope="col">Reduced motion</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">A remark when its status changes (Approve, Done, plan approved)</th><td>The word turns over once on its own slot (rotateX, the slot only)</td><td class="mono">150 ms · ease-out</td><td>The word changes instantly</td></tr>
+          <tr><th scope="row">A disclosure chevron (Anything special?, done stops)</th><td>Turns 90°</td><td class="mono">150 ms · ease-out</td><td>Instant</td></tr>
+          <tr><th scope="row">The now line</th><td>Does not animate</td><td>–</td><td>–</td></tr>
+          <tr><th scope="row">Focus moving to the error summary, the confirmation heading or the drawer</th><td>No animation; the page scrolls to it</td><td>–</td><td>–</td></tr>
+        </tbody>
+      </table>
+      <div class="row-of" style="margin-top: var(--space-4)">
+        <span class="remark remark--proposed" id="flip-slot"><svg class="glyph" aria-hidden="true"><use href="#g-proposed"/></svg><span>Proposed</span></span>
+        <button type="button" class="btn btn--secondary" id="flip-demo" hidden>Change the status</button>
+        <span class="vh" id="flip-live" role="status"></span>
+      </div>
+      <p style="margin-top: var(--space-3)">No split-flap tiles, sound or looping animation: the flip is a single 150 ms turn of one word, and only when something has changed.</p>
+    </section>
+  </main>
+
+  <!-- === Section: Footer === -->
+  <footer class="foot doc">
+    <p><span class="product">PolymathTransit</span> · Design direction 4, Departures · <a href="../index.html">All five directions</a> · <a href="request.html">Request form</a> · <a href="dashboard.html">Dashboard</a> · <a href="driver.html">Driver's route</a></p>
+  </footer>
+</body>
+</html>

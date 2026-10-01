@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<!--
+  Purpose:  Coordinator dashboard (1280 to 1440 px), English only, for the
+            7:05 am approval on Tuesday 13/10/2026: tiles, Marey-style day
+            chart, list view, drawer on PT-2026-0142. Direction 4.
+  Reqs:     FR-19, FR-20, FR-25 to FR-30, FR-34, FR-57, FR-58, FR-61,
+            FR-62, FR-65, BRL-06, BRL-09 to BRL-11, BRL-13, BRL-15,
+            BRL-21, US-16, US-17, US-22, US-23, US-26, US-54, NFR-03.
+  Uses:     tokens.css, components.css, pages.css, script.js, ../assets.
+  Sections: sprite, header and nav, title, tiles, day chart and key, list
+            and filters, drawer, dialog, footer, prototype controls.
+  No JS:    tiles, chart, list and drawer all show.
+-->
+<html lang="en" class="board">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dashboard – PolymathTransit</title>
+  <link rel="icon" href="../assets/crest.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=B612:wght@400;700&amp;family=B612+Mono:wght@400;700&amp;display=swap">
+  <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="components.css">
+  <link rel="stylesheet" href="pages.css">
+  <script src="script.js" defer></script>
+</head>
+<body class="ctx-desk page-dash" data-page="dashboard">
+
+  <!-- === Section: Icon sprite === -->
+  <svg class="sprite" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5h4"/></symbol>
+    <symbol id="i-van" viewBox="0 0 24 24"><path d="M5 17H2V6h12l4 5h4v6h-3M9 17h6M14 6v5h4"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></symbol>
+    <symbol id="i-pax" viewBox="0 0 24 24"><circle cx="9" cy="7" r="3"/><path d="M3 20v-3l3-3h6l3 3v3"/><path d="M16 4a3 3 0 0 1 0 6M18 14l3 3v3"/></symbol>
+    <symbol id="i-repeat" viewBox="0 0 24 24"><path d="M4 11V7h14M15 4l3 3-3 3M20 13v4H6M9 20l-3-3 3-3"/></symbol>
+    <symbol id="i-shared" viewBox="0 0 24 24"><path d="M3 6l6 6h11M3 18l6-6M17 9l3 3-3 3"/></symbol>
+    <symbol id="i-gap" viewBox="0 0 24 24"><path d="M3 5v14M21 5v14M3 12h4M17 12h4"/><path d="M8 9h8v6H8Z"/></symbol>
+    <symbol id="i-outofhours" viewBox="0 0 24 24"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z"/></symbol>
+    <symbol id="i-newreq" viewBox="0 0 24 24"><circle cx="9" cy="7" r="3"/><path d="M3 20v-3l3-3h6l3 3v3M19 8v6M16 11h6"/></symbol>
+    <symbol id="i-late" viewBox="0 0 24 24"><path d="M6 3h12M6 21h12M7 3v3l5 6 5-6V3M7 21v-3l5-6 5 6v3"/></symbol>
+    <symbol id="i-undo" viewBox="0 0 24 24"><path d="M8 5L3 10l5 5M3 10h12a5 5 0 0 1 0 10h-4"/></symbol>
+    <symbol id="i-chevron" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></symbol>
+    <symbol id="i-sort" viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6"/></symbol>
+    <symbol id="i-list" viewBox="0 0 24 24"><path d="M3 6h2M9 6h12M3 12h2M9 12h12M3 18h2M9 18h12"/></symbol>
+    <symbol id="g-submitted" viewBox="0 0 12 12"><circle cx="6" cy="6" r="4.4" stroke-dasharray="2 1.6"/></symbol>
+    <symbol id="g-proposed" viewBox="0 0 12 12"><circle cx="6" cy="6" r="4.4"/></symbol>
+    <symbol id="g-attention" viewBox="0 0 12 12"><path d="M6 1l5.5 10H.5Z" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="g-confirmed" viewBox="0 0 12 12"><circle cx="6" cy="6" r="5" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="g-declined" viewBox="0 0 12 12"><path d="M2 2l8 8M10 2l-8 8" stroke-width="2.2"/></symbol>
+    <symbol id="g-cancelled" viewBox="0 0 12 12"><path d="M1 6h10" stroke-width="2.5"/></symbol>
+    <symbol id="g-completed" viewBox="0 0 12 12"><rect x="1" y="1" width="10" height="10" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="g-noshow" viewBox="0 0 12 12"><rect x="1.9" y="1.9" width="8.2" height="8.2"/></symbol>
+  </svg>
+
+  <a class="skip" href="#main">Skip to main content</a>
+
+  <!-- === Section: Header (brand, board clock, user, navigation) === -->
+  <header class="dh">
+    <div class="dh__top">
+      <a class="dh__brand" href="dashboard.html"><img src="../assets/crest-keyline.png" alt="Polymath College" width="29" height="32"><span class="product">PolymathTransit</span></a>
+      <p class="dh__clock"><span>Tuesday</span> <span class="mono">13/10/2026</span><span class="dh__sep" aria-hidden="true"></span><span class="mono dh__now">7:05 am</span></p>
+      <p class="dh__user"><span>Anoma Jayawardena, Coordinator</span> <a href="#">Sign out</a></p>
+    </div>
+    <nav class="nav-coord dh__nav" aria-label="Coordinator">
+      <ul>
+        <li><a href="dashboard.html" aria-current="page">Dashboard</a></li>
+        <li><a href="#">Calendar</a></li>
+        <li><a href="#">Requests</a></li>
+        <li><a href="#">Fixed trips</a></li>
+        <li><a href="#">Vans and drivers</a></li>
+        <li><a href="#">Places</a></li>
+        <li><a href="#">Reports</a></li>
+        <li><a href="#">Settings</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- === Section: Main === -->
+  <main id="main" class="dash">
+    <div class="dash__main">
+
+      <div class="dash__title">
+        <h1>Dashboard <span class="dash__date">Tuesday <span class="mono">13/10/2026</span></span></h1>
+        <!-- US-22 AC-4: counts would refresh every 30 seconds. -->
+        <p class="updated" id="updated" aria-live="polite">Updated <span class="mono">7:05 am</span></p>
+      </div>
+
+      <!-- === Section: Tiles – the board's header strip (US-22 AC-1) === -->
+      <section aria-labelledby="tiles-title">
+        <h2 class="vh" id="tiles-title">Today at a glance</h2>
+        <div class="tiles">
+          <section class="tile tile--plan" id="plan-tile" aria-labelledby="plan-title">
+            <h3 class="tile__label" id="plan-title">Today's plan – ready to approve</h3>
+            <ul class="facts">
+              <li><strong>Tuesday <span class="mono">13/10/2026</span></strong> · 2 vans · 8 trips</li>
+              <li>Optimised at 5:00 pm yesterday</li>
+              <li>Early trip at 7:30 am already confirmed</li>
+              <li>2 requests that need attention are not in the plan</li>
+            </ul>
+            <div class="deadline" id="plan-deadline">
+              <p><span class="deadline__label">Approve by</span><span class="board-time">7<span class="colon">:</span>10<span class="per">&nbsp;am</span></span></p>
+              <button type="button" class="btn btn--primary" id="approve-plan">Approve today's plan</button>
+            </div>
+            <div id="plan-live" role="status"></div>
+          </section>
+          <a class="tile tile--attention" href="#list-view" data-open-list>
+            <span class="tile__count"><span class="board-time" id="count-attention">2</span><svg class="glyph" aria-hidden="true"><use href="#g-attention"/></svg></span>
+            <span class="tile__label">Needs attention</span>
+            <span class="tile__refs">PT-2026-0147, 0149</span>
+          </a>
+          <a class="tile tile--proposed" href="#list-view" data-open-list>
+            <span class="tile__count"><span class="board-time" id="count-awaiting">7</span><svg class="glyph" aria-hidden="true"><use href="#g-proposed"/></svg></span>
+            <span class="tile__label">Awaiting approval</span>
+            <span class="tile__refs" id="refs-awaiting">PT-2026-0119, 0140, 0142, 0145, 0150, 0151, 0153</span>
+          </a>
+          <a class="tile" href="#list-view" data-open-list>
+            <span class="tile__count"><span class="board-time" id="count-late">1</span><svg class="icon" aria-hidden="true"><use href="#i-late"/></svg></span>
+            <span class="tile__label">Late exceptions</span>
+            <span class="tile__refs">PT-2026-0153</span>
+          </a>
+          <a class="tile" href="#list-view" data-open-list>
+            <span class="tile__count"><span class="board-time" id="count-trips">10</span><svg class="icon" aria-hidden="true"><use href="#i-van"/></svg></span>
+            <span class="tile__label">Today's trips</span>
+            <span class="tile__refs">2 vans · 1 not placed</span>
+          </a>
+        </div>
+      </section>
+
+      <!-- === Section: Day chart (FR-29, US-26 AC-1) === -->
+      <section class="dayboard" aria-labelledby="chart-title">
+        <div class="dayboard__head">
+          <h2 id="chart-title">Day chart</h2>
+          <p class="dayboard__sub">Time runs across, vans run down. Choose a run to open it.</p>
+          <button type="button" class="btn btn--secondary" id="toggle-list" aria-pressed="false" aria-controls="chart-view list-view" hidden><svg class="icon" aria-hidden="true"><use href="#i-list"/></svg>Show as list</button>
+        </div>
+
+        <div id="chart-view">
+          <div class="chart-scroll">
+            <div class="chart">
+              <div class="chart__nowrow" aria-hidden="true"><span class="chart__now-label" style="--t:425">Now 7:05 am</span></div>
+              <ol class="chart__scale" aria-hidden="true">
+                <li class="chart__tick" style="--t:420">7:00<span class="chart__per">am</span></li>
+                <li class="chart__tick" style="--t:480">8:00<span class="chart__per">am</span></li>
+                <li class="chart__tick" style="--t:540">9:00<span class="chart__per">am</span></li>
+                <li class="chart__tick" style="--t:600">10:00<span class="chart__per">am</span></li>
+                <li class="chart__tick" style="--t:660">11:00<span class="chart__per">am</span></li>
+                <li class="chart__tick" style="--t:720">12:00<span class="chart__per">pm</span></li>
+                <li class="chart__tick" style="--t:780">1:00<span class="chart__per">pm</span></li>
+                <li class="chart__tick" style="--t:840">2:00<span class="chart__per">pm</span></li>
+                <li class="chart__tick" style="--t:900">3:00<span class="chart__per">pm</span></li>
+                <li class="chart__tick" style="--t:960">4:00<span class="chart__per">pm</span></li>
+                <li class="chart__tick" style="--t:1020">5:00<span class="chart__per">pm</span></li>
+                <li class="chart__tick chart__tick--edge" style="--t:1080">6:00<span class="chart__per">pm</span></li>
+              </ol>
+
+              <!-- Van 1 -->
+              <div class="lane">
+                <p class="lane__head"><svg class="icon icon--sm" aria-hidden="true"><use href="#i-van"/></svg><span class="lane__name" id="lane-v1">Van 1 – 12 seats</span><span class="lane__meta">Sunil Rathnayake · available 7:00 am – 6:00 pm</span></p>
+                <div class="lane__track">
+                  <div class="lane__marks" aria-hidden="true">
+                    <span class="mark mark--hour" style="--t:480"></span><span class="mark mark--hour" style="--t:540"></span><span class="mark mark--hour" style="--t:600"></span><span class="mark mark--hour" style="--t:660"></span><span class="mark mark--hour" style="--t:720"></span><span class="mark mark--hour" style="--t:780"></span><span class="mark mark--hour" style="--t:840"></span><span class="mark mark--hour" style="--t:900"></span><span class="mark mark--hour" style="--t:960"></span><span class="mark mark--hour" style="--t:1020"></span>
+                    <span class="mark mark--after" style="--t:1080"></span><span class="mark mark--edge" style="--t:1080"></span><span class="mark mark--now" style="--t:425"></span>
+                    <span class="gapframe" style="--t0:570;--t1:690"><span class="gapframe__label">Van free</span></span>
+                  </div>
+                  <ul class="lane__runs" aria-labelledby="lane-v1">
+                    <li><button type="button" class="blk blk--confirmed" data-ref="PT-2026-0131" data-refs="PT-2026-0131" style="--t0:450;--t1:475" aria-label="7:30 am to 7:55 am, PT-2026-0131, Branch A to Branch C, Confirmed, early trip"><span class="blk__bar"><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg></span><span class="blk__label"><span class="blk__ref" data-ref="PT-2026-0131"><svg class="glyph" aria-hidden="true"><use href="#g-confirmed"/></svg>0131</span></span></button></li>
+                    <li><button type="button" class="blk blk--proposed" data-ref="PT-2026-0119" data-refs="PT-2026-0119" style="--t0:545;--t1:570" aria-label="9:05 am to 9:30 am, PT-2026-0119 Grade 7 Swimming, Branch A to Aquatic Centre, Proposed, fixed trip"><span class="blk__bar"><svg class="icon" aria-hidden="true"><use href="#i-repeat"/></svg></span><span class="blk__label"><span class="blk__ref" data-ref="PT-2026-0119"><svg class="glyph" aria-hidden="true"><use href="#g-proposed"/></svg>0119</span></span></button></li>
+                    <li><button type="button" class="blk blk--proposed" data-ref="PT-2026-0145" data-refs="PT-2026-0145" style="--t0:600;--t1:650" aria-label="10:00 am to 10:50 am, PT-2026-0145, Branch B to Stationery supplier and back, Proposed, gap job while Grade 7 Swimming is at the Aquatic Centre"><span class="blk__bar"><svg class="icon" aria-hidden="true"><use href="#i-gap"/></svg><span class="blk__tick" style="--at:40%"></span><span class="blk__tick" style="--at:70%"></span></span><span class="blk__label"><span class="blk__ref" data-ref="PT-2026-0145"><svg class="glyph" aria-hidden="true"><use href="#g-proposed"/></svg>0145</span></span></button></li>
+                    <li><button type="button" class="blk blk--proposed" data-ref="PT-2026-0119" data-refs="PT-2026-0119" style="--t0:690;--t1:715" aria-label="11:30 am to 11:55 am, PT-2026-0119 return, Aquatic Centre to Branch A, Proposed, fixed trip"><span class="blk__bar"><svg class="icon" aria-hidden="true"><use href="#i-repeat"/></svg></span><span class="blk__label"><span class="blk__ref" data-ref="PT-2026-0119"><svg class="glyph" aria-hidden="true"><use href="#g-proposed"/></svg>0119</span></span></button></li>
+                    <li><button type="button" class="blk blk--proposed" data-ref="PT-2026-0150" data-refs="PT-2026-0150" style="--t0:810;--t1:825" aria-label="1:30 pm to 1:45 pm, PT-2026-0150, Branch A to Branch B, Proposed"><span class="blk__bar"></span><span class="blk__label"><span class="blk__ref" data-ref="PT-2026-0150"><svg class="glyph" aria-hidden="true"><use href="#g-proposed"/></svg>0150</span></span></button></li>
+                    <li><button type="button" class="blk blk--proposed" data-ref="PT-2026-0150" data-refs="PT-2026-0150" style="--t0:930;--t1:945" aria-label="3:30 pm to 3:45 pm, PT-2026-0150 return, Branch B to Branch A, Proposed"><span class="blk__bar"></span><span class="blk__label"><span class="blk__ref" data-ref="PT-2026-0150"><svg class="glyph" aria-hidden="true"><use href="#g-proposed"/></svg>0150</span></span></button></li>
+                  </ul>
+                </div>
+              </div>
+
+              <!-- Van 2 -->
+              <div class="lane">
+                <p class="lane__head"><svg class="icon icon--sm" aria-hidden="true"><use href="#i-van"/></svg><span class="lane__name" id="lane-v2">Van 2 – 8 seats</span><span class="lane__meta">Nuwan Dissanayake · available 7:00 am – 6:00 pm</span></p>
+                <div class="lane__track">
+                  <div class="lane__marks" aria-hidden="true">
+                    <span class="mark mark--hour" style="--t:480"></span><span class="mark mark--hour" style="--t:540"></span><span class="mark mark--hour" style="--t:600"></span><span class="mark mark--hour" style="--t:660"></span><span class="mark mark--hour" style="--t:720"></span><span class="mark mark--hour" style="--t:780"></span><span class="mark mark--hour" style="--t:840"></span><span class="mark mark--hour" style="--t:900"></span><span class="mark mark--hour" style="--t:960"></span><span class="mark mark--hour" style="--t:1020"></span>
+                    <span class="mark mark--after" style="--t:1080"></span><span class="mark mark--edge" style="--t:1080"></span><span class="mark mark--now" style="--t:425"></span>
+                  </div>
+                  <ul class="lane__runs" aria-labelledby="lane-v2">
+                    <li><button type="button" class="blk blk--proposed" data-ref="PT-2026-0142" data-refs="PT-2026-0140 PT-2026-0142" style="--t0:505;--t1:550" aria-current="true" aria-label="8:25 am to 9:10 am, one shared run: PT-2026-0140 Branch A to Branch C and PT-2026-0142 Branch B to Sports Centre, Proposed"><span class="blk__bar"><svg class="icon" aria-hidden="true"><use href="#i-shared"/></svg><span class="blk__tick" style="--at:33.3%"></span><span class="blk__tick" style="--at:66.7%"></span></span><span class="blk__label"><span class="blk__ref" data-ref="PT-2026-0140"><svg class="glyph" aria-hidden="true"><use href="#g-proposed"/></svg>0140</span><span class="blk__ref" data-ref="PT-2026-0142"><svg class="glyph" aria-hidden="true"><use href="#g-proposed"/></svg>0142</span></span></button></li>
+                    <li><button type="button" class="blk blk--proposed" data-ref="PT-2026-0142" data-refs="PT-2026-0142" style="--t0:645;--t1:665" aria-current="true" aria-label="10:45 am to 11:05 am, PT-2026-0142 return, Sports Centre to Branch B, Proposed"><span class="blk__bar"></span><span class="blk__label"><span class="blk__ref" data-ref="PT-2026-0142"><svg class="glyph" aria-hidden="true"><use href="#g-proposed"/></svg>0142</span></span></button></li>
+                    <li><button type="button" class="blk blk--attention blk--low" data-ref="PT-2026-0147" data-refs="PT-2026-0147" style="--t0:680;--t1:700" aria-label="11:20 am to 11:40 am, PT-2026-0147, Branch C to a map pin, Needs attention, new requester, route found but not in the plan"><span class="blk__bar"><svg class="icon" aria-hidden="true"><use href="#i-newreq"/></svg></span><span class="blk__label"><span class="blk__ref" data-ref="PT-2026-0147"><svg class="glyph" aria-hidden="true"><use href="#g-attention"/></svg>0147</span></span></button></li>
+                    <li><button type="button" class="blk blk--proposed" data-ref="PT-2026-0153" data-refs="PT-2026-0153" style="--t0:855;--t1:880" aria-label="2:15 pm to 2:40 pm, PT-2026-0153, Branch C to Branch A, Proposed, late exception"><span class="blk__bar"><svg class="icon" aria-hidden="true"><use href="#i-late"/></svg></span><span class="blk__label"><span class="blk__ref" data-ref="PT-2026-0153"><svg class="glyph" aria-hidden="true"><use href="#g-proposed"/></svg>0153</span></span></button></li>
+                    <li><button type="button" class="blk blk--proposed" data-ref="PT-2026-0151" data-refs="PT-2026-0151" style="--t0:1065;--t1:1085" aria-label="5:45 pm to 6:05 pm, PT-2026-0151, Branch B to Branch A, Proposed, out of hours: ends after 6:00 pm"><span class="blk__bar"><svg class="icon" aria-hidden="true"><use href="#i-outofhours"/></svg></span><span class="blk__label"><span class="blk__ref" data-ref="PT-2026-0151"><svg class="glyph" aria-hidden="true"><use href="#g-proposed"/></svg>0151</span></span></button></li>
+                  </ul>
+                </div>
+              </div>
+
+              <!-- Not placed -->
+              <div class="lane lane--unplaced">
+                <p class="lane__head"><svg class="glyph" aria-hidden="true"><use href="#g-attention"/></svg><span class="lane__name" id="lane-np">Not placed</span><span class="lane__meta">Requests no van can take as they stand</span></p>
+                <div class="lane__track">
+                  <div class="lane__marks" aria-hidden="true">
+                    <span class="mark mark--hour" style="--t:480"></span><span class="mark mark--hour" style="--t:540"></span><span class="mark mark--hour" style="--t:600"></span><span class="mark mark--hour" style="--t:660"></span><span class="mark mark--hour" style="--t:720"></span><span class="mark mark--hour" style="--t:780"></span><span class="mark mark--hour" style="--t:840"></span><span class="mark mark--hour" style="--t:900"></span><span class="mark mark--hour" style="--t:960"></span><span class="mark mark--hour" style="--t:1020"></span>
+                    <span class="mark mark--after" style="--t:1080"></span><span class="mark mark--edge" style="--t:1080"></span><span class="mark mark--now" style="--t:425"></span>
+                  </div>
+                  <ul class="lane__runs" aria-labelledby="lane-np">
+                    <li><button type="button" class="blk blk--attention" data-ref="PT-2026-0149" data-refs="PT-2026-0149" style="--t0:780;--t1:900" aria-label="1:00 pm, return 3:00 pm, PT-2026-0149 Grade 9 inter-house practice, 20 passengers, Branch A to Sports Centre, Needs attention, not placed: larger than any van"><span class="blk__bar"></span><span class="blk__label"><span class="blk__ref" data-ref="PT-2026-0149"><svg class="glyph" aria-hidden="true"><use href="#g-attention"/></svg>0149</span><svg class="icon" aria-hidden="true"><use href="#i-pax"/></svg>20</span></button></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <h3 class="legend__title">Key</h3>
+          <ul class="legend">
+            <li><span class="key key--confirmed"><svg class="glyph" aria-hidden="true"><use href="#g-confirmed"/></svg></span>Confirmed: solid bar, filled disc</li>
+            <li><span class="key key--proposed"><svg class="glyph" aria-hidden="true"><use href="#g-proposed"/></svg></span>Proposed: outlined bar, open ring</li>
+            <li><span class="key key--attention"><svg class="glyph" aria-hidden="true"><use href="#g-attention"/></svg></span>Needs attention: dashed bar, triangle; not in the plan yet</li>
+            <li><span class="key key--selected"></span>Purple bar: the trip open on the right</li>
+            <li><span class="key key--ticks"></span>Ticks in a bar: stops along the run</li>
+            <li><span class="key key--gap"></span>Dashed frame: time the van is free between two parts of a trip</li>
+            <li><span class="key key--now"></span>White line: now, 7:05 am</li>
+            <li><span class="key key--edge"></span>Dashed line at 6:00 pm: end of normal hours</li>
+            <li><span class="key key--icon"><svg class="icon icon--sm" aria-hidden="true"><use href="#i-repeat"/></svg></span>Fixed trip (repeats)</li>
+            <li><span class="key key--icon"><svg class="icon icon--sm" aria-hidden="true"><use href="#i-shared"/></svg></span>Shared run (two bookings, one van)</li>
+            <li><span class="key key--icon"><svg class="icon icon--sm" aria-hidden="true"><use href="#i-gap"/></svg></span>Gap job</li>
+            <li><span class="key key--icon"><svg class="icon icon--sm" aria-hidden="true"><use href="#i-clock"/></svg></span>Early trip (before 7:40 am)</li>
+            <li><span class="key key--icon"><svg class="icon icon--sm" aria-hidden="true"><use href="#i-late"/></svg></span>Late (exception)</li>
+            <li><span class="key key--icon"><svg class="icon icon--sm" aria-hidden="true"><use href="#i-outofhours"/></svg></span>Out of hours</li>
+            <li><span class="key key--icon"><svg class="icon icon--sm" aria-hidden="true"><use href="#i-newreq"/></svg></span>New requester</li>
+          </ul>
+        </div>
+
+        <!-- === Section: List view (FR-29) with filters === -->
+        <div id="list-view" class="listview">
+          <form class="filters" aria-label="Filter trips" action="#">
+            <div class="field">
+              <label class="label" for="flt-status">Status</label>
+              <div class="select-wrap"><select class="select" id="flt-status"><option>All statuses</option><option>Needs attention</option><option>Proposed</option><option>Confirmed</option></select><svg class="icon" aria-hidden="true"><use href="#i-chevron"/></svg></div>
+            </div>
+            <div class="field">
+              <label class="label" for="flt-van">Van</label>
+              <div class="select-wrap"><select class="select" id="flt-van"><option>All vans</option><option>Van 1</option><option>Van 2</option><option>Not placed</option></select><svg class="icon" aria-hidden="true"><use href="#i-chevron"/></svg></div>
+            </div>
+            <div class="field">
+              <label class="label" for="flt-date">Date</label>
+              <input class="input input--date" id="flt-date" type="text" value="13/10/2026" inputmode="numeric">
+            </div>
+            <div class="field">
+              <label class="label" for="flt-place">Place</label>
+              <div class="select-wrap"><select class="select" id="flt-place"><option>All places</option><option>Branch A (main branch)</option><option>Branch B</option><option>Branch C</option><option>Aquatic Centre</option><option>Sports Centre</option><option>Stationery supplier</option></select><svg class="icon" aria-hidden="true"><use href="#i-chevron"/></svg></div>
+            </div>
+          </form>
+
+          <div class="table-wrap">
+            <table class="btable" id="trip-table">
+              <caption>Today's trips, Tuesday 13/10/2026: 10 trips, in pickup time order</caption>
+              <thead>
+                <tr>
+                  <th scope="col" aria-sort="ascending">Time<svg class="icon icon--sm" aria-hidden="true"><use href="#i-sort"/></svg></th>
+                  <th scope="col">Ref</th>
+                  <th scope="col">From → To</th>
+                  <th scope="col">Van</th>
+                  <th scope="col" class="n">Pax</th>
+                  <th scope="col">Remarks</th>
+                  <th scope="col">Flags</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr data-ref="PT-2026-0131">
+                  <td class="t">7:30 am</td>
+                  <th scope="row" class="ref"><button type="button" class="linkbtn" data-open="PT-2026-0131">PT-2026-0131</button></th>
+                  <td>Branch A → Branch C</td>
+                  <td>Van 1</td>
+                  <td class="n">2</td>
+                  <td><span class="remark remark--confirmed"><svg class="glyph" aria-hidden="true"><use href="#g-confirmed"/></svg><span>Confirmed</span></span></td>
+                  <td><ul class="flags"><li class="flag"><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg>Early trip</li></ul></td>
+                </tr>
+                <tr data-ref="PT-2026-0140">
+                  <td class="t">8:25 am</td>
+                  <th scope="row" class="ref"><button type="button" class="linkbtn" data-open="PT-2026-0140">PT-2026-0140</button></th>
+                  <td>Branch A → Branch C</td>
+                  <td>Van 2</td>
+                  <td class="n">3</td>
+                  <td><span class="remark remark--proposed"><svg class="glyph" aria-hidden="true"><use href="#g-proposed"/></svg><span>Proposed</span></span></td>
+                  <td><ul class="flags"><li class="flag"><svg class="icon" aria-hidden="true"><use href="#i-shared"/></svg>Shared</li></ul></td>
+                </tr>
+                <tr data-ref="PT-2026-0142" class="is-selected">
+                  <td class="t">8:40 am</td>
+                  <th scope="row" class="ref"><button type="button" class="linkbtn" data-open="PT-2026-0142">PT-2026-0142</button></th>
+                  <td>Branch B → Sports Centre</td>
+                  <td>Van 2</td>
+                  <td class="n">4</td>
+                  <td><span class="remark remark--proposed"><svg class="glyph" aria-hidden="true"><use href="#g-proposed"/></svg><span>Proposed</span></span></td>
+                  <td><ul class="flags"><li class="flag"><svg class="icon" aria-hidden="true"><use href="#i-shared"/></svg>Shared</li></ul></td>
+                </tr>
+                <tr data-ref="PT-2026-0119">
+                  <td class="t">9:05 am</td>
+                  <th scope="row" class="ref"><button type="button" class="linkbtn" data-open="PT-2026-0119">PT-2026-0119</button></th>
+                  <td>Branch A → Aquatic Centre</td>
+                  <td>Van 1</td>
+                  <td class="n">11</td>
+                  <td><span class="remark remark--proposed"><svg class="glyph" aria-hidden="true"><use href="#g-proposed"/></svg><span>Proposed</span></span></td>
+                  <td><ul class="flags"><li class="flag"><svg class="icon" aria-hidden="true"><use href="#i-repeat"/></svg>Fixed trip</li></ul></td>
+                </tr>
+                <tr data-ref="PT-2026-0145">
+                  <td class="t">10:00 am</td>
+                  <th scope="row" class="ref"><button type="button" class="linkbtn" data-open="PT-2026-0145">PT-2026-0145</button></th>
+                  <td>Branch B → Stationery supplier → Branch B</td>
+                  <td>Van 1</td>
+                  <td class="n">1</td>
+                  <td><span class="remark remark--proposed"><svg class="glyph" aria-hidden="true"><use href="#g-proposed"/></svg><span>Proposed</span></span></td>
+                  <td><ul class="flags"><li class="flag"><svg class="icon" aria-hidden="true"><use href="#i-gap"/></svg>Gap job</li></ul></td>
+                </tr>
+                <tr data-ref="PT-2026-0147">
+                  <td class="t">11:20 am</td>
+                  <th scope="row" class="ref"><button type="button" class="linkbtn" data-open="PT-2026-0147">PT-2026-0147</button></th>
+                  <td>Branch C → pin "Opposite the temple, 2nd lane"</td>
+                  <td>Van 2</td>
+                  <td class="n">3</td>
+                  <td><span class="remark remark--attention"><svg class="glyph" aria-hidden="true"><use href="#g-attention"/></svg><span>Needs attention</span></span></td>
+                  <td><ul class="flags"><li class="flag"><svg class="icon" aria-hidden="true"><use href="#i-newreq"/></svg>New requester</li></ul></td>
+                </tr>
+                <tr data-ref="PT-2026-0149">
+                  <td class="t">1:00 pm</td>
+                  <th scope="row" class="ref"><button type="button" class="linkbtn" data-open="PT-2026-0149">PT-2026-0149</button></th>
+                  <td>Branch A → Sports Centre</td>
+                  <td>Not placed</td>
+                  <td class="n">20</td>
+                  <td><span class="remark remark--attention"><svg class="glyph" aria-hidden="true"><use href="#g-attention"/></svg><span>Needs attention</span></span></td>
+                  <td></td>
+                </tr>
+                <tr data-ref="PT-2026-0150">
+                  <td class="t">1:30 pm</td>
+                  <th scope="row" class="ref"><button type="button" class="linkbtn" data-open="PT-2026-0150">PT-2026-0150</button></th>
+                  <td>Branch A → Branch B</td>
+                  <td>Van 1</td>
+                  <td class="n">6</td>
+                  <td><span class="remark remark--proposed"><svg class="glyph" aria-hidden="true"><use href="#g-proposed"/></svg><span>Proposed</span></span></td>
+                  <td></td>
+                </tr>
+                <tr data-ref="PT-2026-0153">
+                  <td class="t">2:15 pm</td>
+                  <th scope="row" class="ref"><button type="button" class="linkbtn" data-open="PT-2026-0153">PT-2026-0153</button></th>
+                  <td>Branch C → Branch A</td>
+                  <td>Van 2</td>
+                  <td class="n">2</td>
+                  <td><span class="remark remark--proposed"><svg class="glyph" aria-hidden="true"><use href="#g-proposed"/></svg><span>Proposed</span></span></td>
+                  <td><ul class="flags"><li class="flag"><svg class="icon" aria-hidden="true"><use href="#i-late"/></svg>Late (exception)</li></ul></td>
+                </tr>
+                <tr data-ref="PT-2026-0151">
+                  <td class="t">5:45 pm</td>
+                  <th scope="row" class="ref"><button type="button" class="linkbtn" data-open="PT-2026-0151">PT-2026-0151</button></th>
+                  <td>Branch B → Branch A</td>
+                  <td>Van 2</td>
+                  <td class="n">7</td>
+                  <td><span class="remark remark--proposed"><svg class="glyph" aria-hidden="true"><use href="#g-proposed"/></svg><span>Proposed</span></span></td>
+                  <td><ul class="flags"><li class="flag"><svg class="icon" aria-hidden="true"><use href="#i-outofhours"/></svg>Out of hours</li></ul></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="notrunning">Not running today: <span class="mono">PT-2026-0138</span> <span class="remark remark--cancelled"><svg class="glyph" aria-hidden="true"><use href="#g-cancelled"/></svg>Cancelled</span> Cancelled by the requester at 6:40 am. Van released. · <span class="mono">PT-2026-0136</span> <span class="remark remark--declined"><svg class="glyph" aria-hidden="true"><use href="#g-declined"/></svg>Declined</span> No van is free at 3:00 pm. An extra hire van would be needed.</p>
+        </div>
+      </section>
+    </div>
+
+    <!-- === Section: Detail drawer (FR-19, US-16): PT-2026-0142 on load === -->
+    <aside class="drawer" id="drawer" aria-labelledby="d-ref">
+      <div class="drawer__head">
+        <p class="drawer__kicker">Selected trip</p>
+        <h2 id="d-ref" tabindex="-1">PT-2026-0142</h2>
+        <div class="drawer__status" id="d-status">
+          <span class="remark remark--proposed" id="d-remark"><svg class="glyph" aria-hidden="true"><use href="#g-proposed"/></svg><span>Proposed</span></span>
+          <ul class="flags"><li class="flag"><svg class="icon" aria-hidden="true"><use href="#i-shared"/></svg>Shared</li></ul>
+        </div>
+        <p class="drawer__lead" id="d-lead"><span class="mono">8:40 am</span> Branch B → Sports Centre · Van 2</p>
+      </div>
+
+      <div id="d-body" class="drawer__body">
+        <section aria-labelledby="d-who-h">
+          <h3 id="d-who-h">Requester</h3>
+          <p>Kasun Jayasinghe · <span class="mono">077 000 0142</span></p>
+        </section>
+        <section aria-labelledby="d-trip-h">
+          <h3 id="d-trip-h">Trip</h3>
+          <dl class="facts-list">
+            <dt>Trip for</dt><dd>Sport</dd>
+            <dt>From → To</dt><dd>Branch B → Sports Centre</dd>
+            <dt>Pickup</dt><dd>Requested <span class="mono">8:45 am</span> ± 10 min; planned <span class="mono">8:40 am</span> (arrives <span class="mono">9:10 am</span>)</dd>
+            <dt>Passengers</dt><dd class="mono">4</dd>
+            <dt>Return</dt><dd><span class="mono">10:45 am</span> from Sports Centre (back <span class="mono">11:05 am</span>)</dd>
+            <dt>Van</dt><dd>Van 2</dd>
+          </dl>
+        </section>
+        <section aria-labelledby="d-why-h">
+          <h3 id="d-why-h">Why this plan</h3>
+          <ul class="explain">
+            <li>Van 2: added to the 8:25 am run from Branch A, shared with PT-2026-0140.</li>
+            <li>Pickup at Branch B at 8:40 am, within the requested 8:45 am ± 10 min.</li>
+            <li>7 of 8 seats used at the busiest point.</li>
+            <li>The 3 passengers from Branch A ride 6 minutes longer, within their limit.</li>
+            <li>Saves a separate 35-minute van run.</li>
+            <li>Van 1 not used: it must leave Branch A at 9:05 am for Grade 7 Swimming.</li>
+          </ul>
+        </section>
+        <div>
+          <table class="run">
+            <caption id="d-run-h">Run summary: Van 2, 8 seats</caption>
+            <thead><tr><th scope="col">Time</th><th scope="col">Stop</th><th scope="col">Action</th><th scope="col">On board</th></tr></thead>
+            <tbody>
+              <tr><td class="t">8:25 am</td><th scope="row">Branch A</th><td>Pick up 3</td><td><span class="meter"><span class="meter__cells" aria-hidden="true"><span class="meter__cell is-on"></span><span class="meter__cell is-on"></span><span class="meter__cell is-on"></span><span class="meter__cell"></span><span class="meter__cell"></span><span class="meter__cell"></span><span class="meter__cell"></span><span class="meter__cell"></span></span><span class="meter__text">3 of 8</span></span></td></tr>
+              <tr><td class="t">8:40 am</td><th scope="row">Branch B</th><td>Pick up 4</td><td><span class="meter"><span class="meter__cells" aria-hidden="true"><span class="meter__cell is-on"></span><span class="meter__cell is-on"></span><span class="meter__cell is-on"></span><span class="meter__cell is-on"></span><span class="meter__cell is-on"></span><span class="meter__cell is-on"></span><span class="meter__cell is-on"></span><span class="meter__cell"></span></span><span class="meter__text">7 of 8</span></span></td></tr>
+              <tr><td class="t">8:55 am</td><th scope="row">Branch C</th><td>Drop off 3</td><td><span class="meter"><span class="meter__cells" aria-hidden="true"><span class="meter__cell is-on"></span><span class="meter__cell is-on"></span><span class="meter__cell is-on"></span><span class="meter__cell is-on"></span><span class="meter__cell"></span><span class="meter__cell"></span><span class="meter__cell"></span><span class="meter__cell"></span></span><span class="meter__text">4 of 8</span></span></td></tr>
+              <tr><td class="t">9:10 am</td><th scope="row">Sports Centre</th><td>Drop off 4</td><td><span class="meter"><span class="meter__cells" aria-hidden="true"><span class="meter__cell"></span><span class="meter__cell"></span><span class="meter__cell"></span><span class="meter__cell"></span><span class="meter__cell"></span><span class="meter__cell"></span><span class="meter__cell"></span><span class="meter__cell"></span></span><span class="meter__text">0 of 8</span></span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="actions" id="d-actions">
+        <button type="button" class="btn btn--primary" data-action="approve"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Approve</button>
+        <button type="button" class="btn btn--secondary" data-action="change">Change</button>
+        <span class="actions__sep"><button type="button" class="btn btn--danger" data-action="decline">Decline</button></span>
+      </div>
+      <div id="d-live" role="status"></div>
+      <p class="audit" id="d-audit">Planned by the system at 5:00 pm on 12/10/2026 (Optimise day).</p>
+    </aside>
+  </main>
+
+  <!-- === Section: Approval dialog (FR-34, FR-61, BRL-21) === -->
+  <dialog class="dlg" id="plan-dialog" aria-labelledby="dlg-title" aria-describedby="dlg-text">
+    <h2 id="dlg-title">Approve the plan for Tuesday 13/10/2026?</h2>
+    <p id="dlg-text">This confirms 7 trips and sends final details to 8 requesters and route links to 2 drivers. The 2 requests that need attention stay open.</p>
+    <div class="actions">
+      <button type="button" class="btn btn--primary" id="dlg-yes"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Approve and send</button>
+      <button type="button" class="btn btn--secondary" id="dlg-no">Not now</button>
+    </div>
+  </dialog>
+
+  <!-- === Section: Footer === -->
+  <footer class="foot foot--desk">
+    <p><span class="product">PolymathTransit</span> · Design direction 4, Departures · <a href="index.html">Foundations</a> · <a href="request.html">Request form</a> · <a href="driver.html">Driver's route</a> · <a href="../index.html">All five directions</a></p>
+  </footer>
+
+  <!-- === Section: Prototype controls (not part of the design) === -->
+  <aside class="proto proto--desk" aria-labelledby="proto-title">
+    <h2 id="proto-title">Prototype controls</h2>
+    <ul>
+      <li><button type="button" data-proto="plan">Approve the plan</button></li>
+      <li><button type="button" data-proto="open0149">Open PT-2026-0149</button></li>
+      <li><button type="button" data-proto="list">Show list view</button></li>
+      <li><button type="button" data-proto="reset">Reset</button></li>
+    </ul>
+  </aside>
+</body>
+</html>

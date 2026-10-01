@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<!--
+  Purpose:  Driver's route link, phone first (360 px), English and Sinhala:
+            Van 1 at 9:40 am on 13/10/2026; the next stop is the dark
+            board row at the top. Direction 4, Departures.
+  Reqs:     FR-61, FR-65, FR-67, NFR-03, NFR-04, NFR-12, NFR-18, US-52,
+            US-60, D-09, Q-17.
+  Uses:     tokens.css, components.css, pages.css, script.js, ../assets.
+  Sections: sprite, header strip, next-stop board, offline banner,
+            progress and done stops, stops 5 to 14, end of day, footer,
+            prototype controls.
+  No JS:    the whole route reads and Call links work; Done, No-show and
+            Navigate need the script.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Today's route – PolymathTransit</title>
+  <link rel="icon" href="../assets/crest.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=B612:wght@400;700&amp;family=B612+Mono:wght@400;700&amp;family=Gemunu+Libre:wght@400;700&amp;display=swap">
+  <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="components.css">
+  <link rel="stylesheet" href="pages.css">
+  <script src="script.js" defer></script>
+</head>
+<body class="ctx-phone page-phone" data-page="driver">
+
+  <!-- === Section: Icon sprite === -->
+  <svg class="sprite" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></symbol>
+    <symbol id="i-chevron" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></symbol>
+    <symbol id="i-pickup" viewBox="0 0 24 24"><path d="M12 18V5M6 11l6-6 6 6M4 21h16"/></symbol>
+    <symbol id="i-dropoff" viewBox="0 0 24 24"><path d="M12 3v13M6 10l6 6 6-6M4 21h16"/></symbol>
+    <symbol id="i-pax" viewBox="0 0 24 24"><circle cx="9" cy="7" r="3"/><path d="M3 20v-3l3-3h6l3 3v3"/><path d="M16 4a3 3 0 0 1 0 6M18 14l3 3v3"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24"><path d="M7 2h10v20H7ZM11 18h2"/></symbol>
+    <symbol id="i-navigate" viewBox="0 0 24 24"><path d="M3 11l18-8-8 18-2-8Z"/></symbol>
+    <symbol id="i-gap" viewBox="0 0 24 24"><path d="M3 5v14M21 5v14M3 12h4M17 12h4"/><path d="M8 9h8v6H8Z"/></symbol>
+    <symbol id="i-undo" viewBox="0 0 24 24"><path d="M8 5L3 10l5 5M3 10h12a5 5 0 0 1 0 10h-4"/></symbol>
+    <symbol id="i-offline" viewBox="0 0 24 24"><path d="M4 20v-2M9 20v-5M14 20v-8M19 20V8M3 3l18 18"/></symbol>
+    <symbol id="i-cross" viewBox="0 0 24 24"><path d="M5 5l14 14M19 5L5 19"/></symbol>
+    <symbol id="i-end" viewBox="0 0 24 24"><path d="M3 12h14M17 5v14M21 5v14"/></symbol>
+    <symbol id="g-noshow" viewBox="0 0 12 12"><rect x="1.9" y="1.9" width="8.2" height="8.2"/></symbol>
+  </svg>
+
+  <a class="skip" href="#main" lang="en">Skip to main content</a>
+
+  <!-- === Section: Header – board strip (crest, product, language switch) === -->
+  <header class="ph board">
+    <div class="ph__brand">
+      <img src="../assets/crest-keyline.png" alt="Polymath College" width="33" height="36">
+      <span class="product" lang="en">PolymathTransit</span>
+    </div>
+    <div class="ph__lang">
+      <span id="lang-label" data-i18n="lang.label">Language</span>
+      <div class="lang" role="group" aria-labelledby="lang-label">
+        <a class="lang__btn" href="driver.html?lang=en" hreflang="en" lang="en" data-set-lang="en" aria-current="true"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>English</a>
+        <a class="lang__btn" href="driver.html?lang=si" hreflang="si" lang="si" data-set-lang="si">සිංහල</a>
+      </div>
+    </div>
+    <p class="ph__note" lang="en">This Sinhala text is a draft for review by native speakers (D-09).</p>
+    <p class="ph__note" data-i18n="lang.note">Your language choice is remembered on this phone.</p>
+  </header>
+
+  <!-- === Section: Main === -->
+  <main id="main">
+
+    <!-- The next stop's board row: the signature on this page. "Now" is
+         9:40 am on Tuesday 13/10/2026. -->
+    <section class="board nextboard" aria-labelledby="route-title">
+      <div class="wrap">
+        <h1 class="nextboard__title" id="route-title" data-i18n="driver.title">Today's route</h1>
+        <p class="nextboard__meta"><span data-i18n="driver.van">Van</span> 1 · <span data-i18n="day.tuesday">Tuesday</span> <span class="num">13/10/2026</span> · <span data-i18n="driver.driver">Driver</span> <span lang="en">Sunil Rathnayake</span></p>
+        <p class="nextboard__meta" data-i18n="driver.updated" data-time="07:06">Route updated at 7:06 am</p>
+
+        <div class="nextrow" id="nextrow">
+          <p class="colhead nextrow__label"><span data-i18n="driver.next">Next stop</span> · <span data-i18n="driver.stop">Stop</span> <span id="next-no">5</span></p>
+          <div class="nextrow__line">
+            <p class="board-time"><time id="next-time" datetime="10:00" data-t="10:00">10<span class="colon">:</span>00<span class="per">&nbsp;am</span></time></p>
+            <p class="nextrow__in" id="next-in" data-i18n="driver.in" data-min="20">in 20 min</p>
+          </div>
+          <p class="nextrow__place" id="next-place" lang="en">Branch B</p>
+          <p class="nextrow__what"><svg class="icon" aria-hidden="true" id="next-icon"><use href="#i-pickup"/></svg><span id="next-action" data-i18n="driver.pickup">Pick up</span><span class="nextrow__pax"><svg class="icon" aria-hidden="true"><use href="#i-pax"/></svg><span id="next-pax">1</span> <span class="vh" data-i18n="driver.passengers">passengers</span></span></p>
+          <p class="nextrow__go"><a href="#stop-5" id="next-link" class="nextrow__link"><span id="next-ref" lang="en">PT-2026-0145</span></a></p>
+        </div>
+      </div>
+    </section>
+
+    <div class="wrap route">
+      <!-- Offline (NFR-18): the route stays visible from the last load. -->
+      <div id="offline-live" role="status">
+        <div class="alert alert--warning offline" id="offline" hidden>
+          <div class="alert__icon"><svg class="icon" aria-hidden="true"><use href="#i-offline"/></svg></div>
+          <p class="alert__body" id="offline-text"></p>
+        </div>
+      </div>
+
+      <!-- Progress and done stops, folded away by default. -->
+      <details class="disclosure donelist" id="donelist">
+        <summary>
+          <svg class="icon" aria-hidden="true"><use href="#i-chevron"/></svg>
+          <span class="progress">
+            <span id="progress" data-i18n="driver.progress" data-done="4" data-total="14">4 of 14 stops done</span>
+            <span class="meter__cells" id="progress-cells" aria-hidden="true"><span class="meter__cell is-on"></span><span class="meter__cell is-on"></span><span class="meter__cell is-on"></span><span class="meter__cell is-on"></span><span class="meter__cell"></span><span class="meter__cell"></span><span class="meter__cell"></span><span class="meter__cell"></span><span class="meter__cell"></span><span class="meter__cell"></span><span class="meter__cell"></span><span class="meter__cell"></span><span class="meter__cell"></span><span class="meter__cell"></span></span>
+          </span>
+        </summary>
+        <ol class="donestops" id="donestops">
+          <li class="donestop"><time datetime="07:30" data-t="07:30">7:30 am</time> <span lang="en">Branch A (main branch)</span> · <span data-i18n="driver.pickup">Pick up</span> 2 <span class="remark remark--confirmed"><svg class="icon icon--sm" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="driver.doneat" data-time="07:31">Done at 7:31 am</span></span></li>
+          <li class="donestop"><time datetime="07:55" data-t="07:55">7:55 am</time> <span lang="en">Branch C</span> · <span data-i18n="driver.dropoff">Drop off</span> 2 <span class="remark remark--confirmed"><svg class="icon icon--sm" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="driver.doneat" data-time="07:56">Done at 7:56 am</span></span></li>
+          <li class="donestop"><time datetime="09:05" data-t="09:05">9:05 am</time> <span lang="en">Branch A (main branch)</span> · <span data-i18n="driver.pickup">Pick up</span> 11 <span class="remark remark--confirmed"><svg class="icon icon--sm" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="driver.doneat" data-time="09:06">Done at 9:06 am</span></span></li>
+          <li class="donestop"><time datetime="09:30" data-t="09:30">9:30 am</time> <span lang="en">Aquatic Centre</span> · <span data-i18n="driver.dropoff">Drop off</span> 11 <span class="remark remark--confirmed"><svg class="icon icon--sm" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="driver.doneat" data-time="09:29">Done at 9:29 am</span></span></li>
+        </ol>
+      </details>
+
+      <!-- Upcoming stops: one board row each, the next one first and largest. -->
+      <ol class="stops" id="stops">
+        <li class="stop is-next" id="stop-5" data-stop="5" data-t="10:00" data-act="pickup" data-pax="1" data-ref="PT-2026-0145">
+          <div class="stop__row">
+            <p class="stop__time"><time datetime="10:00" data-t="10:00">10:00 am</time></p>
+            <div class="stop__main">
+              <h2 class="stop__place"><span class="vh"><span data-i18n="driver.stop">Stop</span> 5: </span><span lang="en">Branch B</span></h2>
+              <p class="stop__what"><svg class="icon" aria-hidden="true"><use href="#i-pickup"/></svg><span data-i18n="driver.pickup">Pick up</span><span class="stop__pax"><svg class="icon" aria-hidden="true"><use href="#i-pax"/></svg>1 <span class="vh" data-i18n="driver.passengers">passengers</span></span></p>
+            </div>
+            <p class="stop__no" aria-hidden="true">5</p>
+          </div>
+          <div class="stop__body">
+            <p class="stop__ref"><span class="mono" lang="en">PT-2026-0145</span></p>
+            <ul class="flags"><li class="flag"><svg class="icon" aria-hidden="true"><use href="#i-gap"/></svg><span data-i18n="driver.gap">Gap job</span></li></ul>
+            <p class="stop__contact"><span class="stop__contact-label" data-i18n="driver.contact">Contact</span> <span lang="en">Shamila Rodrigo</span>, <span class="mono">077 000 0145</span></p>
+            <div class="stop__actions">
+              <div class="stop__go">
+                <button type="button" class="btn btn--secondary" data-act="nav"><svg class="icon" aria-hidden="true"><use href="#i-navigate"/></svg><span data-i18n="driver.navigate">Navigate</span></button>
+                <a class="btn btn--secondary" href="tel:+94770000145"><svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg><span data-i18n="driver.call">Call</span><span class="vh" lang="en"> Shamila Rodrigo</span></a>
+              </div>
+              <p class="hint stop__navnote" role="status"></p>
+              <button type="button" class="btn btn--primary btn--done" data-act="done"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="driver.done">Done</span></button>
+              <button type="button" class="btn btn--secondary btn--noshow" data-act="noshow"><svg class="icon" aria-hidden="true"><use href="#i-cross"/></svg><span data-i18n="driver.noshow">No-show</span></button>
+            </div>
+            <div class="stop__confirm" hidden>
+              <p class="stop__question" tabindex="-1" data-i18n="driver.noshow.confirm">Mark as no-show? We will tell the transport coordinators.</p>
+              <button type="button" class="btn btn--danger" data-act="noshow-yes"><span data-i18n="driver.noshow.yes">Yes, mark no-show</span></button>
+              <button type="button" class="btn btn--secondary" data-act="noshow-back"><span data-i18n="driver.goback">Go back</span></button>
+            </div>
+          </div>
+          <div class="stop__result" hidden>
+            <p class="stop__outcome" tabindex="-1"></p>
+            <button type="button" class="btn btn--secondary btn--undo" data-act="undo"><svg class="icon" aria-hidden="true"><use href="#i-undo"/></svg><span data-i18n="driver.undo">Undo</span></button>
+          </div>
+        </li>
+        <li class="stop" id="stop-6" data-stop="6" data-t="10:20" data-act="dropoff" data-pax="1" data-ref="PT-2026-0145">
+          <div class="stop__row">
+            <p class="stop__time"><time datetime="10:20" data-t="10:20">10:20 am</time></p>
+            <div class="stop__main">
+              <h2 class="stop__place"><span class="vh"><span data-i18n="driver.stop">Stop</span> 6: </span><span lang="en">Stationery supplier</span></h2>
+              <p class="stop__what"><svg class="icon" aria-hidden="true"><use href="#i-dropoff"/></svg><span data-i18n="driver.dropoff">Drop off</span><span class="stop__pax"><svg class="icon" aria-hidden="true"><use href="#i-pax"/></svg>1 <span class="vh" data-i18n="driver.passengers">passengers</span></span></p>
+            </div>
+            <p class="stop__no" aria-hidden="true">6</p>
+          </div>
+          <div class="stop__body">
+            <p class="stop__ref"><span class="mono" lang="en">PT-2026-0145</span></p>
+            <p class="stop__note" lang="en">Wait about 15 minutes.</p>
+            <div class="stop__actions">
+              <div class="stop__go">
+                <button type="button" class="btn btn--secondary" data-act="nav"><svg class="icon" aria-hidden="true"><use href="#i-navigate"/></svg><span data-i18n="driver.navigate">Navigate</span></button>
+              </div>
+              <p class="hint stop__navnote" role="status"></p>
+              <button type="button" class="btn btn--primary btn--done" data-act="done"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="driver.done">Done</span></button>
+              <button type="button" class="btn btn--secondary btn--noshow" data-act="noshow"><svg class="icon" aria-hidden="true"><use href="#i-cross"/></svg><span data-i18n="driver.noshow">No-show</span></button>
+            </div>
+            <div class="stop__confirm" hidden>
+              <p class="stop__question" tabindex="-1" data-i18n="driver.noshow.confirm">Mark as no-show? We will tell the transport coordinators.</p>
+              <button type="button" class="btn btn--danger" data-act="noshow-yes"><span data-i18n="driver.noshow.yes">Yes, mark no-show</span></button>
+              <button type="button" class="btn btn--secondary" data-act="noshow-back"><span data-i18n="driver.goback">Go back</span></button>
+            </div>
+          </div>
+          <div class="stop__result" hidden>
+            <p class="stop__outcome" tabindex="-1"></p>
+            <button type="button" class="btn btn--secondary btn--undo" data-act="undo"><svg class="icon" aria-hidden="true"><use href="#i-undo"/></svg><span data-i18n="driver.undo">Undo</span></button>
+          </div>
+        </li>
+        <li class="stop" id="stop-7" data-stop="7" data-t="10:35" data-act="pickup" data-pax="1" data-ref="PT-2026-0145">
+          <div class="stop__row">
+            <p class="stop__time"><time datetime="10:35" data-t="10:35">10:35 am</time></p>
+            <div class="stop__main">
+              <h2 class="stop__place"><span class="vh"><span data-i18n="driver.stop">Stop</span> 7: </span><span lang="en">Stationery supplier</span></h2>
+              <p class="stop__what"><svg class="icon" aria-hidden="true"><use href="#i-pickup"/></svg><span data-i18n="driver.pickup">Pick up</span><span class="stop__pax"><svg class="icon" aria-hidden="true"><use href="#i-pax"/></svg>1 <span class="vh" data-i18n="driver.passengers">passengers</span></span></p>
+            </div>
+            <p class="stop__no" aria-hidden="true">7</p>
+          </div>
+          <div class="stop__body">
+            <p class="stop__ref"><span class="mono" lang="en">PT-2026-0145</span></p>
+            <p class="stop__note" lang="en">She returns with boxes.</p>
+            <p class="stop__contact"><span class="stop__contact-label" data-i18n="driver.contact">Contact</span> <span lang="en">Shamila Rodrigo</span>, <span class="mono">077 000 0145</span></p>
+            <div class="stop__actions">
+              <div class="stop__go">
+                <button type="button" class="btn btn--secondary" data-act="nav"><svg class="icon" aria-hidden="true"><use href="#i-navigate"/></svg><span data-i18n="driver.navigate">Navigate</span></button>
+                <a class="btn btn--secondary" href="tel:+94770000145"><svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg><span data-i18n="driver.call">Call</span><span class="vh" lang="en"> Shamila Rodrigo</span></a>
+              </div>
+              <p class="hint stop__navnote" role="status"></p>
+              <button type="button" class="btn btn--primary btn--done" data-act="done"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="driver.done">Done</span></button>
+              <button type="button" class="btn btn--secondary btn--noshow" data-act="noshow"><svg class="icon" aria-hidden="true"><use href="#i-cross"/></svg><span data-i18n="driver.noshow">No-show</span></button>
+            </div>
+            <div class="stop__confirm" hidden>
+              <p class="stop__question" tabindex="-1" data-i18n="driver.noshow.confirm">Mark as no-show? We will tell the transport coordinators.</p>
+              <button type="button" class="btn btn--danger" data-act="noshow-yes"><span data-i18n="driver.noshow.yes">Yes, mark no-show</span></button>
+              <button type="button" class="btn btn--secondary" data-act="noshow-back"><span data-i18n="driver.goback">Go back</span></button>
+            </div>
+          </div>
+          <div class="stop__result" hidden>
+            <p class="stop__outcome" tabindex="-1"></p>
+            <button type="button" class="btn btn--secondary btn--undo" data-act="undo"><svg class="icon" aria-hidden="true"><use href="#i-undo"/></svg><span data-i18n="driver.undo">Undo</span></button>
+          </div>
+        </li>
+        <li class="stop" id="stop-8" data-stop="8" data-t="10:50" data-act="dropoff" data-pax="1" data-ref="PT-2026-0145">
+          <div class="stop__row">
+            <p class="stop__time"><time datetime="10:50" data-t="10:50">10:50 am</time></p>
+            <div class="stop__main">
+              <h2 class="stop__place"><span class="vh"><span data-i18n="driver.stop">Stop</span> 8: </span><span lang="en">Branch B</span></h2>
+              <p class="stop__what"><svg class="icon" aria-hidden="true"><use href="#i-dropoff"/></svg><span data-i18n="driver.dropoff">Drop off</span><span class="stop__pax"><svg class="icon" aria-hidden="true"><use href="#i-pax"/></svg>1 <span class="vh" data-i18n="driver.passengers">passengers</span></span></p>
+            </div>
+            <p class="stop__no" aria-hidden="true">8</p>
+          </div>
+          <div class="stop__body">
+            <p class="stop__ref"><span class="mono" lang="en">PT-2026-0145</span></p>
+            <p class="stop__note" lang="en">Then go to the Aquatic Centre (arrive by 11:10 am).</p>
+            <div class="stop__actions">
+              <div class="stop__go">
+                <button type="button" class="btn btn--secondary" data-act="nav"><svg class="icon" aria-hidden="true"><use href="#i-navigate"/></svg><span data-i18n="driver.navigate">Navigate</span></button>
+              </div>
+              <p class="hint stop__navnote" role="status"></p>
+              <button type="button" class="btn btn--primary btn--done" data-act="done"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="driver.done">Done</span></button>
+              <button type="button" class="btn btn--secondary btn--noshow" data-act="noshow"><svg class="icon" aria-hidden="true"><use href="#i-cross"/></svg><span data-i18n="driver.noshow">No-show</span></button>
+            </div>
+            <div class="stop__confirm" hidden>
+              <p class="stop__question" tabindex="-1" data-i18n="driver.noshow.confirm">Mark as no-show? We will tell the transport coordinators.</p>
+              <button type="button" class="btn btn--danger" data-act="noshow-yes"><span data-i18n="driver.noshow.yes">Yes, mark no-show</span></button>
+              <button type="button" class="btn btn--secondary" data-act="noshow-back"><span data-i18n="driver.goback">Go back</span></button>
+            </div>
+          </div>
+          <div class="stop__result" hidden>
+            <p class="stop__outcome" tabindex="-1"></p>
+            <button type="button" class="btn btn--secondary btn--undo" data-act="undo"><svg class="icon" aria-hidden="true"><use href="#i-undo"/></svg><span data-i18n="driver.undo">Undo</span></button>
+          </div>
+        </li>
+        <li class="stop" id="stop-9" data-stop="9" data-t="11:30" data-act="pickup" data-pax="11" data-ref="PT-2026-0119">
+          <div class="stop__row">
+            <p class="stop__time"><time datetime="11:30" data-t="11:30">11:30 am</time></p>
+            <div class="stop__main">
+              <h2 class="stop__place"><span class="vh"><span data-i18n="driver.stop">Stop</span> 9: </span><span lang="en">Aquatic Centre</span></h2>
+              <p class="stop__what"><svg class="icon" aria-hidden="true"><use href="#i-pickup"/></svg><span data-i18n="driver.pickup">Pick up</span><span class="stop__pax"><svg class="icon" aria-hidden="true"><use href="#i-pax"/></svg>11 <span class="vh" data-i18n="driver.passengers">passengers</span></span></p>
+            </div>
+            <p class="stop__no" aria-hidden="true">9</p>
+          </div>
+          <div class="stop__body">
+            <p class="stop__ref"><span class="mono" lang="en">PT-2026-0119</span> <span lang="en">Grade 7 Swimming</span></p>
+            <p class="stop__contact"><span class="stop__contact-label" data-i18n="driver.contact">Contact</span> <span lang="en">Ruwan Silva</span>, <span class="mono">077 000 0119</span></p>
+            <div class="stop__actions">
+              <div class="stop__go">
+                <button type="button" class="btn btn--secondary" data-act="nav"><svg class="icon" aria-hidden="true"><use href="#i-navigate"/></svg><span data-i18n="driver.navigate">Navigate</span></button>
+                <a class="btn btn--secondary" href="tel:+94770000119"><svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg><span data-i18n="driver.call">Call</span><span class="vh" lang="en"> Ruwan Silva</span></a>
+              </div>
+              <p class="hint stop__navnote" role="status"></p>
+              <button type="button" class="btn btn--primary btn--done" data-act="done"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="driver.done">Done</span></button>
+              <button type="button" class="btn btn--secondary btn--noshow" data-act="noshow"><svg class="icon" aria-hidden="true"><use href="#i-cross"/></svg><span data-i18n="driver.noshow">No-show</span></button>
+            </div>
+            <div class="stop__confirm" hidden>
+              <p class="stop__question" tabindex="-1" data-i18n="driver.noshow.confirm">Mark as no-show? We will tell the transport coordinators.</p>
+              <button type="button" class="btn btn--danger" data-act="noshow-yes"><span data-i18n="driver.noshow.yes">Yes, mark no-show</span></button>
+              <button type="button" class="btn btn--secondary" data-act="noshow-back"><span data-i18n="driver.goback">Go back</span></button>
+            </div>
+          </div>
+          <div class="stop__result" hidden>
+            <p class="stop__outcome" tabindex="-1"></p>
+            <button type="button" class="btn btn--secondary btn--undo" data-act="undo"><svg class="icon" aria-hidden="true"><use href="#i-undo"/></svg><span data-i18n="driver.undo">Undo</span></button>
+          </div>
+        </li>
+        <li class="stop" id="stop-10" data-stop="10" data-t="11:55" data-act="dropoff" data-pax="11" data-ref="PT-2026-0119">
+          <div class="stop__row">
+            <p class="stop__time"><time datetime="11:55" data-t="11:55">11:55 am</time></p>
+            <div class="stop__main">
+              <h2 class="stop__place"><span class="vh"><span data-i18n="driver.stop">Stop</span> 10: </span><span lang="en">Branch A (main branch)</span></h2>
+              <p class="stop__what"><svg class="icon" aria-hidden="true"><use href="#i-dropoff"/></svg><span data-i18n="driver.dropoff">Drop off</span><span class="stop__pax"><svg class="icon" aria-hidden="true"><use href="#i-pax"/></svg>11 <span class="vh" data-i18n="driver.passengers">passengers</span></span></p>
+            </div>
+            <p class="stop__no" aria-hidden="true">10</p>
+          </div>
+          <div class="stop__body">
+            <p class="stop__ref"><span class="mono" lang="en">PT-2026-0119</span></p>
+            <div class="stop__actions">
+              <div class="stop__go">
+                <button type="button" class="btn btn--secondary" data-act="nav"><svg class="icon" aria-hidden="true"><use href="#i-navigate"/></svg><span data-i18n="driver.navigate">Navigate</span></button>
+              </div>
+              <p class="hint stop__navnote" role="status"></p>
+              <button type="button" class="btn btn--primary btn--done" data-act="done"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="driver.done">Done</span></button>
+              <button type="button" class="btn btn--secondary btn--noshow" data-act="noshow"><svg class="icon" aria-hidden="true"><use href="#i-cross"/></svg><span data-i18n="driver.noshow">No-show</span></button>
+            </div>
+            <div class="stop__confirm" hidden>
+              <p class="stop__question" tabindex="-1" data-i18n="driver.noshow.confirm">Mark as no-show? We will tell the transport coordinators.</p>
+              <button type="button" class="btn btn--danger" data-act="noshow-yes"><span data-i18n="driver.noshow.yes">Yes, mark no-show</span></button>
+              <button type="button" class="btn btn--secondary" data-act="noshow-back"><span data-i18n="driver.goback">Go back</span></button>
+            </div>
+          </div>
+          <div class="stop__result" hidden>
+            <p class="stop__outcome" tabindex="-1"></p>
+            <button type="button" class="btn btn--secondary btn--undo" data-act="undo"><svg class="icon" aria-hidden="true"><use href="#i-undo"/></svg><span data-i18n="driver.undo">Undo</span></button>
+          </div>
+        </li>
+        <li class="stop" id="stop-11" data-stop="11" data-t="13:30" data-act="pickup" data-pax="6" data-ref="PT-2026-0150">
+          <div class="stop__row">
+            <p class="stop__time"><time datetime="13:30" data-t="13:30">1:30 pm</time></p>
+            <div class="stop__main">
+              <h2 class="stop__place"><span class="vh"><span data-i18n="driver.stop">Stop</span> 11: </span><span lang="en">Branch A (main branch)</span></h2>
+              <p class="stop__what"><svg class="icon" aria-hidden="true"><use href="#i-pickup"/></svg><span data-i18n="driver.pickup">Pick up</span><span class="stop__pax"><svg class="icon" aria-hidden="true"><use href="#i-pax"/></svg>6 <span class="vh" data-i18n="driver.passengers">passengers</span></span></p>
+            </div>
+            <p class="stop__no" aria-hidden="true">11</p>
+          </div>
+          <div class="stop__body">
+            <p class="stop__ref"><span class="mono" lang="en">PT-2026-0150</span></p>
+            <p class="stop__contact"><span class="stop__contact-label" data-i18n="driver.contact">Contact</span> <span lang="en">Priyanka Wijesekara</span>, <span class="mono">077 000 0150</span></p>
+            <div class="stop__actions">
+              <div class="stop__go">
+                <button type="button" class="btn btn--secondary" data-act="nav"><svg class="icon" aria-hidden="true"><use href="#i-navigate"/></svg><span data-i18n="driver.navigate">Navigate</span></button>
+                <a class="btn btn--secondary" href="tel:+94770000150"><svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg><span data-i18n="driver.call">Call</span><span class="vh" lang="en"> Priyanka Wijesekara</span></a>
+              </div>
+              <p class="hint stop__navnote" role="status"></p>
+              <button type="button" class="btn btn--primary btn--done" data-act="done"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="driver.done">Done</span></button>
+              <button type="button" class="btn btn--secondary btn--noshow" data-act="noshow"><svg class="icon" aria-hidden="true"><use href="#i-cross"/></svg><span data-i18n="driver.noshow">No-show</span></button>
+            </div>
+            <div class="stop__confirm" hidden>
+              <p class="stop__question" tabindex="-1" data-i18n="driver.noshow.confirm">Mark as no-show? We will tell the transport coordinators.</p>
+              <button type="button" class="btn btn--danger" data-act="noshow-yes"><span data-i18n="driver.noshow.yes">Yes, mark no-show</span></button>
+              <button type="button" class="btn btn--secondary" data-act="noshow-back"><span data-i18n="driver.goback">Go back</span></button>
+            </div>
+          </div>
+          <div class="stop__result" hidden>
+            <p class="stop__outcome" tabindex="-1"></p>
+            <button type="button" class="btn btn--secondary btn--undo" data-act="undo"><svg class="icon" aria-hidden="true"><use href="#i-undo"/></svg><span data-i18n="driver.undo">Undo</span></button>
+          </div>
+        </li>
+        <li class="stop" id="stop-12" data-stop="12" data-t="13:45" data-act="dropoff" data-pax="6" data-ref="PT-2026-0150">
+          <div class="stop__row">
+            <p class="stop__time"><time datetime="13:45" data-t="13:45">1:45 pm</time></p>
+            <div class="stop__main">
+              <h2 class="stop__place"><span class="vh"><span data-i18n="driver.stop">Stop</span> 12: </span><span lang="en">Branch B</span></h2>
+              <p class="stop__what"><svg class="icon" aria-hidden="true"><use href="#i-dropoff"/></svg><span data-i18n="driver.dropoff">Drop off</span><span class="stop__pax"><svg class="icon" aria-hidden="true"><use href="#i-pax"/></svg>6 <span class="vh" data-i18n="driver.passengers">passengers</span></span></p>
+            </div>
+            <p class="stop__no" aria-hidden="true">12</p>
+          </div>
+          <div class="stop__body">
+            <p class="stop__ref"><span class="mono" lang="en">PT-2026-0150</span></p>
+            <div class="stop__actions">
+              <div class="stop__go">
+                <button type="button" class="btn btn--secondary" data-act="nav"><svg class="icon" aria-hidden="true"><use href="#i-navigate"/></svg><span data-i18n="driver.navigate">Navigate</span></button>
+              </div>
+              <p class="hint stop__navnote" role="status"></p>
+              <button type="button" class="btn btn--primary btn--done" data-act="done"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="driver.done">Done</span></button>
+              <button type="button" class="btn btn--secondary btn--noshow" data-act="noshow"><svg class="icon" aria-hidden="true"><use href="#i-cross"/></svg><span data-i18n="driver.noshow">No-show</span></button>
+            </div>
+            <div class="stop__confirm" hidden>
+              <p class="stop__question" tabindex="-1" data-i18n="driver.noshow.confirm">Mark as no-show? We will tell the transport coordinators.</p>
+              <button type="button" class="btn btn--danger" data-act="noshow-yes"><span data-i18n="driver.noshow.yes">Yes, mark no-show</span></button>
+              <button type="button" class="btn btn--secondary" data-act="noshow-back"><span data-i18n="driver.goback">Go back</span></button>
+            </div>
+          </div>
+          <div class="stop__result" hidden>
+            <p class="stop__outcome" tabindex="-1"></p>
+            <button type="button" class="btn btn--secondary btn--undo" data-act="undo"><svg class="icon" aria-hidden="true"><use href="#i-undo"/></svg><span data-i18n="driver.undo">Undo</span></button>
+          </div>
+        </li>
+        <li class="stop" id="stop-13" data-stop="13" data-t="15:30" data-act="pickup" data-pax="6" data-ref="PT-2026-0150">
+          <div class="stop__row">
+            <p class="stop__time"><time datetime="15:30" data-t="15:30">3:30 pm</time></p>
+            <div class="stop__main">
+              <h2 class="stop__place"><span class="vh"><span data-i18n="driver.stop">Stop</span> 13: </span><span lang="en">Branch B</span></h2>
+              <p class="stop__what"><svg class="icon" aria-hidden="true"><use href="#i-pickup"/></svg><span data-i18n="driver.pickup">Pick up</span><span class="stop__pax"><svg class="icon" aria-hidden="true"><use href="#i-pax"/></svg>6 <span class="vh" data-i18n="driver.passengers">passengers</span></span></p>
+            </div>
+            <p class="stop__no" aria-hidden="true">13</p>
+          </div>
+          <div class="stop__body">
+            <p class="stop__ref"><span class="mono" lang="en">PT-2026-0150</span></p>
+            <p class="stop__contact"><span class="stop__contact-label" data-i18n="driver.contact">Contact</span> <span lang="en">Priyanka Wijesekara</span>, <span class="mono">077 000 0150</span></p>
+            <div class="stop__actions">
+              <div class="stop__go">
+                <button type="button" class="btn btn--secondary" data-act="nav"><svg class="icon" aria-hidden="true"><use href="#i-navigate"/></svg><span data-i18n="driver.navigate">Navigate</span></button>
+                <a class="btn btn--secondary" href="tel:+94770000150"><svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg><span data-i18n="driver.call">Call</span><span class="vh" lang="en"> Priyanka Wijesekara</span></a>
+              </div>
+              <p class="hint stop__navnote" role="status"></p>
+              <button type="button" class="btn btn--primary btn--done" data-act="done"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="driver.done">Done</span></button>
+              <button type="button" class="btn btn--secondary btn--noshow" data-act="noshow"><svg class="icon" aria-hidden="true"><use href="#i-cross"/></svg><span data-i18n="driver.noshow">No-show</span></button>
+            </div>
+            <div class="stop__confirm" hidden>
+              <p class="stop__question" tabindex="-1" data-i18n="driver.noshow.confirm">Mark as no-show? We will tell the transport coordinators.</p>
+              <button type="button" class="btn btn--danger" data-act="noshow-yes"><span data-i18n="driver.noshow.yes">Yes, mark no-show</span></button>
+              <button type="button" class="btn btn--secondary" data-act="noshow-back"><span data-i18n="driver.goback">Go back</span></button>
+            </div>
+          </div>
+          <div class="stop__result" hidden>
+            <p class="stop__outcome" tabindex="-1"></p>
+            <button type="button" class="btn btn--secondary btn--undo" data-act="undo"><svg class="icon" aria-hidden="true"><use href="#i-undo"/></svg><span data-i18n="driver.undo">Undo</span></button>
+          </div>
+        </li>
+        <li class="stop" id="stop-14" data-stop="14" data-t="15:45" data-act="dropoff" data-pax="6" data-ref="PT-2026-0150">
+          <div class="stop__row">
+            <p class="stop__time"><time datetime="15:45" data-t="15:45">3:45 pm</time></p>
+            <div class="stop__main">
+              <h2 class="stop__place"><span class="vh"><span data-i18n="driver.stop">Stop</span> 14: </span><span lang="en">Branch A (main branch)</span></h2>
+              <p class="stop__what"><svg class="icon" aria-hidden="true"><use href="#i-dropoff"/></svg><span data-i18n="driver.dropoff">Drop off</span><span class="stop__pax"><svg class="icon" aria-hidden="true"><use href="#i-pax"/></svg>6 <span class="vh" data-i18n="driver.passengers">passengers</span></span></p>
+            </div>
+            <p class="stop__no" aria-hidden="true">14</p>
+          </div>
+          <div class="stop__body">
+            <p class="stop__ref"><span class="mono" lang="en">PT-2026-0150</span></p>
+            <p class="stop__note" lang="en">End of day at Branch A.</p>
+            <div class="stop__actions">
+              <div class="stop__go">
+                <button type="button" class="btn btn--secondary" data-act="nav"><svg class="icon" aria-hidden="true"><use href="#i-navigate"/></svg><span data-i18n="driver.navigate">Navigate</span></button>
+              </div>
+              <p class="hint stop__navnote" role="status"></p>
+              <button type="button" class="btn btn--primary btn--done" data-act="done"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="driver.done">Done</span></button>
+              <button type="button" class="btn btn--secondary btn--noshow" data-act="noshow"><svg class="icon" aria-hidden="true"><use href="#i-cross"/></svg><span data-i18n="driver.noshow">No-show</span></button>
+            </div>
+            <div class="stop__confirm" hidden>
+              <p class="stop__question" tabindex="-1" data-i18n="driver.noshow.confirm">Mark as no-show? We will tell the transport coordinators.</p>
+              <button type="button" class="btn btn--danger" data-act="noshow-yes"><span data-i18n="driver.noshow.yes">Yes, mark no-show</span></button>
+              <button type="button" class="btn btn--secondary" data-act="noshow-back"><span data-i18n="driver.goback">Go back</span></button>
+            </div>
+          </div>
+          <div class="stop__result" hidden>
+            <p class="stop__outcome" tabindex="-1"></p>
+            <button type="button" class="btn btn--secondary btn--undo" data-act="undo"><svg class="icon" aria-hidden="true"><use href="#i-undo"/></svg><span data-i18n="driver.undo">Undo</span></button>
+          </div>
+        </li>
+      </ol>
+
+      <p class="endofday"><svg class="icon" aria-hidden="true"><use href="#i-end"/></svg><span data-i18n="driver.end">End of day at Branch A</span></p>
+
+      <p class="vh" id="route-live" role="status"></p>
+    </div>
+  </main>
+
+  <!-- === Section: Footer === -->
+  <footer class="foot wrap" lang="en">
+    <p><span class="product">PolymathTransit</span> · Design direction 4, Departures · <a href="index.html">Foundations</a> · <a href="../index.html">All five directions</a></p>
+  </footer>
+
+  <!-- === Section: Prototype controls (not part of the design) === -->
+  <aside class="proto" aria-labelledby="proto-title" lang="en">
+    <h2 id="proto-title">Prototype controls</h2>
+    <ul>
+      <li><button type="button" data-proto="offline" aria-pressed="false">Simulate offline</button></li>
+      <li><button type="button" data-proto="donenext">Mark next stop done</button></li>
+      <li><button type="button" data-proto="reset">Reset</button></li>
+    </ul>
+  </aside>
+</body>
+</html>

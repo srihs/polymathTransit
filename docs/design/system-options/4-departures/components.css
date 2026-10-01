@@ -1,0 +1,1104 @@
+/* ==========================================================================
+   PolymathTransit – Direction 4 "Departures" – components
+   --------------------------------------------------------------------------
+   What this file is for:
+     Every component of the Departures system and all of its states. Each
+     component uses only the semantic aliases from tokens.css, so it works on
+     the light ground and inside a .board (dark) area without a second copy.
+     The foundations page (index.html) shows every state; it uses the
+     .is-hover, .is-focus and .is-pressed classes to freeze a state for
+     display. Real pages use the pseudo-classes.
+
+   Sections:
+     1.  Base (box model, page text, links, headings)
+     2.  Utilities (visually hidden, skip link)
+     3.  Focus
+     4.  Icons and status glyphs
+     5.  Buttons
+     6.  Text fields, selects, text areas
+     7.  Option rows (radio and checkbox rows, date departures list)
+     8.  Checkbox
+     9.  Passenger stepper
+     10. Disclosure (details and summary)
+     11. Remark slot (status) and flags
+     12. Board row (the signature row)
+     13. Alerts and error summary
+     14. Data table (board table)
+     15. Navigation: coordinator navigation, phone header, language switch
+     16. Tiles (the board's header strip)
+     17. Day chart (Marey-style)
+     18. Detail drawer, run summary and seat meter
+     19. Dialog
+     20. Toast status line with Undo
+     21. Prototype controls (deliberately plain)
+     22. Motion and reduced motion
+     23. Forced colours
+   ========================================================================== */
+
+/* === Section 1: Base === */
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html {
+  font-family: var(--font-text);
+  color: var(--c-ink);
+  background-color: var(--c-ground);
+  /* Never let the browser fake bold or italic Sinhala (research.md 3.2). */
+  font-synthesis: none;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  font-size: calc(var(--fs-body) * var(--k));
+  line-height: var(--lh-body);
+  /* All times and counts line up in columns. */
+  font-variant-numeric: tabular-nums;
+}
+
+h1, h2, h3, h4 { margin: 0; line-height: var(--leading-title); font-weight: var(--weight-bold); }
+p { margin: 0; }
+ul, ol { margin: 0; padding: 0; }
+img, svg { display: block; max-width: 100%; }
+
+a { color: var(--c-link); text-decoration: underline; text-underline-offset: 0.18em; text-decoration-thickness: 1px; }
+a:visited { color: var(--c-link-visited); }
+a:hover { text-decoration-thickness: 3px; }
+
+.mono { font-family: var(--font-mono); }
+/* Latin letters and digits inside Sinhala text keep their English size: the
+   1.2 factor (tokens 7) is for Sinhala letters only. script.js marks the runs
+   with .latin; static digits use .num. */
+.num:lang(si),
+.latin:lang(si) { font-size: calc(1em / 1.2); }
+/* English data shown inside Sinhala text (place names, references) also
+   returns to its English size. Zero specificity from :where(), so any
+   component that sets its own size (it uses --k, which is 1 for lang="en")
+   still wins. */
+:where(:lang(si)) [lang="en"] { font-size: calc(1em / 1.2); }
+/* In Sinhala, mono slots use the text face (B612 Mono's full-cell dots and
+   spaces would spread "පෙ.ව." apart); only their Latin runs stay in mono. */
+.remark:lang(si),
+.mono:lang(si),
+.colhead:lang(si),
+.nextrow__in:lang(si) { font-family: var(--font-text); }
+.remark:lang(si) .latin,
+.mono:lang(si) .latin,
+.colhead:lang(si) .latin,
+.nextrow__in:lang(si) .latin { font-family: var(--font-mono); }
+time:lang(si),
+.board-time .per:lang(si) { font-family: var(--font-text); }
+time:lang(si) .latin { font-family: var(--font-mono); }
+
+/* === Section 2: Utilities === */
+.vh {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip {
+  position: absolute;
+  left: var(--space-2);
+  top: -10rem;
+  z-index: var(--layer-dialog);
+  padding: var(--space-3) var(--space-4);
+  background: var(--board-950);
+  color: var(--white);
+  font-weight: var(--weight-bold);
+}
+.skip:visited { color: var(--white); }
+.skip:focus { top: var(--space-2); outline: var(--border-strong) solid var(--white); outline-offset: 0; }
+
+[hidden] { display: none !important; }
+
+/* The inline icon sprite: present for <use>, never drawn itself. */
+.sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
+
+/* === Section 3: Focus === */
+/* One focus treatment for the system: a 3 px outline 2 px away from the
+   element. Board-950 on light (19.18:1), white on the board (19.18:1). */
+:focus-visible,
+.is-focus {
+  outline: var(--border-strong) solid var(--c-focus);
+  outline-offset: 2px;
+}
+:focus:not(:focus-visible) { outline: none; }
+/* Headings and status lines that receive focus by script get a ring when
+   the person is using the keyboard (the browser decides via :focus-visible),
+   a little further out so it does not crowd large type. */
+[tabindex="-1"]:focus-visible { outline-offset: 4px; }
+
+/* === Section 4: Icons and status glyphs === */
+/* Icons: 24 px grid, 2 px stroke, square ends, mitred joins (brief 6.4). The
+   stroke settings live here and the inline <symbol> shapes inherit them. */
+.icon {
+  width: var(--icon-lg);
+  height: var(--icon-lg);
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: square;
+  stroke-linejoin: miter;
+  stroke-miterlimit: 10;
+}
+.icon--sm { width: var(--icon-sm); height: var(--icon-sm); }
+.icon--md { width: var(--icon-md); height: var(--icon-md); }
+
+/* Status glyphs: 12 px shapes, one per status, drawn in the status colour. */
+.glyph { width: var(--glyph); height: var(--glyph); flex: none; fill: none; stroke: currentColor; stroke-width: 1.75; }
+
+/* === Section 5: Buttons === */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: var(--target);
+  min-width: var(--target);
+  padding: var(--space-2) var(--space-4);
+  border: var(--border-control) solid transparent;
+  border-radius: var(--radius);
+  font: inherit;
+  font-family: var(--font-text);
+  font-weight: var(--weight-bold);
+  font-size: calc(var(--fs-row) * var(--k));
+  line-height: var(--lh-row);
+  text-align: center;
+  text-decoration: none;
+  /* Long Sinhala labels wrap; the button grows (brief 3.5). */
+  white-space: normal;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+.btn--block { display: flex; width: 100%; }
+
+.btn--primary { background: var(--c-action); color: var(--c-on-action); border-color: var(--c-action); }
+.btn--primary:hover,
+.btn--primary.is-hover { background: var(--c-action-hover); border-color: var(--c-action-hover); }
+.btn--primary:active,
+.btn--primary.is-pressed { background: var(--c-action-pressed); border-color: var(--c-action-pressed); }
+
+.btn--secondary { background: var(--c-ground); color: var(--c-ink); border-color: var(--c-edge); }
+.btn--secondary:hover,
+.btn--secondary.is-hover { border-color: var(--c-ink); }
+.btn--secondary:active,
+.btn--secondary.is-pressed { background: var(--c-raised); border-color: var(--c-ink); }
+
+.btn--quiet {
+  background: transparent;
+  color: var(--c-link);
+  border-color: transparent;
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+  padding-inline: var(--space-2);
+}
+.btn--quiet:hover,
+.btn--quiet.is-hover { text-decoration-thickness: 3px; }
+.btn--quiet:active,
+.btn--quiet.is-pressed { color: var(--c-ink); }
+
+.btn--danger { background: var(--c-ground); color: var(--c-danger); border-color: var(--c-danger); }
+.btn--danger:hover,
+.btn--danger.is-hover { background: var(--c-danger); color: var(--c-ground); }
+.btn--danger:active,
+.btn--danger.is-pressed { background: var(--c-danger); color: var(--c-ground); border-color: var(--c-ink); }
+
+/* Disabled: dashed edge and a quiet fill, never colour alone. */
+.btn[disabled],
+.btn[aria-disabled="true"] {
+  background: var(--c-sunken);
+  color: var(--c-ink-2);
+  border-color: var(--c-edge-quiet);
+  border-style: dashed;
+  text-decoration: none;
+  cursor: not-allowed;
+}
+
+/* Busy: the label changes to "Sending…" and a static clock shows; nothing
+   spins (brief 3.7). */
+.btn[aria-busy="true"] { cursor: progress; }
+
+/* === Section 6: Text fields, selects, text areas === */
+.field { display: grid; gap: var(--space-1); }
+.field + .field,
+.field + .group,
+.group + .field,
+.group + .group { margin-top: var(--space-5); }
+
+.label {
+  display: block;
+  font-weight: var(--weight-bold);
+  font-size: calc(var(--fs-body) * var(--k));
+  line-height: var(--lh-row);
+}
+.hint {
+  display: block;
+  color: var(--c-ink-2);
+  font-size: calc(var(--fs-small) * var(--k));
+  line-height: var(--lh-body);
+}
+.error-msg {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  color: var(--c-danger);
+  font-weight: var(--weight-bold);
+  font-size: calc(var(--fs-body) * var(--k));
+  line-height: var(--lh-row);
+}
+.error-msg .icon { margin-top: 0.1em; }
+
+.input,
+.select,
+.textarea {
+  display: block;
+  width: 100%;
+  min-height: var(--row-height);
+  padding: var(--space-2) var(--space-3);
+  border: var(--border-control) solid var(--c-edge);
+  border-radius: var(--radius);
+  background: var(--c-ground);
+  color: var(--c-ink);
+  font: inherit;
+  /* 16 px or more stops phones zooming into the field. */
+  font-size: calc(var(--fs-body) * var(--k));
+  line-height: var(--lh-row);
+}
+.input--short { max-width: 12ch; }
+.input--date { max-width: 14ch; font-family: var(--font-mono); }
+.textarea { min-height: 6rem; resize: vertical; }
+
+.input:hover, .select:hover, .textarea:hover,
+.input.is-hover { border-color: var(--c-ink); }
+.input:focus-visible, .select:focus-visible, .textarea:focus-visible,
+.input.is-focus { border-color: var(--c-ink); }
+
+.input[disabled], .select[disabled], .textarea[disabled] {
+  background: var(--c-sunken);
+  color: var(--c-ink-2);
+  border-style: dashed;
+  border-color: var(--c-edge-quiet);
+  cursor: not-allowed;
+}
+
+/* Error: a red edge, a thick left bar (shape), the message and its icon. */
+.is-error > .input,
+.is-error > .select-wrap > .select,
+.is-error > .textarea,
+.input[aria-invalid="true"],
+.select[aria-invalid="true"] {
+  border-color: var(--c-danger);
+  border-left-width: 6px;
+}
+
+/* Native select with our own chevron (the select keeps its phone wheel). */
+.select-wrap { position: relative; }
+.select { appearance: none; padding-inline-end: var(--space-7); cursor: pointer; }
+.select-wrap .icon {
+  position: absolute;
+  inset-inline-end: var(--space-3);
+  top: 50%;
+  transform: translateY(-50%) rotate(90deg);
+  pointer-events: none;
+}
+
+/* === Section 7: Option rows (radio and checkbox rows, date departures list) === */
+.group { border: 0; margin: 0; padding: 0; min-width: 0; }
+.group > legend { padding: 0; margin-bottom: var(--space-1); }
+.group .hint,
+.group .error-msg { margin-bottom: var(--space-2); }
+
+/* Options sit as the rows of one board: shared rules, one column on phones. */
+.rows { display: grid; }
+.rows--2 { grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); gap: var(--space-2); }
+
+.opt {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1.5rem 1fr;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: var(--row-height);
+  padding: var(--space-2) var(--space-3);
+  border: var(--border-control) solid var(--c-edge);
+  border-radius: var(--radius);
+  background: var(--c-ground);
+  font-size: calc(var(--fs-body) * var(--k));
+  line-height: var(--lh-row);
+  cursor: pointer;
+}
+.rows:not(.rows--2) > .opt + .opt { margin-top: calc(var(--border-control) * -1); }
+.opt:hover,
+.opt.is-hover { border-color: var(--c-ink); z-index: 1; }
+
+/* Selected: tint, brand edge, bold label and the filled control (3 cues). */
+.opt:has(> input:checked),
+.opt.is-selected {
+  background: var(--c-selected);
+  border-color: var(--c-selected-edge);
+  font-weight: var(--weight-bold);
+  z-index: 2;
+}
+
+.opt:has(> input:focus-visible) { outline: var(--border-strong) solid var(--c-focus); outline-offset: 2px; z-index: 3; }
+@supports selector(:has(a)) {
+  .opt > input:focus-visible { outline: none; }
+}
+
+/* The control itself: a 24 px ring or box we draw so it reads in sunlight. */
+.ctl {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 1.5rem;
+  height: 1.5rem;
+  margin: 0;
+  border: var(--border-control) solid var(--c-ink);
+  background: var(--c-ground);
+  display: grid;
+  place-content: center;
+  cursor: pointer;
+}
+.ctl[type="radio"] { border-radius: 50%; }
+.ctl[type="checkbox"] { border-radius: var(--radius); }
+.ctl[type="radio"]:checked { background: var(--c-brand); box-shadow: inset 0 0 0 4px var(--c-ground); border-color: var(--c-brand); }
+.ctl[type="checkbox"]::after {
+  content: "";
+  width: 0.5rem;
+  height: 0.875rem;
+  margin-top: -0.2rem;
+  border: solid var(--c-on-action);
+  border-width: 0 3px 3px 0;
+  transform: rotate(45deg);
+  visibility: hidden;
+}
+.ctl[type="checkbox"]:checked { background: var(--c-brand); border-color: var(--c-brand); }
+.ctl[type="checkbox"]:checked::after { visibility: visible; }
+.ctl:disabled,
+.ctl[aria-disabled="true"] { border-style: dashed; border-color: var(--c-edge-quiet); background: var(--c-sunken); cursor: not-allowed; }
+
+/* Group in error: red rule on the left of the rows and the message above. */
+.group.is-error .rows { border-left: 6px solid var(--c-danger); padding-left: var(--space-2); }
+
+/* Date departures list (signature, brief 6.4): each date is a board row with
+   its remark, so the cutoff is part of the choice itself (FR-07, BRL-13). */
+.opt--date { align-items: start; padding-block: var(--space-3); }
+.opt--date .ctl { margin-top: 0.15em; }
+.when {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-1) var(--space-3);
+}
+/* Dates are digits only, so they keep one size in both languages (no --k). */
+.when__date { display: block; font-family: var(--font-mono); font-weight: var(--weight-bold); font-size: var(--fs-row); }
+.when__day { display: block; font-weight: var(--weight-regular); color: var(--c-ink); }
+.opt--date[aria-disabled="true"],
+.opt--date.is-closed {
+  background: var(--c-sunken);
+  border-style: dashed;
+  border-color: var(--c-edge-quiet);
+  color: var(--c-ink-2);
+  cursor: not-allowed;
+}
+.opt--date.is-closed .when__day,
+.opt--date.is-closed .when__date { color: var(--c-ink-2); text-decoration: none; }
+
+/* === Section 8: Checkbox (standalone row, no frame) === */
+.check {
+  display: grid;
+  grid-template-columns: 1.5rem 1fr;
+  align-items: start;
+  gap: var(--space-3);
+  min-height: var(--target);
+  padding-block: var(--space-2);
+  cursor: pointer;
+  font-size: calc(var(--fs-body) * var(--k));
+  line-height: var(--lh-row);
+}
+.check .ctl { margin-top: 0.1em; }
+.check + .check { margin-top: var(--space-2); }
+.check.is-disabled { color: var(--c-ink-2); cursor: not-allowed; }
+
+/* === Section 9: Passenger stepper === */
+.stepper { display: flex; align-items: stretch; gap: var(--space-2); }
+.stepper .btn { min-width: var(--row-height); min-height: var(--row-height); padding: 0; }
+.stepper .input {
+  width: 6ch;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-weight: var(--weight-bold);
+  font-size: calc(var(--fs-row) * 1.2);
+}
+
+/* === Section 10: Disclosure === */
+.disclosure > summary {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--target);
+  padding-block: var(--space-2);
+  cursor: pointer;
+  color: var(--c-link);
+  font-weight: var(--weight-bold);
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+  list-style: none;
+}
+.disclosure > summary::-webkit-details-marker { display: none; }
+.disclosure > summary .icon { transition: transform var(--duration-flip) var(--ease-out); }
+.disclosure[open] > summary .icon { transform: rotate(90deg); }
+.disclosure > summary:hover { text-decoration-thickness: 3px; }
+.disclosure__body { padding: var(--space-3) 0 0 var(--space-4); border-left: var(--border-control) solid var(--c-edge); margin-left: 0.7rem; }
+
+/* === Section 11: Remark slot (status) and flags === */
+/* The status as a remark: glyph and word in the status colour, inside a
+   framed cell (1 px on the board, 2 px on light pages). The HTML keeps the
+   word in sentence case; capitals come from CSS for English only (brief 6.4). */
+.remark {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  min-height: 1.75rem;
+  padding: 0.15em 0.5em;
+  border: var(--remark-border) solid currentColor;
+  border-radius: var(--radius);
+  background: var(--c-ground);
+  color: var(--remark-c, var(--c-ink));
+  font-family: var(--font-mono);
+  font-weight: var(--weight-bold);
+  font-size: calc(var(--fs-remark) * var(--k));
+  line-height: var(--leading-remark);
+  letter-spacing: var(--tracking-remark);
+  text-transform: uppercase;
+  white-space: normal;
+  vertical-align: middle;
+}
+.remark:lang(si) { text-transform: none; letter-spacing: 0; line-height: var(--leading-row-si); }
+
+.remark--submitted  { --remark-c: var(--c-quiet-status); }
+.remark--proposed   { --remark-c: var(--c-info); }
+.remark--attention  { --remark-c: var(--c-attention); }
+.remark--confirmed  { --remark-c: var(--c-ok); }
+.remark--declined   { --remark-c: var(--c-danger); }
+.remark--cancelled  { --remark-c: var(--c-quiet-status); }
+.remark--completed  { --remark-c: var(--c-ink); }
+.remark--noshow     { --remark-c: var(--c-danger); }
+.remark--open       { --remark-c: var(--c-ok); }
+.remark--closes     { --remark-c: var(--c-attention); }
+.remark--closed     { --remark-c: var(--c-quiet-status); }
+
+.flags { display: inline-flex; flex-wrap: wrap; gap: var(--space-1) var(--space-3); list-style: none; }
+.flag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  color: var(--c-ink);
+  font-size: calc(var(--fs-small) * var(--k));
+  line-height: var(--leading-small);
+}
+.flag .icon { width: var(--icon-sm); height: var(--icon-sm); color: var(--c-ink-2); }
+
+/* === Section 12: Board row (the signature row) === */
+/* One row format wherever a trip appears: time first in mono, then places
+   and details, then the remark slot. */
+.brow {
+  display: grid;
+  grid-template-columns: minmax(6.5ch, auto) 1fr;
+  grid-template-areas:
+    "time main"
+    "time remark";
+  align-items: start;
+  gap: var(--space-1) var(--space-4);
+  padding: var(--space-3) 0;
+  border-bottom: var(--border-hair) solid var(--c-rule);
+}
+.brow__time {
+  grid-area: time;
+  font-family: var(--font-mono);
+  font-weight: var(--weight-bold);
+  font-size: calc(var(--fs-row) * var(--k));
+  line-height: var(--lh-row);
+  white-space: nowrap;
+}
+.brow__main { grid-area: main; font-size: calc(var(--fs-row) * var(--k)); line-height: var(--lh-row); min-width: 0; }
+.brow__remark { grid-area: remark; display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-3); }
+
+/* The board-time style: the next stop's time, tile counts, the reference. */
+.board-time {
+  font-family: var(--font-mono);
+  font-weight: var(--weight-bold);
+  font-size: var(--fs-board-time);
+  line-height: var(--leading-board-time);
+  letter-spacing: -0.01em;
+}
+.board-time .per { font-size: 0.55em; letter-spacing: 0; }
+/* B612 Mono gives the colon a full cell, so "10:00" reads as "10: 00".
+   The colon's cell is narrowed (script.js wraps colons in mono times). */
+.colon { margin-inline: -0.04em -0.16em; }
+
+/* Column headers of the board: small mono capitals over a strong rule. */
+.colhead {
+  font-family: var(--font-mono);
+  font-weight: var(--weight-bold);
+  font-size: calc(var(--fs-remark) * var(--k));
+  letter-spacing: var(--tracking-remark);
+  text-transform: uppercase;
+  color: var(--c-ink-2);
+}
+.colhead:lang(si) { text-transform: none; letter-spacing: 0; }
+
+/* === Section 13: Alerts and error summary === */
+/* A message is a board cell: a fixed icon column ruled off from the text,
+   framed in the signal colour (taken from the SBB principle of using the
+   board's own format for messages). */
+.alert {
+  display: grid;
+  grid-template-columns: var(--target) 1fr;
+  border: var(--border-control) solid var(--alert-c, var(--c-edge));
+  border-radius: var(--radius);
+  background: var(--c-ground);
+  color: var(--c-ink);
+}
+.alert__icon {
+  display: grid;
+  place-items: start center;
+  padding-top: var(--space-3);
+  border-right: var(--border-control) solid var(--alert-c, var(--c-edge));
+  color: var(--alert-c, var(--c-ink));
+}
+.alert__body { padding: var(--space-3); display: grid; gap: var(--space-2); min-width: 0; }
+/* A one-paragraph message flows as text (marked Latin runs stay inline). */
+p.alert__body { display: block; }
+.alert__title { font-size: calc(var(--fs-row) * var(--k)); }
+.alert--info    { --alert-c: var(--c-info); }
+.alert--success { --alert-c: var(--c-ok); }
+.alert--warning { --alert-c: var(--c-attention); }
+.alert--error   { --alert-c: var(--c-danger); }
+.alert--error .alert__title { color: var(--c-ink); }
+.alert ul { padding-left: 0; list-style: none; display: grid; gap: var(--space-2); }
+.alert--error a { color: var(--c-danger); font-weight: var(--weight-bold); }
+.alert--error a:visited { color: var(--c-danger); }
+.alert:focus { outline: var(--border-strong) solid var(--c-focus); outline-offset: 2px; }
+
+/* === Section 14: Data table (board table) === */
+.table-wrap { overflow-x: auto; }
+.btable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: calc(var(--fs-row) * var(--k));
+  line-height: var(--lh-row);
+}
+.btable caption {
+  text-align: left;
+  padding-bottom: var(--space-2);
+  font-weight: var(--weight-bold);
+  font-size: calc(var(--fs-row) * var(--k));
+}
+.btable th[scope="col"] {
+  text-align: left;
+  vertical-align: bottom;
+  padding: var(--space-2) var(--space-3) var(--space-2) 0;
+  border-bottom: var(--border-control) solid var(--c-rule-strong);
+  font-family: var(--font-mono);
+  font-weight: var(--weight-bold);
+  font-size: calc(var(--fs-remark) * var(--k));
+  letter-spacing: var(--tracking-remark);
+  text-transform: uppercase;
+  color: var(--c-ink-2);
+  white-space: nowrap;
+}
+.btable th[aria-sort] { color: var(--c-ink); }
+.btable th[aria-sort] .icon { display: inline-block; vertical-align: -0.2em; margin-left: var(--space-1); }
+.btable td,
+.btable th[scope="row"] {
+  height: var(--row-height);
+  padding: var(--space-2) var(--space-3) var(--space-2) 0;
+  border-bottom: var(--border-hair) solid var(--c-rule);
+  text-align: left;
+  vertical-align: middle;
+  font-weight: var(--weight-regular);
+}
+.btable .t { font-family: var(--font-mono); font-weight: var(--weight-bold); white-space: nowrap; }
+.btable .ref { font-family: var(--font-mono); white-space: nowrap; }
+.btable .n { text-align: right; font-family: var(--font-mono); padding-right: var(--space-4); }
+.btable tbody tr:hover td,
+.btable tbody tr:hover th { background: var(--c-raised); }
+.btable tr.is-selected td,
+.btable tr.is-selected th { background: var(--c-selected); color: var(--white); }
+.btable .linkbtn { font-family: var(--font-mono); }
+.btable .remark { white-space: nowrap; }
+
+/* A button that looks like a link (opens a trip in the drawer). */
+.linkbtn {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--target);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--c-link);
+  font: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+  cursor: pointer;
+}
+.linkbtn:hover { text-decoration-thickness: 3px; }
+
+/* === Section 15: Navigation === */
+/* 15a. Coordinator navigation: the current page has a bar under it and bold
+   type, not only a different colour. */
+.nav-coord ul { display: flex; flex-wrap: wrap; gap: 0 var(--space-1); list-style: none; }
+.nav-coord a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--target-min);
+  padding: 0 var(--space-3);
+  color: var(--c-ink-2);
+  text-decoration: none;
+  font-size: calc(var(--fs-row) * var(--k));
+  border-bottom: var(--border-strong) solid transparent;
+}
+.nav-coord a:visited { color: var(--c-ink-2); }
+.nav-coord a:hover { color: var(--c-ink); border-bottom-color: var(--c-edge); }
+.nav-coord a[aria-current="page"] {
+  color: var(--c-ink);
+  font-weight: var(--weight-bold);
+  border-bottom-color: var(--c-brand);
+}
+
+/* 15b. Phone header: the board strip at the top of each phone page. */
+.ph {
+  padding: var(--space-3) var(--space-4) var(--space-4);
+  border-bottom: var(--border-strong) solid var(--c-brand);
+}
+.ph__brand { display: flex; align-items: center; gap: var(--space-3); }
+.ph__brand img { width: auto; height: 2.25rem; }
+.product {
+  font-family: var(--font-text);
+  font-weight: var(--weight-bold);
+  font-size: calc(var(--fs-row) * var(--k));
+  letter-spacing: 0.01em;
+}
+.ph__lang { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-3); margin-top: var(--space-3); }
+.ph__note { margin-top: var(--space-2); color: var(--c-ink-2); font-size: calc(var(--fs-small) * var(--k)); line-height: var(--lh-body); }
+
+/* 15c. Language switch: each option in its own language and script; the
+   current one is filled and carries a tick (more than colour, brief 3.5). */
+.lang { display: flex; flex-wrap: wrap; gap: var(--space-2); list-style: none; }
+.lang__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-height: var(--target-min);
+  padding: var(--space-1) var(--space-3);
+  border: var(--border-hair) solid var(--c-edge);
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--c-ink);
+  font: inherit;
+  font-size: calc(var(--fs-body) * var(--k));
+  line-height: var(--lh-row);
+  text-decoration: none;
+  cursor: pointer;
+}
+.lang__btn:visited { color: var(--c-ink); }
+.lang__btn:hover { border-color: var(--c-ink); }
+.lang__btn .icon { width: var(--icon-sm); height: var(--icon-sm); display: none; }
+.lang__btn[aria-pressed="true"],
+.lang__btn[aria-current="true"] {
+  background: var(--c-action);
+  color: var(--c-on-action);
+  border-color: var(--c-action);
+  font-weight: var(--weight-bold);
+}
+.lang__btn[aria-pressed="true"] .icon,
+.lang__btn[aria-current="true"] .icon { display: block; }
+
+/* === Section 16: Tiles (the board's header strip) === */
+/* Cells of the board's header strip, divided by 1 px board lines (the
+   container's edge colour shows through 1 px gaps). The plan tile is the
+   largest and spans two rows (US-22 AC-1: it comes first). */
+.tiles {
+  display: grid;
+  grid-template-columns: minmax(18rem, 1.5fr) repeat(2, minmax(10rem, 1fr));
+  grid-template-rows: auto auto;
+  gap: var(--border-hair);
+  background: var(--c-edge);
+  border: var(--border-hair) solid var(--c-edge);
+  border-radius: var(--radius);
+}
+.tile {
+  display: grid;
+  align-content: start;
+  gap: var(--space-1);
+  padding: var(--space-4);
+  background: var(--c-ground);
+  color: var(--c-ink);
+  text-decoration: none;
+  min-width: 0;
+}
+a.tile:visited { color: var(--c-ink); }
+a.tile:hover .tile__label { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 0.2em; }
+a.tile:hover { background: var(--c-raised); }
+.tile__count { display: flex; align-items: center; gap: var(--space-2); }
+.tile__count .glyph { width: 1rem; height: 1rem; }
+.tile__label { font-weight: var(--weight-bold); font-size: calc(var(--fs-row) * var(--k)); line-height: var(--lh-row); }
+.tile__refs { font-family: var(--font-mono); color: var(--c-ink-2); font-size: var(--fs-small); line-height: var(--leading-small); }
+.tile--plan { grid-row: span 2; background: var(--c-raised); gap: var(--space-3); }
+.tile--plan .facts { display: grid; gap: var(--space-1); list-style: none; color: var(--c-ink-2); font-size: var(--fs-small); line-height: var(--leading-small); }
+.tile--plan .facts strong { color: var(--c-ink); font-weight: var(--weight-bold); }
+.deadline { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: var(--space-3); }
+.deadline__label { display: block; color: var(--c-ink-2); font-size: var(--fs-small); }
+
+/* === Section 17: Day chart (Marey-style) === */
+/* Time runs across (7:00 am to 6:15 pm), vans run down. Each run is a button
+   placed at its start time. Inline styles carry only the data: --t0 and --t1
+   in minutes after midnight. --start and --span are set on .chart. */
+.chart { --start: 420; --span: 705; } /* 7:00 am to 6:45 pm: room for the 6:00 pm edge and PT-2026-0151 */
+.chart__scale { position: relative; height: 2.5rem; margin: 0 0 var(--space-1); padding: 0; list-style: none; }
+.chart__tick {
+  position: absolute;
+  bottom: 0;
+  left: calc((var(--t) - var(--start)) / var(--span) * 100%);
+  padding-left: var(--space-1);
+  border-left: var(--border-hair) solid var(--c-edge);
+  color: var(--c-ink-2);
+  font-family: var(--font-mono);
+  font-size: var(--fs-small);
+  line-height: 1.25;
+  white-space: nowrap;
+}
+/* Hour labels keep the full "10:00 am" format on two lines, so they fit
+   70 px apart at 1280 px wide. */
+.chart__per { display: block; }
+.chart__now-label {
+  position: absolute;
+  bottom: 0;
+  left: calc((var(--t) - var(--start)) / var(--span) * 100%);
+  z-index: 4;
+  padding: 0 var(--space-1);
+  background: var(--c-ink);
+  color: var(--c-ground);
+  font-family: var(--font-mono);
+  font-weight: var(--weight-bold);
+  font-size: var(--fs-small);
+  line-height: 1.6;
+  white-space: nowrap;
+}
+
+.lane + .lane { margin-top: var(--space-3); }
+.lane__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-1) var(--space-3);
+  margin-bottom: var(--space-1);
+}
+.lane__name { font-weight: var(--weight-bold); font-size: var(--fs-row); }
+.lane__meta { color: var(--c-ink-2); font-size: var(--fs-small); }
+/* The track is a size container, so a bar inside a button can be drawn at
+   its true length in time (100cqw = the track's width). */
+.lane__track {
+  position: relative;
+  height: 5rem;
+  border: var(--border-hair) solid var(--c-edge);
+  background: var(--c-raised);
+  container-type: inline-size;
+}
+.lane__marks { position: absolute; inset: 0; }
+.lane__runs { list-style: none; margin: 0; padding: 0; }
+
+/* Marks that every track carries: hour lines, the now line, the 6:00 pm edge,
+   and the zone after hours. */
+.mark { position: absolute; top: 0; bottom: 0; left: calc((var(--t) - var(--start)) / var(--span) * 100%); pointer-events: none; }
+.mark--hour { width: 0; border-left: var(--border-hair) solid var(--c-rule); }
+.mark--now { width: 0; border-left: var(--border-control) solid var(--c-ink); z-index: 4; }
+.mark--edge { width: 0; border-left: var(--border-control) dashed var(--c-ink-2); z-index: 1; }
+.mark--after { right: 0; background: var(--c-ground); }
+
+/* The waiting time a gap job uses (PT-2026-0145 inside Grade 7 Swimming). */
+.gapframe {
+  position: absolute;
+  top: 0.125rem;
+  height: 2rem;
+  left: calc((var(--t0) - var(--start)) / var(--span) * 100%);
+  width: calc((var(--t1) - var(--t0)) / var(--span) * 100%);
+  border: var(--border-control) dashed var(--c-ink-2);
+  pointer-events: none;
+}
+/* The label sits under the run labels, at the foot of the track. */
+.gapframe__label {
+  position: absolute;
+  right: 0;
+  top: 3.6rem;
+  color: var(--c-ink-2);
+  font-family: var(--font-mono);
+  font-size: var(--fs-small);
+  line-height: 1.5;
+  white-space: nowrap;
+}
+
+/* A run: one button holding the bar (true length in time) and, under it,
+   the label (status glyph and short reference for each booking, then flag
+   icons). The label may be wider than a short bar; the bar never lies about
+   time. */
+.blk {
+  --blk-c: var(--c-info);
+  position: absolute;
+  top: 0.375rem;
+  left: calc((var(--t0) - var(--start)) / var(--span) * 100%);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-1);
+  min-width: 1.5rem;
+  min-height: 1.5rem;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius);
+  background: none;
+  color: var(--c-ink);
+  font-family: var(--font-mono);
+  font-weight: var(--weight-bold);
+  font-size: var(--fs-small);
+  line-height: 1.2;
+  white-space: nowrap;
+  text-align: left;
+  cursor: pointer;
+}
+.blk__bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding-inline: 1px;
+  height: 1.5rem;
+  width: calc((var(--t1) - var(--t0)) / var(--span) * 100cqw);
+  min-width: 0.75rem;
+  border: var(--border-control) solid var(--blk-c);
+  border-radius: var(--radius);
+  background: var(--c-raised);
+  color: var(--c-ink);
+}
+.blk__label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0.0625rem var(--space-1);
+  border-radius: var(--radius);
+}
+.blk__ref { display: inline-flex; align-items: center; gap: 0.25rem; }
+/* A second label row for a run that starts too close to the one before it,
+   so labels never overlap (PT-2026-0147 after the 0142 return). */
+.blk--low .blk__label { margin-top: 1.25rem; }
+/* Flag icons sit inside the bar, so labels stay short (glyph and number). */
+.blk .icon { width: 0.875rem; height: 0.875rem; color: var(--c-ink); stroke-width: 2.25; }
+.blk--confirmed .blk__bar .icon { color: var(--c-ground); }
+.blk:hover .blk__label { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 0.2em; }
+.blk:hover .blk__bar { border-color: var(--c-ink); }
+.blk:focus-visible { outline: var(--border-strong) solid var(--c-focus); outline-offset: 3px; z-index: 5; }
+
+/* Each booking's glyph takes its status colour from its shape. */
+.blk__ref .glyph:has(use[href="#g-confirmed"]) { color: var(--c-ok); }
+.blk__ref .glyph:has(use[href="#g-proposed"]) { color: var(--c-info); }
+.blk__ref .glyph:has(use[href="#g-attention"]) { color: var(--c-attention); }
+
+/* Run status by bar fill and edge style, plus the glyph shape in the label
+   (never colour alone). */
+.blk--confirmed { --blk-c: var(--c-ok); }
+.blk--confirmed .blk__bar { background: var(--c-ok); color: var(--c-ground); }
+.blk--proposed  { --blk-c: var(--c-info); }
+.blk--attention { --blk-c: var(--c-attention); }
+.blk--attention .blk__bar { border-style: dashed; background: var(--c-ground); }
+
+/* The selected trip: purple fill with a white edge on the bar, and the
+   label set white on purple (8.86:1; status glyphs 4.48:1 or more). The
+   white edge carries the selection, because purple on the panel is 1.99:1. */
+.blk[aria-current="true"] .blk__bar { background: var(--c-selected); border-color: var(--white); border-style: solid; color: var(--white); }
+.blk[aria-current="true"] .blk__label { background: var(--c-selected); color: var(--white); outline: var(--border-control) solid var(--white); }
+.blk[aria-current="true"] .icon { color: var(--white); }
+
+/* Stop ticks inside a run, like the stations on a Marey chart. */
+.blk__tick {
+  position: absolute;
+  bottom: 0;
+  left: var(--at);
+  width: 2px;
+  height: 0.5rem;
+  background: currentColor;
+}
+
+/* Bars that are visually the same length must still be told apart by
+   colour-blind readers: the label glyph shape does that (ok vs attention is
+   only Delta E 6.8 for protanopia, so the dashed edge is required too). */
+
+.legend {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  gap: var(--space-2) var(--space-5);
+  list-style: none;
+  font-size: var(--fs-small);
+  line-height: var(--leading-small);
+  color: var(--c-ink);
+}
+.legend li { display: flex; align-items: center; gap: var(--space-2); }
+.legend .key {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 1.25rem;
+  border: var(--border-control) solid var(--c-ink-2);
+  border-radius: var(--radius);
+  background: var(--c-raised);
+}
+.legend .key--confirmed { border-color: var(--c-ok); background: var(--c-ok); color: var(--c-ground); }
+.legend .key--proposed { border-color: var(--c-info); color: var(--c-info); }
+.legend .key--attention { border-color: var(--c-attention); border-style: dashed; background: var(--c-ground); color: var(--c-attention); }
+.legend .key--selected { border-color: var(--white); background: var(--c-selected); color: var(--white); }
+.legend .key--gap { border-style: dashed; background: transparent; }
+.legend .key--now { width: 2.25rem; border: 0; background: none; }
+.legend .key--now::before { content: ""; width: 0; height: 1.25rem; border-left: var(--border-control) solid var(--c-ink); }
+.legend .key--edge { border: 0; background: none; }
+.legend .key--edge::before { content: ""; width: 0; height: 1.25rem; border-left: var(--border-control) dashed var(--c-ink-2); }
+.legend .key--icon { border: 0; background: none; color: var(--c-ink); }
+.legend .key--ticks { position: relative; }
+.legend .key--ticks::before,
+.legend .key--ticks::after { content: ""; position: absolute; bottom: 0; width: 2px; height: 0.35rem; background: var(--c-ink); }
+.legend .key--ticks::before { left: 35%; }
+.legend .key--ticks::after { left: 65%; }
+
+/* === Section 18: Detail drawer, run summary and seat meter === */
+.drawer {
+  background: var(--c-raised);
+  border-left: var(--border-hair) solid var(--c-edge);
+  padding: var(--space-5);
+  display: grid;
+  align-content: start;
+  gap: var(--space-5);
+}
+.drawer__kicker { color: var(--c-ink-2); font-family: var(--font-mono); font-size: var(--fs-remark); letter-spacing: var(--tracking-remark); text-transform: uppercase; }
+.drawer__head { display: grid; gap: var(--space-3); padding-bottom: var(--space-4); border-bottom: var(--border-control) solid var(--c-rule-strong); }
+.drawer__head h2 { justify-self: start; font-family: var(--font-mono); font-size: var(--fs-board-time); line-height: 1.1; }
+.drawer__status { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-3); }
+.drawer h3 { font-size: var(--fs-row); margin-bottom: var(--space-2); }
+
+.facts-list { display: grid; grid-template-columns: max-content 1fr; gap: var(--space-2) var(--space-4); margin: 0; }
+.facts-list dt { color: var(--c-ink-2); font-size: var(--fs-small); line-height: var(--lh-body); }
+.facts-list dd { margin: 0; line-height: var(--lh-body); }
+
+.explain { display: grid; gap: var(--space-2); list-style: none; padding-left: var(--space-4); border-left: var(--border-strong) solid var(--c-brand); max-width: var(--measure); }
+
+.run { width: 100%; border-collapse: collapse; font-size: var(--fs-body); }
+.run caption { text-align: left; font-weight: var(--weight-bold); font-size: var(--fs-row); padding-bottom: var(--space-2); }
+.run th[scope="col"] { text-align: left; padding: 0 var(--space-2) var(--space-1) 0; border-bottom: var(--border-control) solid var(--c-rule-strong); }
+.run td, .run th[scope="row"] { text-align: left; padding: var(--space-2) var(--space-2) var(--space-2) 0; border-bottom: var(--border-hair) solid var(--c-rule); font-weight: var(--weight-regular); vertical-align: top; }
+.run .t { font-family: var(--font-mono); font-weight: var(--weight-bold); white-space: nowrap; }
+
+/* Seat meter: one cell per seat, filled cells are seats in use. The words
+   "7 of 8" always sit beside it. */
+.meter { display: inline-flex; align-items: center; gap: var(--space-2); white-space: nowrap; }
+.meter__cells { display: inline-flex; gap: 2px; }
+.meter__cell { width: 0.4rem; height: 0.8rem; border: var(--border-hair) solid var(--c-ink-2); }
+.meter__cell.is-on { background: var(--c-ink); border-color: var(--c-ink); }
+.meter__text { font-family: var(--font-mono); font-size: var(--fs-small); }
+
+.actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); }
+.actions__sep { margin-left: auto; padding-left: var(--space-4); border-left: var(--border-hair) solid var(--c-edge); }
+.audit { color: var(--c-ink-2); font-size: var(--fs-small); line-height: var(--leading-small); }
+
+/* === Section 19: Dialog === */
+.dlg {
+  max-width: 34rem;
+  width: calc(100% - 2rem);
+  padding: var(--space-5);
+  border: var(--border-control) solid var(--c-ink);
+  border-radius: var(--radius);
+  background: var(--c-raised);
+  color: var(--c-ink);
+}
+/* No translucency over content (brief 3.2): the backdrop is a solid board.
+   ::backdrop does not inherit custom properties in older browsers, so the
+   raw value is given as the fallback. */
+.dlg::backdrop { background: var(--board-950, #140C17); }
+.dlg h2 { font-size: var(--fs-title); margin-bottom: var(--space-3); }
+.dlg p + .actions { margin-top: var(--space-5); }
+
+/* === Section 20: Toast status line with Undo === */
+.toast {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-4);
+  padding: var(--space-2) var(--space-3);
+  border: var(--border-control) solid var(--c-ok);
+  border-radius: var(--radius);
+  background: var(--c-ground);
+}
+.toast:empty { display: none; }
+.toast .icon { color: var(--c-ok); }
+
+/* === Section 21: Prototype controls (deliberately plain) === */
+/* Not part of the design: system font, dashed grey border, so nobody mistakes
+   it for the direction (brief 2). */
+.proto {
+  margin: var(--space-7) auto 0;
+  padding: var(--space-3);
+  border: 2px dashed var(--grey-500);
+  background: var(--grey-100);
+  color: var(--black);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+.proto h2 { font-size: 0.875rem; font-weight: 700; margin-bottom: 0.5rem; }
+.proto ul { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; }
+.proto button {
+  min-height: 2.75rem;
+  padding: 0 0.75rem;
+  border: 1px solid var(--grey-500);
+  border-radius: 0;
+  background: var(--white);
+  color: var(--black);
+  font: inherit;
+  cursor: pointer;
+}
+.proto button:focus-visible { outline: 3px solid var(--black); outline-offset: 2px; }
+
+/* === Section 22: Motion and reduced motion === */
+/* The remark flip: when a status changes, the word turns over once in 150 ms
+   on its own slot (brief 6.4). It never loops. */
+@keyframes remark-flip {
+  from { transform: perspective(12rem) rotateX(-90deg); }
+  to   { transform: perspective(12rem) rotateX(0deg); }
+}
+.is-flipping { animation: remark-flip var(--duration-flip) var(--ease-out); transform-origin: 50% 50%; }
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* === Section 23: Forced colours === */
+/* In Windows high-contrast mode, give the drawn controls back to the system. */
+@media (forced-colors: active) {
+  .ctl { appearance: auto; -webkit-appearance: auto; }
+  .ctl[type="checkbox"]::after { display: none; }
+  .blk, .remark, .opt, .tile { border-color: CanvasText; }
+  .blk[aria-current="true"] { outline: 3px solid Highlight; }
+}
