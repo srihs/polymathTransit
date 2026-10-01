@@ -1,0 +1,59 @@
+# PolymathTransit .gitignore
+# Stack: Django, HTML5 templates, JavaScript, PostgreSQL, Docker.
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# --- Virtual environments ---
+.venv/
+venv/
+env/
+
+# --- Environment and secrets (keep .env.example tracked) ---
+.env
+.env.*
+!.env.example
+
+# --- Django ---
+/staticfiles/
+/media/
+*.sqlite3
+*.log
+
+# --- Tests, coverage and linters ---
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+.tox/
+.nox/
+.ruff_cache/
+.mypy_cache/
+
+# --- JavaScript tooling ---
+node_modules/
+npm-debug.log*
+
+# --- Docker local overrides ---
+compose.override.yaml
+docker-compose.override.yml
+
+# --- Editors and operating systems ---
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- Office lock files (Requirements/ holds .docx and .xlsx) ---
+~$*
+
+# --- Claude Code: personal settings only; .claude/commands and agents are tracked ---
+.claude/settings.local.json
