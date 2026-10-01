@@ -44,6 +44,6 @@ and the routing ADRs in `docs/adr/`.
 
 ## Skills
 
-| Task | Skill |
-|------|-------|
-| Measuring and tuning performance | `performance-profiling` |
+No installed skill fits your tasks yet. Before each task, check the installed
+skills list for one that does, as "Using installed skills" in `CLAUDE.md`
+requires.
