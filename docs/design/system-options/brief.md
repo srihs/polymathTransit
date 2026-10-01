@@ -1561,7 +1561,7 @@ calendar component.
 
 **Concept.** Every trip is a ticket: a compact card where each fact always
 sits in the same place (from, to, date, time, seats, reference). The form
-fills a ticket, the confirmation issues it, the coordinator's day is a rack of
+fills a ticket, a coordinator's confirmation issues it, the coordinator's day is a rack of
 tickets along each van's line, and the driver tears off stubs as the day goes.
 It draws on the card tickets that Sri Lanka Railways still issues and on the
 best thinking about travel documents.
@@ -1584,7 +1584,7 @@ engineered text for narrow slots).
 
 | Token | Hex | Role | Contrast |
 |---|---|---|---|
-| `--c-brand` | `#722A82` | The ticket's header strip (with the reference in white), primary buttons, links | white on it 8.86:1 |
+| `--c-brand` | `#722A82` | The issued (Confirmed) ticket's header strip (with the reference in white), primary buttons, links | white on it 8.86:1 |
 | `--c-desk` | `#F3F1F4` | Page ground (the desk the tickets lie on) | ink-2 on it 5.13:1 |
 | `--c-ticket` | `#FFFFFF` | Ticket and form surface | |
 | `--c-ticket-edge` | `#7D8086` | Ticket edges, perforations, input borders | 3.96:1 on white; 3.53:1 on desk |
@@ -1622,9 +1622,14 @@ separated from the desk by their edge colour only.
 
 **Signature element: the ticket.** The same ticket layout appears everywhere a
 trip appears. On the form, a live ticket at the top fills its slots as you
-answer (empty slots show the slot label and a dash); on submit the ticket is
-"issued": its header strip turns on with the reference in Stick No Bills and
-the status stamp. Outbound and return are separated by a perforation line with
+answer (empty slots show the slot label and a dash). On submit the ticket
+gets its reference in Stick No Bills and the status stamp of the status the
+request really has: Submitted, shown to the requester as "Not confirmed yet"
+(`done.status`). The purple strip means one thing only, Confirmed: a ticket
+is "issued", and its strip turns purple, only when a coordinator confirms the
+trip. A just-sent request keeps the unfilled strip, and its stamp is neutral
+(no tick, no Confirmed colour) (FR-04, US-01 AC-5; settled after review 5.1,
+01/10/2026). Outbound and return are separated by a perforation line with
 notches. On the dashboard the detail panel shows the opened proposal as a full
 ticket with the explanation printed on its stub, and the timeline blocks are
 small tickets along each van's line. On the driver page each stop is a stub;
@@ -1641,7 +1646,7 @@ read). Flags are smaller outline stamps in ink.
 rubber-stamp marks (simple, closed shapes). Same set as direction 1 (section
 6.1 list), plus a punched-hole mark for Done.
 
-**Motion.** Issuing the ticket: the header strip fills from left (180 ms).
+**Motion.** Issuing the ticket (when it is confirmed): the header strip fills from left (180 ms).
 Punch: the hole scales in (120 ms), then the stub folds closed (180 ms).
 Reduced motion: instant.
 

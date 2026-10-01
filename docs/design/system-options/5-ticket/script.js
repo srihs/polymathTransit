@@ -10,7 +10,7 @@
  *   3. Time and date formatting (NFR-12)
  *   4. Language switch (FR-65)
  *   5. Request form (FR-01 to FR-07, FR-09, FR-54, FR-55, US-01, US-03, US-05)
- *   6. The ticket renderer (live ticket and the issued confirmation)
+ *   6. The ticket renderer (live ticket and the received confirmation)
  *   7. Dashboard (FR-19, FR-29, US-16, US-22, US-26, BRL-21)
  *   8. Driver's route (FR-61, FR-67, US-60, NFR-18)
  *   9. Foundations page demos
@@ -288,6 +288,18 @@
       "driver.navnote": "ඔබේ සිතියම් යෙදුම විවෘත කරයි"
     }
   };
+
+  /*
+   * Strings this direction needs beyond brief 4.9. Kept apart so the block
+   * above stays an exact copy of the brief. Each Sinhala string here is a
+   * draft by the ux-designer and is on the D-09 review list.
+   *
+   * done.status – the status stamp on the requester's confirmation. A request
+   * that has just been sent is Submitted, not Confirmed (US-01 AC-5, FR-04,
+   * specification 6.2), so the stamp says so in plain words (review 5.1).
+   */
+  STRINGS.en['done.status'] = 'Not confirmed yet';
+  STRINGS.si['done.status'] = 'තවම තහවුරු කර නැත'; // Draft, D-09.
 
   // === Section: 2. Small helpers ===
 
@@ -620,7 +632,7 @@
   /** The template for extra stops, taken from the no-JS rows. */
   let stopTemplate = null;
   /** The answers shown on the confirmation, kept to redraw it in Sinhala. */
-  let issuedData = null;
+  let receivedData = null;
 
   /**
    * Reads the form into a plain object.
@@ -1072,7 +1084,7 @@
     });
     $('#done-view').hidden = true;
     $('#form-view').hidden = false;
-    issuedData = null;
+    receivedData = null;
     syncReveals();
     updateCutoff(false);
     updatePax();
@@ -1104,7 +1116,7 @@
   }
 
   /**
-   * Handles "Send request": shows errors, or issues the ticket (FR-04).
+   * Handles "Send request": shows errors, or shows the received ticket (FR-04).
    * @param {Event} [event] The submit event.
    * @returns {void}
    */
@@ -1120,26 +1132,20 @@
   }
 
   /**
-   * Replaces the form with the issued ticket and moves focus to its heading
-   * (US-01 AC-5). The strip fills from the left as it is issued.
+   * Replaces the form with the received ticket and moves focus to its
+   * heading (US-01 AC-5). The ticket is not issued here: its strip stays
+   * unfilled, because the purple strip means Confirmed and a request that
+   * has just been sent is only Submitted (FR-04, review 5.1). It is issued
+   * when a coordinator confirms the trip.
    * @returns {void}
    */
   function showConfirmation() {
-    issuedData = readForm();
-    const ticket = $('#done-ticket');
-    ticket.classList.remove('is-issued');
-    ticket.innerHTML = ticketHtml(issuedData, 'done');
+    receivedData = readForm();
+    $('#done-ticket').innerHTML = ticketHtml(receivedData, 'done');
     $('#form-view').hidden = true;
     $('#done-view').hidden = false;
     window.scrollTo(0, 0);
-    const heading = $('#done-title');
-    heading.focus();
-    // Two frames so the unissued strip is painted before it fills.
-    window.requestAnimationFrame(function () {
-      window.requestAnimationFrame(function () {
-        ticket.classList.add('is-issued');
-      });
-    });
+    $('#done-title').focus();
   }
 
   /**
@@ -1240,8 +1246,8 @@
 
     languageHooks.push(function () {
       renderCheckTicket();
-      if (issuedData && !$('#done-view').hidden) {
-        $('#done-ticket').innerHTML = ticketHtml(issuedData, 'done');
+      if (receivedData && !$('#done-view').hidden) {
+        $('#done-ticket').innerHTML = ticketHtml(receivedData, 'done');
       }
     });
 
@@ -1325,7 +1331,8 @@
 
   /**
    * Builds the ticket for the request page: the live "Check your request"
-   * ticket, or the issued confirmation with its reference and stamp.
+   * ticket, or the received (not yet issued) confirmation with its
+   * reference and its "Not confirmed yet" stamp.
    * @param {Object} d Answers from readForm().
    * @param {string} mode 'check' or 'done'.
    * @returns {string} The ticket's inner HTML.
@@ -1354,9 +1361,14 @@
     if (mode === 'done') {
       // Principle 2: the reference is the ticket's name; the serial (0142)
       // is the part people say aloud, so it is the largest.
-      head = '<div class="ticket__stamp-row"><h1 class="ticket__h1" id="done-title" tabindex="-1">' +
-        '<span class="stamp stamp--large stamp--confirmed"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>' +
-        esc(t('done.title')) + '</span></h1></div>' +
+      // Review 5.1: the request is Submitted, so the heading is plain text and
+      // the stamp is the neutral Submitted stamp (tray icon, no tick, no
+      // Confirmed colour) saying "Not confirmed yet" (US-01 AC-5, FR-04).
+      head = '<div class="ticket__stamp-row ticket__stamp-row--received">' +
+        '<h1 class="ticket__h1" id="done-title" tabindex="-1">' + esc(t('done.title')) + '</h1>' +
+        '<p class="ticket__status"><span class="stamp stamp--large stamp--submitted">' +
+        '<svg class="icon" aria-hidden="true"><use href="#i-submitted"/></svg>' +
+        esc(t('done.status')) + '</span></p></div>' +
         '<div class="ticket__strip"><p class="ticket__ref-line"><span class="ticket__strip-label">' + esc(t('done.ref')) + '</span>' +
         '<span class="ref"><span class="ref__prefix">PT-2026-</span>0142</span></p></div>' +
         '<h2 class="ticket__trip-title">' + esc(t('section.trip')) + '</h2>';
@@ -2080,7 +2092,7 @@
 
   /**
    * Wires the demos on index.html: the language switch sample, issuing a
-   * ticket and punching a stub.
+   * received ticket when it is confirmed, and punching a stub.
    * @returns {void}
    */
   function initFoundations() {

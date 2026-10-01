@@ -6,7 +6,10 @@
   Purpose:      The public "Request a van" form at phone width (360 px first),
                 with the English / සිංහල switch, the cutoff message, inline
                 errors, the error summary, the live ticket ("Check your
-                request") and the confirmation state, where the ticket is issued.
+                request") and the confirmation state, where the ticket gets
+                its reference and a "Not confirmed yet" stamp. It is not
+                issued (no purple strip) until a coordinator confirms the
+                trip (FR-04, review 5.1).
   Direction:    5 Ticket. Every trip is a ticket with each fact in a fixed slot.
   Requirements: FR-01 to FR-07, FR-09, FR-49, FR-52, FR-54, FR-55, FR-65,
                 NFR-01, NFR-02, NFR-03, NFR-04, NFR-12, NFR-18, BRL-13,
@@ -912,7 +915,11 @@
     </form>
   </div>
 
-  <!-- === 4. Confirmation view (FR-04, US-01 AC-5) === -->
+  <!-- === 4. Confirmation view (FR-04, US-01 AC-5) ===
+       The script fills the ticket: heading "Request received", the neutral
+       "Not confirmed yet" stamp, the reference on an unfilled strip and the
+       trip summary. In production the server renders the same markup after a
+       normal POST, so it does not depend on JavaScript. -->
   <div id="done-view" hidden>
     <div class="ticket ticket--done" id="done-ticket" data-ticket></div>
     <section class="next-steps" aria-labelledby="done-what">

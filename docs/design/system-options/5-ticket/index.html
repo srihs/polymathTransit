@@ -505,8 +505,8 @@
   <!-- === Section 8: Signature element – the ticket === -->
   <section class="fd-section" id="signature" aria-labelledby="signature-h">
     <h2 id="signature-h"><span class="num">8</span> The signature element: the ticket</h2>
-    <p class="fd-measure">The ticket does one job: it makes a trip the same object for everyone who handles it. Staff check their request on it before sending; the confirmation issues it with its reference; the coordinator sees each booking as a small ticket on its van's line and opens it as a full ticket with the explanation on the stub; the driver punches a stub at each stop. Because the date, pick up, going to, passengers and trip-for slots are always in the same order, a coordinator reading a ticket aloud on the phone and a requester holding theirs are looking at the same place for the same fact. The purple strip means one thing only: this ticket is issued (confirmed).</p>
-    <div class="fd-grid fd-grid--3">
+    <p class="fd-measure">The ticket does one job: it makes a trip the same object for everyone who handles it. Staff check their request on it before sending; sending gives it a reference and a neutral "Not confirmed yet" stamp; a coordinator's confirmation issues it; the coordinator sees each booking as a small ticket on its van's line and opens it as a full ticket with the explanation on the stub; the driver punches a stub at each stop. Because the date, pick up, going to, passengers and trip-for slots are always in the same order, a coordinator reading a ticket aloud on the phone and a requester holding theirs are looking at the same place for the same fact. The purple strip means one thing only: this ticket is issued (confirmed). A request that has just been sent is only Submitted, so its strip stays unfilled and its stamp is the neutral one, with a tray, not a tick.</p>
+    <div class="fd-grid fd-grid--2">
       <div>
         <h3>Being filled (not issued)</h3>
         <article class="ticket" aria-labelledby="sig-1">
@@ -523,10 +523,31 @@
         </article>
       </div>
       <div>
-        <h3>Issued</h3>
-        <article class="ticket is-issued" id="demo-issue" aria-labelledby="sig-2">
+        <h3>Sent: received, not confirmed yet</h3>
+        <!-- Review 5.1: a sent request is Submitted. Unfilled strip, neutral
+             stamp with a tray, no tick and no Confirmed colour (FR-04). -->
+        <article class="ticket" aria-labelledby="sig-2">
           <div class="ticket__strip"><p class="ticket__ref-line"><span class="ticket__strip-label">Your reference is</span><span class="ref" id="sig-2"><span class="ref__prefix">PT-2026-</span>0142</span></p></div>
-          <div class="ticket__stamp-row"><span class="stamp stamp--large stamp--confirmed"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Request received</span></div>
+          <div class="ticket__stamp-row"><span class="stamp stamp--large stamp--submitted"><svg class="icon" aria-hidden="true"><use href="#i-submitted"/></svg>Not confirmed yet</span></div>
+          <dl class="slots slots--flex">
+            <div class="slot"><dt class="slot__label">Date</dt><dd class="slot__value">Tuesday 13/10/2026</dd></div>
+            <div class="slot"><dt class="slot__label">Pick up</dt><dd class="slot__value"><span class="slot__line">8:45 am</span><span class="slot__sub">(± 10 min)</span><span class="slot__sub">Branch B</span></dd></div>
+            <div class="slot"><dt class="slot__label">Going to</dt><dd class="slot__value">Sports Centre</dd></div>
+            <div class="slot"><dt class="slot__label">Passengers</dt><dd class="slot__value">4</dd></div>
+            <div class="slot slot--wide"><dt class="slot__label">Trip for</dt><dd class="slot__value">Sport</dd></div>
+          </dl>
+          <div class="perf" aria-hidden="true"><span class="perf__notch perf__notch--start"></span><span class="perf__notch perf__notch--end"></span></div>
+          <dl class="slots"><div class="slot slot--wide"><dt class="slot__label">Return</dt><dd class="slot__value"><span class="slot__line">10:45 am</span><span class="slot__sub">Sports Centre</span></dd></div></dl>
+        </article>
+      </div>
+      <div>
+        <h3>Issued: confirmed by a coordinator</h3>
+        <!-- The toggle below plays the change from received to issued: the
+             strip fills and the stamp changes with it, so the purple strip
+             never appears without the Confirmed stamp, or the reverse. -->
+        <article class="ticket fd-issue-demo is-issued" id="demo-issue" aria-labelledby="sig-3">
+          <div class="ticket__strip"><p class="ticket__ref-line"><span class="ticket__strip-label">Reference</span><span class="ref" id="sig-3"><span class="ref__prefix">PT-2026-</span>0142</span></p></div>
+          <div class="ticket__stamp-row"><span class="stamp stamp--large stamp--confirmed" data-when-issued><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Confirmed</span><span class="stamp stamp--large stamp--submitted" data-when-received><svg class="icon" aria-hidden="true"><use href="#i-submitted"/></svg>Not confirmed yet</span></div>
           <dl class="slots slots--flex">
             <div class="slot"><dt class="slot__label">Date</dt><dd class="slot__value">Tuesday 13/10/2026</dd></div>
             <div class="slot"><dt class="slot__label">Pick up</dt><dd class="slot__value"><span class="slot__line">8:45 am</span><span class="slot__sub">(± 10 min)</span><span class="slot__sub">Branch B</span></dd></div>
@@ -568,7 +589,7 @@
         <caption>What moves</caption>
         <thead><tr><th scope="col">What</th><th scope="col">How</th><th scope="col">Time</th><th scope="col">Reduced motion</th></tr></thead>
         <tbody>
-          <tr><th scope="row">A ticket is issued</th><td>The purple strip fills from the left (scaleX), then the reference reads in white</td><td>180 ms, ease-out</td><td>The strip is simply purple</td></tr>
+          <tr><th scope="row">A ticket is issued (a coordinator confirms it)</th><td>The purple strip fills from the left (scaleX), then the reference reads in white. Sending a request does not issue it.</td><td>180 ms, ease-out</td><td>The strip is simply purple</td></tr>
           <tr><th scope="row">A stop is done</th><td>The hole is punched (scales in), then the stub folds closed</td><td>120 ms, then 180 ms</td><td>Hole and fold appear at once</td></tr>
           <tr><th scope="row">Hover and press</th><td>Background colour changes</td><td>120 ms</td><td>Instant</td></tr>
           <tr><th scope="row">A disclosure opens</th><td>The chevron turns a quarter</td><td>120 ms</td><td>Instant</td></tr>
@@ -577,7 +598,7 @@
       </table>
     </div>
     <div class="btn-row" style="margin-top:16px">
-      <button class="btn btn--secondary btn--small" type="button" data-demo="is-issued" aria-controls="demo-issue" aria-pressed="true">Issue the ticket (toggle)</button>
+      <button class="btn btn--secondary btn--small" type="button" data-demo="is-issued" aria-controls="demo-issue" aria-pressed="true">Issue the ticket: confirmed (toggle)</button>
       <button class="btn btn--secondary btn--small" type="button" data-demo="is-done" aria-controls="demo-stub" aria-pressed="true">Punch the stub (toggle)</button>
     </div>
   </section>

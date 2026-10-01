@@ -19,8 +19,9 @@ for, and the return below a perforation. The reference (PT-2026-0142) is
 the ticket's name and its serial (0142) is printed largest, because that
 is the part people read aloud. The purple strip across the top of a
 ticket means one thing only: the ticket is issued (confirmed). Staff
-check their request on a live ticket before sending it; the confirmation
-issues it; the coordinator's day is a rack of small tickets hanging from
+check their request on a live ticket before sending it; sending gives it
+its reference and a neutral "Not confirmed yet" stamp, with the strip
+still unfilled; a coordinator's confirmation issues it; the coordinator's day is a rack of small tickets hanging from
 each van's line, and approving the plan turns every strip on the rack
 purple; the driver's route is a column of stubs, and Done punches a hole
 and folds the stub away. One typographic rule runs through all of it:
@@ -45,8 +46,9 @@ read in IBM Plex Sans Condensed and Yaldevi.**
 
 | Question | Options | Chosen, and why |
 |---|---|---|
-| Where the live ticket sits on the form | (a) at the very top of the page, as section 6.5 describes; (b) heading the "Your trip" section; (c) just above "Send request", titled "Check your request" | **(c)**. The research "avoid" list asks pages to open straight on the first question; a full ticket at the top pushes "Your name" below the fold at 360 px and is off screen while the trip fields are filled. Above the button it becomes a check-before-send step, uses the shared string `summary.title`, and is exactly where the eye is when sending. On a valid send the same ticket is issued at the top of the confirmation. **This departs from the wording of brief 6.5; the owner may prefer (a) – see question 1.** |
-| What the confirmation's heading is | A separate "Request received" heading above the ticket, or the ticket's own stamp | The `<h1>` **is** the stamp "Request received" printed on the issued ticket, so the heading is not said twice. Focus moves to it (US-01 AC-5). |
+| Where the live ticket sits on the form | (a) at the very top of the page, as section 6.5 describes; (b) heading the "Your trip" section; (c) just above "Send request", titled "Check your request" | **(c)**. The research "avoid" list asks pages to open straight on the first question; a full ticket at the top pushes "Your name" below the fold at 360 px and is off screen while the trip fields are filled. Above the button it becomes a check-before-send step, uses the shared string `summary.title`, and is exactly where the eye is when sending. On a valid send the same ticket moves to the top of the confirmation with its reference and a "Not confirmed yet" stamp; it is not issued until a coordinator confirms it (review 5.1). **This departs from the wording of brief 6.5; the owner may prefer (a) – see question 1.** |
+| What the confirmation's heading is | A separate "Request received" heading above the ticket, or the ticket's own stamp | The `<h1>` "Request received" sits on the ticket as plain title text, and under it the status stamp shows the status the request really has. Focus moves to the heading (US-01 AC-5). (Revised for review 5.1: the heading used to be printed as a stamp in the Confirmed style.) |
+| What a just-sent request looks like (review 5.1) | (a) the strip means "issued" for every request and the stamp carries the status; (b) the strip means "Confirmed" only, and a sent request keeps an unfilled strip | **(b)**. One meaning per mark: the purple strip and the tick mean Confirmed everywhere (dashboard legend, panel, driver). A just-sent request is Submitted (specification 6.2), so it keeps the unfilled strip with the dashed foot, its reference in black, and the neutral Submitted stamp: grey (`#63666B`, 5.76:1 on white), a tray icon, and the words "Not confirmed yet" / "තවම තහවුරු කර නැත" (`done.status`, draft for D-09). No tick, no green, no purple. In greyscale and without colour the difference is still the filled versus dashed strip, the tray versus the tick, and the words. The strip is issued (fills purple) later, when a coordinator confirms the trip. |
 | Where the stencil face is used | Everywhere numbers appear, or only where it reads well | Only for printed references, big times and counts, at **20 px or more**. Below 20 px the stencil's breaks eat the figures, so small references (timeline, tables) use Plex 600 with tabular figures. |
 | How a time sits on the driver's stub | One string, or figures and am/pm apart | Figures in the stencil, the am/pm word on its own line in Plex. English puts the word after ("10:00 / am"), Sinhala before ("පෙ.ව. / 10:00"), so both fit an 84 px column. |
 | How timeline labels avoid colliding | Labels inside the bars, tooltips, or tickets hanging from the line | Small tickets hang **above or below** each van's line on a stem, so a 15-minute run still has a readable label; the bar on the line shows the real duration. |
@@ -181,9 +183,13 @@ US-26, US-44, US-46, US-47, US-52, US-54, US-58, US-60, D-09, Q-17.
 
 - **Missing shared strings** (not invented, reported): no label for the
   "Other saved places" group (Stationery supplier sits ungrouped after
-  Venues); no Sinhala for "Submitted", so the confirmation stamp uses
-  `done.title`; no Sinhala for "Sending…", so the request page shows no
-  busy state (it is shown on index.html); no Sinhala for "seats".
+  Venues); no Sinhala for the "Submitted" badge; no Sinhala for
+  "Sending…", so the request page shows no busy state (it is shown on
+  index.html); no Sinhala for "seats".
+- **Strings added beyond brief 4.9** (drafts by the ux-designer, on the
+  D-09 review list; kept in a separate block under the copied strings in
+  `script.js`): `done.status` "Not confirmed yet" / "තවම තහවුරු කර නැත",
+  the status stamp on the requester's confirmation (review 5.1).
 - **Extra stops** offer saved places only, not "Another address".
 - **Filters, sorting, Change and Decline** are visible but do not work
   (as the brief allows).

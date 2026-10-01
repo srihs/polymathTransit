@@ -15,7 +15,7 @@
  *   1. Script on and off
  *   2. Phone page frame
  *   3. Request form
- *   4. Confirmation (the issued ticket)
+ *   4. Confirmation (the received ticket, not yet issued)
  *   5. Driver's route
  *   6. Dashboard frame and tiles
  *   7. Dashboard timeline
@@ -217,19 +217,41 @@
   line-height: 1.7;
 }
 
-/* === Section: 4. Confirmation (the issued ticket) === */
+/* === Section: 4. Confirmation (the received ticket, not yet issued) === */
 .ticket--done {
   display: flex;
   flex-direction: column;
   margin-bottom: var(--space-5);
 }
 
-/* The heading comes first in reading order; the strip is drawn first. */
+/* The heading comes first in reading order; the strip is drawn first.
+   The strip is never filled here: purple means Confirmed, and a request
+   that has just been sent is only Submitted (FR-04, review 5.1). The
+   unfilled strip, the tray icon and the words "Not confirmed yet" carry
+   that without colour. */
 .ticket--done > .ticket__strip {
   order: -1;
 }
 
+/* Heading above its status stamp, so neither crowds the other at 360 px,
+   whatever the length of the Sinhala. */
+.ticket__stamp-row--received {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
 .ticket__h1 {
+  margin: 0;
+  font-size: calc(var(--fs-title) * var(--script-factor));
+  line-height: var(--lh-title);
+  font-weight: var(--weight-strong);
+}
+
+:lang(si) .ticket__h1 {
+  line-height: 1.45;
+}
+
+.ticket__status {
   margin: 0;
 }
 
@@ -1073,6 +1095,13 @@
 
 .fd:focus {
   outline: none;
+}
+
+/* The issuing demo swaps its stamp with its strip, so the purple strip only
+   ever shows with the Confirmed stamp (review 5.1). */
+.fd-issue-demo:not(.is-issued) [data-when-issued],
+.fd-issue-demo.is-issued [data-when-received] {
+  display: none;
 }
 
 .fd-toc {
