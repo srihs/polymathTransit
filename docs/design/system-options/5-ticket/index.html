@@ -68,6 +68,8 @@
   <symbol id="i-submitted" viewBox="0 0 24 24"><path d="M3.75 13.5h4.5l1.5 2.5h4.5l1.5-2.5h4.5v6.75H3.75z"/><path d="M12 3.75v8M8.75 8.75 12 12l3.25-3.25"/></symbol>
   <symbol id="i-hourglass" viewBox="0 0 24 24"><path d="M6.75 3.75h10.5M6.75 20.25h10.5"/><path d="M8 3.75c0 4.75 8 4.5 8 8.25s-8 3.5-8 8.25M16 3.75c0 4.75-8 4.5-8 8.25s8 3.5 8 8.25"/></symbol>
   <symbol id="i-cancelled" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.25"/><path d="M6.2 6.2l11.6 11.6"/></symbol>
+  <!-- Busy mark (review 5.5): three dots drawn as round ends, static. -->
+  <symbol id="i-busy" viewBox="0 0 24 24"><path d="M5.5 12h.01M12 12h.01M18.5 12h.01" stroke-width="3.5"/></symbol>
   <symbol id="i-noshow" viewBox="0 0 24 24"><circle cx="9" cy="7.75" r="3.25"/><path d="M3 19.75a6 6 0 0 1 12 0z"/><path d="M16.5 9.5l4.5 4.5M21 9.5l-4.5 4.5"/></symbol>
 </svg>
 
@@ -310,6 +312,7 @@
       <li><svg class="icon"><use href="#i-hourglass"/></svg>Proposed</li>
       <li><svg class="icon"><use href="#i-cancelled"/></svg>Cancelled</li>
       <li><svg class="icon"><use href="#i-noshow"/></svg>No-show</li>
+      <li><svg class="icon"><use href="#i-busy"/></svg>Busy (sending)</li>
     </ul>
   </section>
 
@@ -325,25 +328,27 @@
       <div class="state"><span class="state__name">Primary · focus</span><button class="btn btn--primary is-focus-demo" type="button">Send request</button></div>
       <div class="state"><span class="state__name">Primary · pressed</span><button class="btn btn--primary is-pressed" type="button">Send request</button></div>
       <div class="state"><span class="state__name">Primary · disabled</span><button class="btn btn--primary" type="button" disabled>Send request</button></div>
-      <div class="state"><span class="state__name">Primary · busy</span><button class="btn btn--primary" type="button" aria-busy="true" aria-disabled="true"><span class="btn__busy-mark" aria-hidden="true"></span>Sending…</button></div>
+      <div class="state"><span class="state__name">Primary · busy</span><button class="btn btn--primary" type="button" aria-busy="true" aria-disabled="true"><svg class="icon btn__busy-mark" aria-hidden="true"><use href="#i-busy"/></svg>Sending…</button></div>
       <div class="state"><span class="state__name">Secondary · default</span><button class="btn btn--secondary" type="button">Navigate</button></div>
       <div class="state"><span class="state__name">Secondary · hover</span><button class="btn btn--secondary is-hover" type="button">Navigate</button></div>
       <div class="state"><span class="state__name">Secondary · focus</span><button class="btn btn--secondary is-focus-demo" type="button">Navigate</button></div>
       <div class="state"><span class="state__name">Secondary · pressed</span><button class="btn btn--secondary is-pressed" type="button">Navigate</button></div>
       <div class="state"><span class="state__name">Secondary · disabled</span><button class="btn btn--secondary" type="button" disabled>Navigate</button></div>
-      <div class="state"><span class="state__name">Secondary · busy</span><button class="btn btn--secondary" type="button" aria-busy="true" aria-disabled="true"><span class="btn__busy-mark" aria-hidden="true"></span>Sending…</button></div>
+      <div class="state"><span class="state__name">Secondary · busy</span><button class="btn btn--secondary" type="button" aria-busy="true" aria-disabled="true"><svg class="icon btn__busy-mark" aria-hidden="true"><use href="#i-busy"/></svg>Sending…</button></div>
       <div class="state"><span class="state__name">Quiet · default</span><button class="btn btn--quiet" type="button">Undo</button></div>
       <div class="state"><span class="state__name">Quiet · hover</span><button class="btn btn--quiet is-hover" type="button">Undo</button></div>
       <div class="state"><span class="state__name">Quiet · focus</span><button class="btn btn--quiet is-focus-demo" type="button">Undo</button></div>
       <div class="state"><span class="state__name">Quiet · pressed</span><button class="btn btn--quiet is-pressed" type="button">Undo</button></div>
       <div class="state"><span class="state__name">Quiet · disabled</span><button class="btn btn--quiet" type="button" disabled>Undo</button></div>
-      <div class="state"><span class="state__name">Quiet · busy</span><button class="btn btn--quiet" type="button" aria-busy="true" aria-disabled="true"><span class="btn__busy-mark" aria-hidden="true"></span>Sending…</button></div>
+      <div class="state"><span class="state__name">Quiet · busy</span><button class="btn btn--quiet" type="button" aria-busy="true" aria-disabled="true"><svg class="icon btn__busy-mark" aria-hidden="true"><use href="#i-busy"/></svg>Sending…</button></div>
       <div class="state"><span class="state__name">Destructive · default</span><button class="btn btn--danger" type="button">Decline</button></div>
       <div class="state"><span class="state__name">Destructive · hover</span><button class="btn btn--danger is-hover" type="button">Decline</button></div>
       <div class="state"><span class="state__name">Destructive · focus</span><button class="btn btn--danger is-focus-demo" type="button">Decline</button></div>
       <div class="state"><span class="state__name">Destructive · pressed</span><button class="btn btn--danger is-pressed" type="button">Decline</button></div>
       <div class="state"><span class="state__name">Destructive · disabled</span><button class="btn btn--danger" type="button" disabled>Decline</button></div>
-      <div class="state"><span class="state__name">Destructive · busy</span><button class="btn btn--danger" type="button" aria-busy="true" aria-disabled="true"><span class="btn__busy-mark" aria-hidden="true"></span>Sending…</button></div>
+      <div class="state"><span class="state__name">Destructive · busy</span><button class="btn btn--danger" type="button" aria-busy="true" aria-disabled="true"><svg class="icon btn__busy-mark" aria-hidden="true"><use href="#i-busy"/></svg>Sending…</button></div>
+      <!-- Sinhala busy label: draft for D-09 (review 5.5); it wraps rather than clips. -->
+      <div class="state"><span class="state__name">Primary · busy, Sinhala (draft, D-09)</span><button class="btn btn--primary" type="button" aria-busy="true" aria-disabled="true" lang="si"><svg class="icon btn__busy-mark" aria-hidden="true"><use href="#i-busy"/></svg>යවමින්…</button></div>
     </div>
 
     <h3>Text field</h3>
@@ -593,7 +598,7 @@
           <tr><th scope="row">A stop is done</th><td>The hole is punched (scales in), then the stub folds closed</td><td>120 ms, then 180 ms</td><td>Hole and fold appear at once</td></tr>
           <tr><th scope="row">Hover and press</th><td>Background colour changes</td><td>120 ms</td><td>Instant</td></tr>
           <tr><th scope="row">A disclosure opens</th><td>The chevron turns a quarter</td><td>120 ms</td><td>Instant</td></tr>
-          <tr><th scope="row">Busy button</th><td>A small ring turns twice, then stops</td><td>700 ms × 2</td><td>No ring movement; the word "Sending…" stays</td></tr>
+          <tr><th scope="row">Busy button</th><td>Nothing moves: the label becomes "Sending…" with a static three-dot mark, for as long as the wait lasts</td><td>None</td><td>The same (there is no motion to remove)</td></tr>
         </tbody>
       </table>
     </div>

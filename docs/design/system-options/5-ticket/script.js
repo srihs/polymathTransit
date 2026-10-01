@@ -300,6 +300,13 @@
    */
   STRINGS.en['done.status'] = 'Not confirmed yet';
   STRINGS.si['done.status'] = 'තවම තහවුරු කර නැත'; // Draft, D-09.
+  /*
+   * busy.sending – the label of a busy button (review 5.5): static mark plus
+   * these words. Shown on index.html; the request form's Send button gets
+   * its busy state with the shared strings (review C3).
+   */
+  STRINGS.en['busy.sending'] = 'Sending…';
+  STRINGS.si['busy.sending'] = 'යවමින්…'; // Draft, D-09.
 
   // === Section: 2. Small helpers ===
 

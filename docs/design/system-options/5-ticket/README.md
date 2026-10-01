@@ -55,6 +55,7 @@ read in IBM Plex Sans Condensed and Yaldevi.**
 | How "Pick up" shows its count without "1 passengers" | Plural rules, or a slot | A labelled count ("Passengers 1"), so no plural rule is needed in either language. |
 | How the driver's page is headed (review 5.2) | (a) group headings "Next stop" and "Later stops" over the stops; (b) one `h2` per stop | **(b)**. The next stop moves down the list as stops are done and undone, and done stubs stay in place, folded, so group headings would need stubs moved between lists. One `h2` per stop keeps the levels in order in every state, with or without JavaScript. The next stop's `h2` begins "Next stop:" for screen readers (from `driver.next`), so it can be found in the headings list, and the visible strip title is hidden from them so it is not read twice. No new string, no visual change. |
 | How the "Show as list" toggle shows its state (review 5.3) | (a) one fixed label with `aria-pressed`; (b) a label that changes ("Show as timeline") without `aria-pressed` | **(a)**. The brief names it the "Show as list" toggle (3.3, 5.3), and a fixed name is easier to find and to say to voice control. Changing the label as well as the pressed state made a screen reader say "Show as timeline, pressed", as if the timeline were showing. Pressed is shown the way the current language is: a tick in place of the list icon, the purple tint (brand on it 7.46:1) and a 3 px bar, so it reads without colour. |
+| How a button shows it is busy (review 5.5) | (a) a spinner that turns; (b) a static mark with the words "Sending…" | **(b)**. The busy state is the system's busy component, so it must not depend on motion: a spinner that stops after a set time looks finished while the wait goes on, and one that keeps turning breaks the motion rule (brief 3.7). The label becomes "Sending…" ("යවමින්…", draft for D-09) and a static three-dot mark, drawn with the icon set's round ends, stands before it. A frozen ring was rejected because it reads as "stuck"; the hourglass already means Proposed. The button keeps its colours, so busy is never mistaken for disabled, and `aria-disabled` (not `disabled`) keeps focus on it so a screen reader hears the new label. |
 | How strong Done is on later stops | Every stop's Done filled purple, or only the next | Only the **next** stop's Done is filled; later stops have an outline Done. One strong button per screen, and the wrong stop is less likely to be marked. |
 | How quiet No-show is | Red outline, or quieter | Thin grey edge, regular weight, red only in the word and icon: always quieter than Done (brief 5.4). |
 | Choice layout at 320 px | Always two columns, or let them fall to one | Two columns while each is at least 140 px, one column below: the Sinhala "Thursday" (බ්‍රහස්පතින්දා) cannot wrap and would hit the edge. |
@@ -185,13 +186,16 @@ US-26, US-44, US-46, US-47, US-52, US-54, US-58, US-60, D-09, Q-17.
 
 - **Missing shared strings** (not invented, reported): no label for the
   "Other saved places" group (Stationery supplier sits ungrouped after
-  Venues); no Sinhala for the "Submitted" badge; no Sinhala for
-  "Sending…", so the request page shows no busy state (it is shown on
-  index.html); no Sinhala for "seats".
+  Venues); no Sinhala for the "Submitted" badge; no shared Sinhala for
+  "Sending…" (a draft is listed below), so the request page shows no busy
+  state yet (the busy component is shown on index.html); no Sinhala for
+  "seats".
 - **Strings added beyond brief 4.9** (drafts by the ux-designer, on the
   D-09 review list; kept in a separate block under the copied strings in
   `script.js`): `done.status` "Not confirmed yet" / "තවම තහවුරු කර නැත",
-  the status stamp on the requester's confirmation (review 5.1).
+  the status stamp on the requester's confirmation (review 5.1);
+  `busy.sending` "Sending…" / "යවමින්…", the label of a busy button
+  (review 5.5).
 - **Extra stops** offer saved places only, not "Another address".
 - **Filters, sorting, Change and Decline** are visible but do not work
   (as the brief allows).

@@ -215,7 +215,7 @@
   --space-1-5: 6px;
   --space-2-5: 10px;
 
-  --line-strong: 2px;         /* hover underline, busy ring, dashed lines */
+  --line-strong: 2px;         /* hover underline, dashed lines */
   --bar-current: 3px;         /* current-language bar, pressed bar, next-stop ring */
   --bar-nav: 4px;             /* current-page bar in the coordinator navigation */
   --border-error: 3px;        /* a field in error has a thicker red edge */

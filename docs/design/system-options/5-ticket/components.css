@@ -572,7 +572,14 @@ p {
   text-decoration: none;
 }
 
-/* Busy: the label changes to "Sending…" and a small bar runs once. */
+/* Busy: the system's busy component (review 5.5, brief 3.7). The label
+   becomes "Sending…" ("යවමින්…", draft for D-09) and a static three-dot
+   mark stands before it. Nothing moves, so nothing has to be switched off
+   for reduced motion and nothing stops turning while the wait goes on. The
+   words carry the state; the mark adds a shape; the button keeps its own
+   colours, so busy never looks like disabled (dashed and grey). Markup:
+   aria-busy="true" and aria-disabled="true" (not disabled), so focus stays
+   on the button and a screen reader hears the new label. */
 .btn[aria-busy="true"] {
   cursor: progress;
   opacity: 1;
@@ -582,20 +589,10 @@ p {
   display: none;
   width: var(--icon-xs);
   height: var(--icon-xs);
-  border: var(--line-strong) solid currentColor;
-  border-right-color: transparent;
-  border-radius: 50%;
 }
 
 .btn[aria-busy="true"] .btn__busy-mark {
-  display: inline-block;
-  animation: busy-turn 700ms linear 2;
-}
-
-@keyframes busy-turn {
-  to {
-    transform: rotate(360deg);
-  }
+  display: block;
 }
 
 .btn-row {
