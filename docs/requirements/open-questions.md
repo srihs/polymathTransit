@@ -19,8 +19,8 @@ recommendation. The owner answers. The analyst does not.
 
 | ID | Question | Raised from | Status |
 |----|----------|-------------|--------|
-| OQ-01 | How should the public form treat a weekend trip date? | Code review 2026-10-01, finding C2 | Open |
-| OQ-02 | Is NFR-18's "500 KB" 500,000 bytes or 512,000 bytes, and what is counted? | Code review 2026-10-01, finding 2.1 | Open |
+| OQ-01 | How should the public form treat a weekend trip date? | Code review 2026-10-01, finding C2 | Answered (option C, 2026-10-01); CR-001 drafted |
+| OQ-02 | Is NFR-18's "500 KB" 500,000 bytes or 512,000 bytes, and what is counted? | Code review 2026-10-01, finding 2.1 | Answered (option C with A's unit, 2026-10-01); CR-001 drafted |
 
 ---
 
@@ -32,7 +32,8 @@ recommendation. The owner answers. The analyst does not.
 - **Affects:** BRL-13, FR-07, US-05, A-08, Q-04, FR-42, BRL-15, BRL-21,
   Appendix A (Booking: Flags). The design brief's validation table and strings
   (`docs/design/system-options/brief.md`, `hours.warning`).
-- **Status:** Open
+- **Status:** Answered on 2026-10-01 (option C). Becomes Closed when CR-001
+  is approved and taken into the baseline.
 
 ### Question
 
@@ -204,7 +205,32 @@ change.
 
 ### Owner's answer
 
-Owner's answer: pending
+Owner's answer: 2026-10-01, **option C** (the recommended option), as relayed
+by the main session: accept the date, show the out-of-hours warning, set the
+"Out of hours" flag, and also set the request to "Needs attention" so that a
+coordinator confirms it in advance. Operating hours come from the FR-42
+setting (days and times), never a hard-coded weekend.
+
+- **Decider and date:** the owner, 2026-10-01.
+- **Rejected:** A (refuse out-of-hours dates), because it contradicts BRL-13,
+  FR-07 and A-08 and pushes staff back to phoning; B (warn and flag only),
+  because a flagged request could still be batch-approved unnoticed and the
+  weekend approval problem stays open; D (leave as built), because it fails
+  FR-07.
+- **Rationale:** delivers A-08's "manual handling" for every out-of-hours
+  request, reuses the existing BRL-15 and BRL-21 patterns, and keeps Q-04 a
+  "default value only" question because the setting holds days as well as
+  times.
+- **Follow-up:** the change to BRL-15 and BRL-21 (and the wording that goes
+  with it in BRL-13, FR-07, FR-42 and US-05) is drafted as
+  `docs/requirements/change-requests/CR-001-out-of-hours-and-page-weight.md`,
+  awaiting the owner's approval. Open points 1, 3 and 4 above are carried into
+  that change request: Q-04 is still with the Transport Coordinators, who
+  approves an out-of-hours day's plan is not yet decided, and weekday
+  non-school days keep the baseline reading until Q-04 is answered.
+- **Revisit:** when the Transport Coordinators answer Q-04. If they say
+  weekend trips are never allowed, a further change request moves to option A,
+  still driven by the setting.
 
 ---
 
@@ -217,7 +243,8 @@ Owner's answer: pending
 - **Affects:** NFR-18 and its test TC-NFR-18 (Should, Release 2 in the RTM);
   the design brief's weight budget (`brief.md` section 2 and its checklist);
   how every later page weight is reported.
-- **Status:** Open
+- **Status:** Answered on 2026-10-01 (option C with option A's unit). Becomes
+  Closed when CR-001 is approved and taken into the baseline.
 
 ### Question
 
@@ -313,4 +340,24 @@ draft it on the owner's answer.
 
 ### Owner's answer
 
-Owner's answer: pending
+Owner's answer: 2026-10-01, **option C with option A's unit** (the
+recommended option), as relayed by the main session: 500,000 bytes, measured
+as bytes transferred on a first visit with an empty cache, English and
+Sinhala measured separately, with anything loaded only after the user acts
+(such as the map) reported separately.
+
+- **Decider and date:** the owner, 2026-10-01.
+- **Rejected:** B (1 KB = 1,024 bytes, 512,000 bytes), because "K" is read as
+  1,000 by most readers and a page could pass on one report and fail on
+  another; A or B alone without a stated method, because the unit by itself
+  does not settle what is counted.
+- **Rationale:** the stricter reading costs nothing today (Ticket has at least
+  84,156 bytes to spare in Sinhala), matches NFR-18's purpose (slow data, so
+  bytes on the network are what matter), and gives TC-NFR-18 one exact test.
+- **Follow-up:** taken into the baseline through the same change request as
+  OQ-01,
+  `docs/requirements/change-requests/CR-001-out-of-hours-and-page-weight.md`,
+  awaiting the owner's approval. Whether the map needs its own budget is
+  listed there as an open point, not decided here.
+- **Revisit:** when the map service is chosen (the separately reported map
+  weight will then be known), and if the throttled-3G test profile is set.
