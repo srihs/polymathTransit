@@ -20,6 +20,14 @@
                 8 Prototype controls.
   Without JS:   the whole route is readable; Call links work; Done, No-show
                 and Navigate need the script.
+  Headings:     h1 "Today's route", then one h2 per stop ("Stop 5, 10:00 am:
+                Branch B"), then the prototype controls' h2. The next stop's
+                h2 starts with "Next stop:" (screen readers only), so it can
+                be found in the headings list; the visible "Next stop" strip
+                is hidden from screen readers so it is not read twice. Flat
+                h2s keep the levels in order in every state: Done, Undo, the
+                done stops opened, and without JS (brief 3.3, NFR-03 WCAG
+                1.3.1, review 5.2).
 -->
 <head>
   <meta charset="utf-8">
@@ -129,12 +137,12 @@
     <div class="disclosure__body">
       <ol class="stub-list stub-list--done">
         <li class="stub stub--compact is-done" id="stop-1" data-stop="1" data-time="07:30">
-          <div class="stub__strip"><p class="stub__strip-title" data-i18n="driver.next">Next stop</p><span class="stub__in" data-in></span></div>
+          <div class="stub__strip"><p class="stub__strip-title" data-i18n="driver.next" aria-hidden="true">Next stop</p><span class="stub__in" data-in></span></div>
           <div class="stub__body">
             <div class="stub__time" aria-hidden="true"><span class="stub__meridiem stub__meridiem--pre" data-mer-pre></span><span class="stub__clock">7:30</span><span class="stub__meridiem stub__meridiem--post" data-mer-post>am</span></div>
             <div class="stub__main">
               <div class="stub__head"><span class="label-caps"><span data-i18n="driver.stop">Stop</span> 1</span></div>
-              <h3 class="stub__place"><span class="vh"><span data-i18n="driver.stop">Stop</span> 1, <span data-time-text>7:30 am</span>: </span><span class="data" lang="en">Branch A (main branch)</span></h3>
+              <h2 class="stub__place"><span class="vh"><span data-i18n="driver.stop">Stop</span> 1, <span data-time-text>7:30 am</span>: </span><span class="data" lang="en">Branch A (main branch)</span></h2>
               <p class="stub__action"><span class="stub__action-item"><svg class="icon" aria-hidden="true"><use href="#i-pickup"/></svg><span data-i18n="driver.pickup">Pick up</span></span><span class="stub__action-item stub__pax"><svg class="icon" aria-hidden="true"><use href="#i-passengers"/></svg><span class="label-caps" data-i18n="label.passengers">Passengers</span><span class="stub__pax-n">2</span></span></p>
               <p class="stub__result"><svg class="icon icon--20" aria-hidden="true"><use href="#i-punch"/></svg><span data-i18n="driver.doneat" data-i18n-time="07:31">Done at 7:31 am</span></p>
             </div>
@@ -142,12 +150,12 @@
           <span class="punch" aria-hidden="true"></span>
         </li>
         <li class="stub stub--compact is-done" id="stop-2" data-stop="2" data-time="07:55">
-          <div class="stub__strip"><p class="stub__strip-title" data-i18n="driver.next">Next stop</p><span class="stub__in" data-in></span></div>
+          <div class="stub__strip"><p class="stub__strip-title" data-i18n="driver.next" aria-hidden="true">Next stop</p><span class="stub__in" data-in></span></div>
           <div class="stub__body">
             <div class="stub__time" aria-hidden="true"><span class="stub__meridiem stub__meridiem--pre" data-mer-pre></span><span class="stub__clock">7:55</span><span class="stub__meridiem stub__meridiem--post" data-mer-post>am</span></div>
             <div class="stub__main">
               <div class="stub__head"><span class="label-caps"><span data-i18n="driver.stop">Stop</span> 2</span></div>
-              <h3 class="stub__place"><span class="vh"><span data-i18n="driver.stop">Stop</span> 2, <span data-time-text>7:55 am</span>: </span><span class="data" lang="en">Branch C</span></h3>
+              <h2 class="stub__place"><span class="vh"><span data-i18n="driver.stop">Stop</span> 2, <span data-time-text>7:55 am</span>: </span><span class="data" lang="en">Branch C</span></h2>
               <p class="stub__action"><span class="stub__action-item"><svg class="icon" aria-hidden="true"><use href="#i-dropoff"/></svg><span data-i18n="driver.dropoff">Drop off</span></span><span class="stub__action-item stub__pax"><svg class="icon" aria-hidden="true"><use href="#i-passengers"/></svg><span class="label-caps" data-i18n="label.passengers">Passengers</span><span class="stub__pax-n">2</span></span></p>
               <p class="stub__result"><svg class="icon icon--20" aria-hidden="true"><use href="#i-punch"/></svg><span data-i18n="driver.doneat" data-i18n-time="07:56">Done at 7:56 am</span></p>
             </div>
@@ -155,12 +163,12 @@
           <span class="punch" aria-hidden="true"></span>
         </li>
         <li class="stub stub--compact is-done" id="stop-3" data-stop="3" data-time="09:05">
-          <div class="stub__strip"><p class="stub__strip-title" data-i18n="driver.next">Next stop</p><span class="stub__in" data-in></span></div>
+          <div class="stub__strip"><p class="stub__strip-title" data-i18n="driver.next" aria-hidden="true">Next stop</p><span class="stub__in" data-in></span></div>
           <div class="stub__body">
             <div class="stub__time" aria-hidden="true"><span class="stub__meridiem stub__meridiem--pre" data-mer-pre></span><span class="stub__clock">9:05</span><span class="stub__meridiem stub__meridiem--post" data-mer-post>am</span></div>
             <div class="stub__main">
               <div class="stub__head"><span class="label-caps"><span data-i18n="driver.stop">Stop</span> 3</span></div>
-              <h3 class="stub__place"><span class="vh"><span data-i18n="driver.stop">Stop</span> 3, <span data-time-text>9:05 am</span>: </span><span class="data" lang="en">Branch A (main branch)</span></h3>
+              <h2 class="stub__place"><span class="vh"><span data-i18n="driver.stop">Stop</span> 3, <span data-time-text>9:05 am</span>: </span><span class="data" lang="en">Branch A (main branch)</span></h2>
               <p class="stub__action"><span class="stub__action-item"><svg class="icon" aria-hidden="true"><use href="#i-pickup"/></svg><span data-i18n="driver.pickup">Pick up</span></span><span class="stub__action-item stub__pax"><svg class="icon" aria-hidden="true"><use href="#i-passengers"/></svg><span class="label-caps" data-i18n="label.passengers">Passengers</span><span class="stub__pax-n">11</span></span></p>
               <p class="stub__result"><svg class="icon icon--20" aria-hidden="true"><use href="#i-punch"/></svg><span data-i18n="driver.doneat" data-i18n-time="09:06">Done at 9:06 am</span></p>
             </div>
@@ -168,12 +176,12 @@
           <span class="punch" aria-hidden="true"></span>
         </li>
         <li class="stub stub--compact is-done" id="stop-4" data-stop="4" data-time="09:30">
-          <div class="stub__strip"><p class="stub__strip-title" data-i18n="driver.next">Next stop</p><span class="stub__in" data-in></span></div>
+          <div class="stub__strip"><p class="stub__strip-title" data-i18n="driver.next" aria-hidden="true">Next stop</p><span class="stub__in" data-in></span></div>
           <div class="stub__body">
             <div class="stub__time" aria-hidden="true"><span class="stub__meridiem stub__meridiem--pre" data-mer-pre></span><span class="stub__clock">9:30</span><span class="stub__meridiem stub__meridiem--post" data-mer-post>am</span></div>
             <div class="stub__main">
               <div class="stub__head"><span class="label-caps"><span data-i18n="driver.stop">Stop</span> 4</span></div>
-              <h3 class="stub__place"><span class="vh"><span data-i18n="driver.stop">Stop</span> 4, <span data-time-text>9:30 am</span>: </span><span class="data" lang="en">Aquatic Centre</span></h3>
+              <h2 class="stub__place"><span class="vh"><span data-i18n="driver.stop">Stop</span> 4, <span data-time-text>9:30 am</span>: </span><span class="data" lang="en">Aquatic Centre</span></h2>
               <p class="stub__action"><span class="stub__action-item"><svg class="icon" aria-hidden="true"><use href="#i-dropoff"/></svg><span data-i18n="driver.dropoff">Drop off</span></span><span class="stub__action-item stub__pax"><svg class="icon" aria-hidden="true"><use href="#i-passengers"/></svg><span class="label-caps" data-i18n="label.passengers">Passengers</span><span class="stub__pax-n">11</span></span></p>
               <p class="stub__result"><svg class="icon icon--20" aria-hidden="true"><use href="#i-punch"/></svg><span data-i18n="driver.doneat" data-i18n-time="09:29">Done at 9:29 am</span></p>
             </div>
@@ -184,16 +192,18 @@
     </div>
   </details>
 
-  <!-- === 6. Next stop and the stops to come (US-60) === -->
+  <!-- === 6. Next stop and the stops to come (US-60) ===
+       Each stop is headed by its h2. The visible "Next stop" strip title is
+       aria-hidden: the next stop's h2 says "Next stop:" instead (review 5.2). -->
   <p class="vh" id="route-live" role="status" aria-live="polite"></p>
   <ol class="stub-list" id="stops-ahead" aria-label="Stops">
     <li class="stub stub--next" id="stop-5" data-stop="5" data-time="10:00">
-      <div class="stub__strip"><p class="stub__strip-title" data-i18n="driver.next">Next stop</p><span class="stub__in" data-in></span></div>
+      <div class="stub__strip"><p class="stub__strip-title" data-i18n="driver.next" aria-hidden="true">Next stop</p><span class="stub__in" data-in></span></div>
       <div class="stub__body">
         <div class="stub__time" aria-hidden="true"><span class="stub__meridiem stub__meridiem--pre" data-mer-pre></span><span class="stub__clock">10:00</span><span class="stub__meridiem stub__meridiem--post" data-mer-post>am</span></div>
         <div class="stub__main">
           <div class="stub__head"><span class="label-caps"><span data-i18n="driver.stop">Stop</span> 5</span><span class="flag"><svg class="icon" aria-hidden="true"><use href="#i-gap"/></svg><span data-i18n="driver.gap">Gap job</span></span></div>
-          <h3 class="stub__place"><span class="vh"><span data-i18n="driver.stop">Stop</span> 5, <span data-time-text>10:00 am</span>: </span><span class="data" lang="en">Branch B</span></h3>
+          <h2 class="stub__place"><span class="vh"><span class="stub__next-label"><span data-i18n="driver.next">Next stop</span>: </span><span data-i18n="driver.stop">Stop</span> 5, <span data-time-text>10:00 am</span>: </span><span class="data" lang="en">Branch B</span></h2>
           <p class="stub__action"><span class="stub__action-item"><svg class="icon" aria-hidden="true"><use href="#i-pickup"/></svg><span data-i18n="driver.pickup">Pick up</span></span><span class="stub__action-item stub__pax"><svg class="icon" aria-hidden="true"><use href="#i-passengers"/></svg><span class="label-caps" data-i18n="label.passengers">Passengers</span><span class="stub__pax-n">1</span></span></p>
           <div class="stub__fold"><div class="stub__fold-inner">
             <div class="stub__facts"><p><span class="ref-small data" lang="en">PT-2026-0145</span></p></div>
@@ -210,12 +220,12 @@
       <span class="punch" aria-hidden="true"></span>
     </li>
     <li class="stub" id="stop-6" data-stop="6" data-time="10:20">
-      <div class="stub__strip"><p class="stub__strip-title" data-i18n="driver.next">Next stop</p><span class="stub__in" data-in></span></div>
+      <div class="stub__strip"><p class="stub__strip-title" data-i18n="driver.next" aria-hidden="true">Next stop</p><span class="stub__in" data-in></span></div>
       <div class="stub__body">
         <div class="stub__time" aria-hidden="true"><span class="stub__meridiem stub__meridiem--pre" data-mer-pre></span><span class="stub__clock">10:20</span><span class="stub__meridiem stub__meridiem--post" data-mer-post>am</span></div>
         <div class="stub__main">
           <div class="stub__head"><span class="label-caps"><span data-i18n="driver.stop">Stop</span> 6</span></div>
-          <h3 class="stub__place"><span class="vh"><span data-i18n="driver.stop">Stop</span> 6, <span data-time-text>10:20 am</span>: </span><span class="data" lang="en">Stationery supplier</span></h3>
+          <h2 class="stub__place"><span class="vh"><span class="stub__next-label"><span data-i18n="driver.next">Next stop</span>: </span><span data-i18n="driver.stop">Stop</span> 6, <span data-time-text>10:20 am</span>: </span><span class="data" lang="en">Stationery supplier</span></h2>
           <p class="stub__action"><span class="stub__action-item"><svg class="icon" aria-hidden="true"><use href="#i-dropoff"/></svg><span data-i18n="driver.dropoff">Drop off</span></span><span class="stub__action-item stub__pax"><svg class="icon" aria-hidden="true"><use href="#i-passengers"/></svg><span class="label-caps" data-i18n="label.passengers">Passengers</span><span class="stub__pax-n">1</span></span></p>
           <div class="stub__fold"><div class="stub__fold-inner">
             <div class="stub__facts"><p><span class="ref-small data" lang="en">PT-2026-0145</span></p><p><span class="data" lang="en">Wait about 15 minutes.</span></p></div>
@@ -231,12 +241,12 @@
       <span class="punch" aria-hidden="true"></span>
     </li>
     <li class="stub" id="stop-7" data-stop="7" data-time="10:35">
-      <div class="stub__strip"><p class="stub__strip-title" data-i18n="driver.next">Next stop</p><span class="stub__in" data-in></span></div>
+      <div class="stub__strip"><p class="stub__strip-title" data-i18n="driver.next" aria-hidden="true">Next stop</p><span class="stub__in" data-in></span></div>
       <div class="stub__body">
         <div class="stub__time" aria-hidden="true"><span class="stub__meridiem stub__meridiem--pre" data-mer-pre></span><span class="stub__clock">10:35</span><span class="stub__meridiem stub__meridiem--post" data-mer-post>am</span></div>
         <div class="stub__main">
           <div class="stub__head"><span class="label-caps"><span data-i18n="driver.stop">Stop</span> 7</span></div>
-          <h3 class="stub__place"><span class="vh"><span data-i18n="driver.stop">Stop</span> 7, <span data-time-text>10:35 am</span>: </span><span class="data" lang="en">Stationery supplier</span></h3>
+          <h2 class="stub__place"><span class="vh"><span class="stub__next-label"><span data-i18n="driver.next">Next stop</span>: </span><span data-i18n="driver.stop">Stop</span> 7, <span data-time-text>10:35 am</span>: </span><span class="data" lang="en">Stationery supplier</span></h2>
           <p class="stub__action"><span class="stub__action-item"><svg class="icon" aria-hidden="true"><use href="#i-pickup"/></svg><span data-i18n="driver.pickup">Pick up</span></span><span class="stub__action-item stub__pax"><svg class="icon" aria-hidden="true"><use href="#i-passengers"/></svg><span class="label-caps" data-i18n="label.passengers">Passengers</span><span class="stub__pax-n">1</span></span></p>
           <div class="stub__fold"><div class="stub__fold-inner">
             <div class="stub__facts"><p><span class="ref-small data" lang="en">PT-2026-0145</span></p><p><span class="data" lang="en">She returns with boxes.</span></p></div>
@@ -253,12 +263,12 @@
       <span class="punch" aria-hidden="true"></span>
     </li>
     <li class="stub" id="stop-8" data-stop="8" data-time="10:50">
-      <div class="stub__strip"><p class="stub__strip-title" data-i18n="driver.next">Next stop</p><span class="stub__in" data-in></span></div>
+      <div class="stub__strip"><p class="stub__strip-title" data-i18n="driver.next" aria-hidden="true">Next stop</p><span class="stub__in" data-in></span></div>
       <div class="stub__body">
         <div class="stub__time" aria-hidden="true"><span class="stub__meridiem stub__meridiem--pre" data-mer-pre></span><span class="stub__clock">10:50</span><span class="stub__meridiem stub__meridiem--post" data-mer-post>am</span></div>
         <div class="stub__main">
           <div class="stub__head"><span class="label-caps"><span data-i18n="driver.stop">Stop</span> 8</span></div>
-          <h3 class="stub__place"><span class="vh"><span data-i18n="driver.stop">Stop</span> 8, <span data-time-text>10:50 am</span>: </span><span class="data" lang="en">Branch B</span></h3>
+          <h2 class="stub__place"><span class="vh"><span class="stub__next-label"><span data-i18n="driver.next">Next stop</span>: </span><span data-i18n="driver.stop">Stop</span> 8, <span data-time-text>10:50 am</span>: </span><span class="data" lang="en">Branch B</span></h2>
           <p class="stub__action"><span class="stub__action-item"><svg class="icon" aria-hidden="true"><use href="#i-dropoff"/></svg><span data-i18n="driver.dropoff">Drop off</span></span><span class="stub__action-item stub__pax"><svg class="icon" aria-hidden="true"><use href="#i-passengers"/></svg><span class="label-caps" data-i18n="label.passengers">Passengers</span><span class="stub__pax-n">1</span></span></p>
           <div class="stub__fold"><div class="stub__fold-inner">
             <div class="stub__facts"><p><span class="ref-small data" lang="en">PT-2026-0145</span></p><p><span class="data" lang="en">Then go to the Aquatic Centre (arrive by 11:10 am).</span></p></div>
@@ -274,12 +284,12 @@
       <span class="punch" aria-hidden="true"></span>
     </li>
     <li class="stub" id="stop-9" data-stop="9" data-time="11:30">
-      <div class="stub__strip"><p class="stub__strip-title" data-i18n="driver.next">Next stop</p><span class="stub__in" data-in></span></div>
+      <div class="stub__strip"><p class="stub__strip-title" data-i18n="driver.next" aria-hidden="true">Next stop</p><span class="stub__in" data-in></span></div>
       <div class="stub__body">
         <div class="stub__time" aria-hidden="true"><span class="stub__meridiem stub__meridiem--pre" data-mer-pre></span><span class="stub__clock">11:30</span><span class="stub__meridiem stub__meridiem--post" data-mer-post>am</span></div>
         <div class="stub__main">
           <div class="stub__head"><span class="label-caps"><span data-i18n="driver.stop">Stop</span> 9</span></div>
-          <h3 class="stub__place"><span class="vh"><span data-i18n="driver.stop">Stop</span> 9, <span data-time-text>11:30 am</span>: </span><span class="data" lang="en">Aquatic Centre</span></h3>
+          <h2 class="stub__place"><span class="vh"><span class="stub__next-label"><span data-i18n="driver.next">Next stop</span>: </span><span data-i18n="driver.stop">Stop</span> 9, <span data-time-text>11:30 am</span>: </span><span class="data" lang="en">Aquatic Centre</span></h2>
           <p class="stub__action"><span class="stub__action-item"><svg class="icon" aria-hidden="true"><use href="#i-pickup"/></svg><span data-i18n="driver.pickup">Pick up</span></span><span class="stub__action-item stub__pax"><svg class="icon" aria-hidden="true"><use href="#i-passengers"/></svg><span class="label-caps" data-i18n="label.passengers">Passengers</span><span class="stub__pax-n">11</span></span></p>
           <div class="stub__fold"><div class="stub__fold-inner">
             <div class="stub__facts"><p><span class="ref-small data" lang="en">PT-2026-0119</span></p></div>
@@ -296,12 +306,12 @@
       <span class="punch" aria-hidden="true"></span>
     </li>
     <li class="stub" id="stop-10" data-stop="10" data-time="11:55">
-      <div class="stub__strip"><p class="stub__strip-title" data-i18n="driver.next">Next stop</p><span class="stub__in" data-in></span></div>
+      <div class="stub__strip"><p class="stub__strip-title" data-i18n="driver.next" aria-hidden="true">Next stop</p><span class="stub__in" data-in></span></div>
       <div class="stub__body">
         <div class="stub__time" aria-hidden="true"><span class="stub__meridiem stub__meridiem--pre" data-mer-pre></span><span class="stub__clock">11:55</span><span class="stub__meridiem stub__meridiem--post" data-mer-post>am</span></div>
         <div class="stub__main">
           <div class="stub__head"><span class="label-caps"><span data-i18n="driver.stop">Stop</span> 10</span></div>
-          <h3 class="stub__place"><span class="vh"><span data-i18n="driver.stop">Stop</span> 10, <span data-time-text>11:55 am</span>: </span><span class="data" lang="en">Branch A (main branch)</span></h3>
+          <h2 class="stub__place"><span class="vh"><span class="stub__next-label"><span data-i18n="driver.next">Next stop</span>: </span><span data-i18n="driver.stop">Stop</span> 10, <span data-time-text>11:55 am</span>: </span><span class="data" lang="en">Branch A (main branch)</span></h2>
           <p class="stub__action"><span class="stub__action-item"><svg class="icon" aria-hidden="true"><use href="#i-dropoff"/></svg><span data-i18n="driver.dropoff">Drop off</span></span><span class="stub__action-item stub__pax"><svg class="icon" aria-hidden="true"><use href="#i-passengers"/></svg><span class="label-caps" data-i18n="label.passengers">Passengers</span><span class="stub__pax-n">11</span></span></p>
           <div class="stub__fold"><div class="stub__fold-inner">
             <div class="stub__facts"><p><span class="ref-small data" lang="en">PT-2026-0119</span></p></div>
@@ -317,12 +327,12 @@
       <span class="punch" aria-hidden="true"></span>
     </li>
     <li class="stub" id="stop-11" data-stop="11" data-time="13:30">
-      <div class="stub__strip"><p class="stub__strip-title" data-i18n="driver.next">Next stop</p><span class="stub__in" data-in></span></div>
+      <div class="stub__strip"><p class="stub__strip-title" data-i18n="driver.next" aria-hidden="true">Next stop</p><span class="stub__in" data-in></span></div>
       <div class="stub__body">
         <div class="stub__time" aria-hidden="true"><span class="stub__meridiem stub__meridiem--pre" data-mer-pre></span><span class="stub__clock">1:30</span><span class="stub__meridiem stub__meridiem--post" data-mer-post>pm</span></div>
         <div class="stub__main">
           <div class="stub__head"><span class="label-caps"><span data-i18n="driver.stop">Stop</span> 11</span></div>
-          <h3 class="stub__place"><span class="vh"><span data-i18n="driver.stop">Stop</span> 11, <span data-time-text>1:30 pm</span>: </span><span class="data" lang="en">Branch A (main branch)</span></h3>
+          <h2 class="stub__place"><span class="vh"><span class="stub__next-label"><span data-i18n="driver.next">Next stop</span>: </span><span data-i18n="driver.stop">Stop</span> 11, <span data-time-text>1:30 pm</span>: </span><span class="data" lang="en">Branch A (main branch)</span></h2>
           <p class="stub__action"><span class="stub__action-item"><svg class="icon" aria-hidden="true"><use href="#i-pickup"/></svg><span data-i18n="driver.pickup">Pick up</span></span><span class="stub__action-item stub__pax"><svg class="icon" aria-hidden="true"><use href="#i-passengers"/></svg><span class="label-caps" data-i18n="label.passengers">Passengers</span><span class="stub__pax-n">6</span></span></p>
           <div class="stub__fold"><div class="stub__fold-inner">
             <div class="stub__facts"><p><span class="ref-small data" lang="en">PT-2026-0150</span></p></div>
@@ -339,12 +349,12 @@
       <span class="punch" aria-hidden="true"></span>
     </li>
     <li class="stub" id="stop-12" data-stop="12" data-time="13:45">
-      <div class="stub__strip"><p class="stub__strip-title" data-i18n="driver.next">Next stop</p><span class="stub__in" data-in></span></div>
+      <div class="stub__strip"><p class="stub__strip-title" data-i18n="driver.next" aria-hidden="true">Next stop</p><span class="stub__in" data-in></span></div>
       <div class="stub__body">
         <div class="stub__time" aria-hidden="true"><span class="stub__meridiem stub__meridiem--pre" data-mer-pre></span><span class="stub__clock">1:45</span><span class="stub__meridiem stub__meridiem--post" data-mer-post>pm</span></div>
         <div class="stub__main">
           <div class="stub__head"><span class="label-caps"><span data-i18n="driver.stop">Stop</span> 12</span></div>
-          <h3 class="stub__place"><span class="vh"><span data-i18n="driver.stop">Stop</span> 12, <span data-time-text>1:45 pm</span>: </span><span class="data" lang="en">Branch B</span></h3>
+          <h2 class="stub__place"><span class="vh"><span class="stub__next-label"><span data-i18n="driver.next">Next stop</span>: </span><span data-i18n="driver.stop">Stop</span> 12, <span data-time-text>1:45 pm</span>: </span><span class="data" lang="en">Branch B</span></h2>
           <p class="stub__action"><span class="stub__action-item"><svg class="icon" aria-hidden="true"><use href="#i-dropoff"/></svg><span data-i18n="driver.dropoff">Drop off</span></span><span class="stub__action-item stub__pax"><svg class="icon" aria-hidden="true"><use href="#i-passengers"/></svg><span class="label-caps" data-i18n="label.passengers">Passengers</span><span class="stub__pax-n">6</span></span></p>
           <div class="stub__fold"><div class="stub__fold-inner">
             <div class="stub__facts"><p><span class="ref-small data" lang="en">PT-2026-0150</span></p></div>
@@ -360,12 +370,12 @@
       <span class="punch" aria-hidden="true"></span>
     </li>
     <li class="stub" id="stop-13" data-stop="13" data-time="15:30">
-      <div class="stub__strip"><p class="stub__strip-title" data-i18n="driver.next">Next stop</p><span class="stub__in" data-in></span></div>
+      <div class="stub__strip"><p class="stub__strip-title" data-i18n="driver.next" aria-hidden="true">Next stop</p><span class="stub__in" data-in></span></div>
       <div class="stub__body">
         <div class="stub__time" aria-hidden="true"><span class="stub__meridiem stub__meridiem--pre" data-mer-pre></span><span class="stub__clock">3:30</span><span class="stub__meridiem stub__meridiem--post" data-mer-post>pm</span></div>
         <div class="stub__main">
           <div class="stub__head"><span class="label-caps"><span data-i18n="driver.stop">Stop</span> 13</span></div>
-          <h3 class="stub__place"><span class="vh"><span data-i18n="driver.stop">Stop</span> 13, <span data-time-text>3:30 pm</span>: </span><span class="data" lang="en">Branch B</span></h3>
+          <h2 class="stub__place"><span class="vh"><span class="stub__next-label"><span data-i18n="driver.next">Next stop</span>: </span><span data-i18n="driver.stop">Stop</span> 13, <span data-time-text>3:30 pm</span>: </span><span class="data" lang="en">Branch B</span></h2>
           <p class="stub__action"><span class="stub__action-item"><svg class="icon" aria-hidden="true"><use href="#i-pickup"/></svg><span data-i18n="driver.pickup">Pick up</span></span><span class="stub__action-item stub__pax"><svg class="icon" aria-hidden="true"><use href="#i-passengers"/></svg><span class="label-caps" data-i18n="label.passengers">Passengers</span><span class="stub__pax-n">6</span></span></p>
           <div class="stub__fold"><div class="stub__fold-inner">
             <div class="stub__facts"><p><span class="ref-small data" lang="en">PT-2026-0150</span></p></div>
@@ -382,12 +392,12 @@
       <span class="punch" aria-hidden="true"></span>
     </li>
     <li class="stub" id="stop-14" data-stop="14" data-time="15:45">
-      <div class="stub__strip"><p class="stub__strip-title" data-i18n="driver.next">Next stop</p><span class="stub__in" data-in></span></div>
+      <div class="stub__strip"><p class="stub__strip-title" data-i18n="driver.next" aria-hidden="true">Next stop</p><span class="stub__in" data-in></span></div>
       <div class="stub__body">
         <div class="stub__time" aria-hidden="true"><span class="stub__meridiem stub__meridiem--pre" data-mer-pre></span><span class="stub__clock">3:45</span><span class="stub__meridiem stub__meridiem--post" data-mer-post>pm</span></div>
         <div class="stub__main">
           <div class="stub__head"><span class="label-caps"><span data-i18n="driver.stop">Stop</span> 14</span></div>
-          <h3 class="stub__place"><span class="vh"><span data-i18n="driver.stop">Stop</span> 14, <span data-time-text>3:45 pm</span>: </span><span class="data" lang="en">Branch A (main branch)</span></h3>
+          <h2 class="stub__place"><span class="vh"><span class="stub__next-label"><span data-i18n="driver.next">Next stop</span>: </span><span data-i18n="driver.stop">Stop</span> 14, <span data-time-text>3:45 pm</span>: </span><span class="data" lang="en">Branch A (main branch)</span></h2>
           <p class="stub__action"><span class="stub__action-item"><svg class="icon" aria-hidden="true"><use href="#i-dropoff"/></svg><span data-i18n="driver.dropoff">Drop off</span></span><span class="stub__action-item stub__pax"><svg class="icon" aria-hidden="true"><use href="#i-passengers"/></svg><span class="label-caps" data-i18n="label.passengers">Passengers</span><span class="stub__pax-n">6</span></span></p>
           <div class="stub__fold"><div class="stub__fold-inner">
             <div class="stub__facts"><p><span class="ref-small data" lang="en">PT-2026-0150</span></p><p><span class="data" lang="en">End of day at Branch A.</span></p></div>

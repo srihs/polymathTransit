@@ -1715,6 +1715,8 @@ p {
   padding-right: calc(var(--punch-size) + var(--space-2));
 }
 
+/* Each stop's place is its h2 (review 5.2); the class, not the element,
+   sets its look, so the level can change without a visual change. */
 .stub__place {
   display: block;
   margin: 0;
@@ -1813,6 +1815,13 @@ p {
 }
 
 .stub__strip {
+  display: none;
+}
+
+/* "Next stop:" inside the stop's heading, for screen readers, only while
+   that stub is the next one (review 5.2). It is inside a .vh span, so it
+   never shows on screen. */
+.stub:not(.stub--next) .stub__next-label {
   display: none;
 }
 
