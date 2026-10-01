@@ -91,3 +91,83 @@ Decided by the owner on 2026-10-01.
   - URLs are clean and namespaced, end with a slash, and are built with
     `reverse()` or `{% url %}`.
   - Queries are efficient (`select_related`, `prefetch_related`).
+
+## Agent workflow (project rule)
+
+Every task runs through one of this project's subagents in `.claude/agents/`.
+Nothing runs on general agents: never use general-purpose, Explore, Plan,
+claude-code-guide, the `claude` catch-all or any other built-in agent for
+project work.
+
+### The main session
+
+- It is the orchestrator. It breaks work down, delegates each task to the
+  agent that owns it, integrates the results and talks to the owner.
+- It does no task work itself: it writes no code, documents, tests or
+  configuration. It may read files and run read-only commands to brief agents
+  and check their results.
+- It owns git: it creates branches from `PROD`, makes every commit, merges
+  with the owner's approval, and runs `/oversight`.
+- Each delegation names the requirement IDs, the files in scope and the skills
+  from the agent's Skills table that apply. The main session checks that the
+  agent's report lists the skills it used.
+- If no agent fits a task, it asks the owner and has the process-steward
+  create or extend an agent. It never falls back to a general agent.
+- Bootstrap exception: the first agent definitions and this section were
+  written by the main session on 2026-10-01, because no agent existed yet.
+
+### Agents
+
+| Agent | Use it for | Writes to |
+|-------|-----------|-----------|
+| requirements-analyst | Reading the requirements, slice briefs with acceptance criteria, traceability, open questions, change request drafts, verifying finished work against the acceptance criteria and rules | `docs/requirements/` |
+| architect | App boundaries, data model, lifecycles, background jobs, integration interfaces, URL and API design, security architecture, library and service choices, ADRs | `docs/adr/`, `docs/architecture/` |
+| ux-designer | User flows, screen specs, forms, content and microcopy, states, accessibility, critique of built screens, user guides and in-app help | `docs/design/` |
+| backend-developer | Django models, migrations, domain logic, services, forms, views, URLs, roles and permissions, audit trail, Procrastinate tasks, management commands | Django apps (except routing and integrations) |
+| routing-engineer | The allocation and route-optimisation engine: solver spike, constraints, insertion and pooling, gap-filling, splits, no-fit alternatives, Optimise day, explanations, benchmarks | The routing app, `docs/routing/` |
+| integrations-engineer | Map service, SMS gateway, WhatsApp Business Platform and email: adapters, fakes, retries, fallbacks, delivery tracking, message templates | The maps and notifications apps |
+| frontend-developer | Django templates, HTML5, CSS and plain JavaScript for every screen, from the ux-designer's specs | App `templates/` and `static/` |
+| devops-engineer | Containers, settings per environment, dependencies, database setup, worker processes, CI, Oracle Cloud deployment, backups, README and developer setup | Build, settings, CI and `docs/operations/` |
+| test-engineer | Acceptance tests from the acceptance criteria, business-rule tests, permission and security behaviour tests; running the full suite | `tests/` |
+| code-reviewer | Independent critique of correctness, rule compliance, data model, design and tests after each piece of work | `docs/reviews/` |
+| security-privacy-reviewer | Independent critique of security and of compliance with the Personal Data Protection Act No. 9 of 2022 | `docs/reviews/`, `docs/privacy/` |
+| process-steward | Changes to CLAUDE.md, the agent definitions and the slash commands, including the Durable changes from oversight episodes | `CLAUDE.md`, `.claude/agents/`, `.claude/commands/` |
+
+### Normal order for a feature
+
+1. requirements-analyst: a slice brief with stories, acceptance criteria,
+   rules and open questions.
+2. architect: design and ADRs, where the slice needs a decision.
+3. ux-designer: flows and screen specs, when the slice has screens.
+4. backend-developer, routing-engineer, integrations-engineer and
+   frontend-developer: the build, each in their own area.
+5. test-engineer: acceptance and business-rule tests, then the full suite.
+6. code-reviewer, plus security-privacy-reviewer when the work touches sign-in,
+   roles, tokens, the public form, personal data or an external service.
+7. requirements-analyst: verifies the result against the acceptance criteria.
+8. The owner adjudicates every review finding. Accepted and overruled findings
+   are both oversight episodes, recorded with `/oversight`.
+
+### Rules for every agent
+
+- Read this file first. "Branching", "Oversight capture" and "Project
+  decisions" bind you.
+- The requirements are version 1.0 in `Requirements/`. Cite their IDs exactly
+  (BR, BRL, FR, NFR, US, AC, Q). Where code enforces a rule, a comment cites
+  the rule's ID.
+- Never commit, push, merge, create or switch branches, stash, or rewrite
+  history. Read-only git commands are fine. The main session makes every
+  commit.
+- Never edit `CLAUDE.md`, `.claude/agents/` or `.claude/commands/` (the
+  process-steward's), or `OVERSIGHT_LOG.md` (written only by `/oversight`).
+- Work only in the area you own. If the task needs a change elsewhere, say so
+  in your report; do not make it.
+- If the requirements are silent, ambiguous or contradict each other, stop and
+  report the question with options and a recommendation. Do not guess.
+- Before a task that matches your Skills table, load that skill with the Skill
+  tool. Do not use skills or commands that start their own agents.
+- Write in British English and plain language.
+- End with a report: (1) outcome: done, partly done or blocked; (2) files
+  created or changed; (3) requirement IDs covered; (4) skills used, or "none";
+  (5) checks run, with results exactly as they came out; (6) questions,
+  assumptions and anything left undone.
