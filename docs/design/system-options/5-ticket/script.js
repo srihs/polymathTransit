@@ -1969,13 +1969,44 @@
   }
 
   /**
+   * Empties the route's hidden status region, so it never holds an
+   * announcement that no longer matches the screen (review 5.4).
+   * @returns {void}
+   */
+  function clearRouteStatus() {
+    $('#route-live').textContent = '';
+  }
+
+  /**
+   * Puts a stop's result line back to how it was before Done or No-show:
+   * no "Done at" or "No-show at" text, and no longer a focus target. The
+   * i18n keys go too, so a language switch cannot write the text back.
+   * @param {HTMLElement} stub The stop's stub.
+   * @returns {void}
+   */
+  function clearStopResult(stub) {
+    const result = stub.querySelector('[data-result]');
+    const text = result.querySelector('[data-result-text]');
+    text.textContent = '';
+    delete text.dataset.i18n;
+    delete text.dataset.i18nTime;
+    result.removeAttribute('tabindex');
+  }
+
+  /**
    * Undoes Done or No-show on a stop and puts focus back on its Done button.
+   * The stop's status text and the status region go back to their state
+   * before the action (empty), so nothing says "Done at 9:41 am" after the
+   * stop is open again (US-60, review 5.4). Focus on Done tells a screen
+   * reader user the stop is open again.
    * @param {HTMLElement} stub The stop's stub.
    * @returns {void}
    */
   function undoStop(stub) {
     stub.classList.remove('is-done', 'is-noshow');
     window.clearTimeout(stubTimers[stub.dataset.stop]);
+    clearStopResult(stub);
+    clearRouteStatus();
     updateNextStop();
     stub.querySelector('[data-done]').focus();
   }
@@ -2016,6 +2047,25 @@
   }
 
   /**
+   * Keyboard handling on the route. Escape inside the no-show question works
+   * as "Go back": it closes the question and returns focus to the No-show
+   * button that opened it (brief 5.3 and 7, review 5.4).
+   * @param {KeyboardEvent} event The keydown event from the list of stops.
+   * @returns {void}
+   */
+  function onRouteKeydown(event) {
+    if (event.key !== 'Escape') {
+      return;
+    }
+    const box = event.target.closest('.stub__confirm');
+    if (!box) {
+      return;
+    }
+    event.preventDefault();
+    closeNoShowConfirm(box.closest('.stub'), true);
+  }
+
+  /**
    * Puts the route back to 9:40 am.
    * @returns {void}
    */
@@ -2024,8 +2074,10 @@
     $$('#stops-ahead .stub').forEach(function (stub) {
       stub.classList.remove('is-done', 'is-noshow');
       closeNoShowConfirm(stub, false);
+      clearStopResult(stub);
       window.clearTimeout(stubTimers[stub.dataset.stop]);
     });
+    clearRouteStatus();
     $$('.stub__note-out').forEach(function (note) {
       note.textContent = '';
       delete note.dataset.i18n;
@@ -2063,6 +2115,7 @@
         applyI18n(note);
       }
     });
+    $('#stops-ahead').addEventListener('keydown', onRouteKeydown);
 
     $$('[data-proto]').forEach(function (btn) {
       btn.addEventListener('click', function () {
@@ -2084,6 +2137,8 @@
 
     languageHooks.push(function () {
       $$('.stub[data-time]').forEach(paintStubTime);
+      // The status region would still hold the old language's words.
+      clearRouteStatus();
     });
     $$('.stub[data-time]').forEach(paintStubTime);
     updateNextStop();
