@@ -1,14 +1,18 @@
 <!DOCTYPE html>
 <!--
-  Purpose:      Gallery of the five PolymathTransit design-system directions, so the
-                owner can compare them and choose the system theme.
+  Purpose:      Gallery of the five PolymathTransit design-system directions. The
+                owner compared them here and, on 01/10/2026, chose direction 5,
+                Ticket, as the base design; directions 1 to 4 stay as a record
+                (review 2026-10-01, "Owner's adjudication"; finding C7).
   Owner:        ux-designer (docs/design/system-options/)
   Requirements: NFR-03 (accessible gallery), NFR-04; introduces options for BO-04,
-                FR-65 and NFR-18 work. No direction is preferred.
+                FR-65 and NFR-18 work. The decision is stated in words only; the
+                styling still favours no direction.
   Depends on:   assets/logo.png; each direction's folder 1-stop-by-stop/ to 5-ticket/
                 (index.html, request.html, dashboard.html, driver.html, README.md);
                 research.md; brief.md.
-  Sections:     header, about, directions list (one article per direction), footer.
+  Sections:     header, decision, about, directions list (one article per
+                direction, each with its status), footer.
   Styling:      deliberately neutral (system fonts, greys, no brand treatment) so the
                 gallery favours none of the five directions. Order is by number only.
 -->
@@ -55,6 +59,8 @@
     .direction h3 { font-size: 1.375rem; }
     .direction .num { color: var(--text-2); font-weight: 400; }
     .direction .type { color: var(--text-2); font-size: 0.9375rem; }
+    /* Each direction's status: the same plain line for all five (C7). */
+    .direction .status { color: var(--text-2); font-size: 0.9375rem; }
 
     /* === Section: Swatches === */
     .swatches { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0 0 1rem; padding: 0; list-style: none; }
@@ -83,16 +89,22 @@
     <img src="assets/logo.png" alt="Polymath College – Vivere Disce, Learn to Live" width="1200" height="427">
     <div>
       <h1>PolymathTransit: five design directions</h1>
-      <p class="meta">For the owner's choice of system theme · Prepared 01/10/2026 · Draft</p>
+      <p class="meta">Prepared 01/10/2026 · Decided 01/10/2026: direction 5, Ticket, is the base design</p>
     </div>
   </header>
 
   <main id="main">
+    <!-- === Section: Decision (review finding C7) === -->
+    <section aria-labelledby="decision-heading">
+      <h2 id="decision-heading">Decision</h2>
+      <p>On 01/10/2026 the owner chose direction 5, Ticket, as the base design for PolymathTransit. Directions 1 to 4 stay here as a record of the options and will not be developed further. The review of all five, with the owner's decision on each finding, is in <a href="../../reviews/2026-10-01-design-system-options.md">the design options review</a>.</p>
+    </section>
+
     <!-- === Section: About === -->
     <section aria-labelledby="about-heading">
-      <h2 id="about-heading">How to compare them</h2>
-      <p>Each direction uses the same brand colour (the crest purple), the same content and the same four pages, so you compare design, not content. Open each direction's request form and driver page on a phone, or narrow your browser to about 360 px wide; open the dashboard on a computer.</p>
-      <p>This gallery is plain on purpose and favours none of them. The order is by number only. The research behind the directions is in <a href="research.md">research.md</a>, and the brief the five were built from is in <a href="brief.md">brief.md</a>. All Sinhala text is a draft that native speakers still need to review.</p>
+      <h2 id="about-heading">How they were compared</h2>
+      <p>Each direction uses the same brand colour (the crest purple), the same content and the same four pages, so they could be compared on design, not content. Open each direction's request form and driver page on a phone, or narrow your browser to about 360 px wide; open the dashboard on a computer.</p>
+      <p>This gallery is plain on purpose: its styling favours none of them, and the order is by number only. The research behind the directions is in <a href="research.md">research.md</a>, and the brief the five were built from is in <a href="brief.md">brief.md</a>. All Sinhala text is a draft that native speakers still need to review.</p>
     </section>
 
     <!-- === Section: Directions list === -->
@@ -104,6 +116,7 @@
         <li class="direction">
           <article aria-labelledby="d1">
             <h3 id="d1"><span class="num">1 ·</span> Stop by Stop</h3>
+            <p class="status">Status: kept as a record; not developed further (owner, 01/10/2026).</p>
             <p>Every journey is drawn as a line with stops, from the request form to the driver's phone, with signage discipline and shapes that mean one thing everywhere.</p>
             <ul class="swatches" aria-label="Main colours of Stop by Stop">
               <li><span class="chip" style="background:#722A82"></span><code>#722A82</code><br>Brand, route line</li>
@@ -127,6 +140,7 @@
         <li class="direction">
           <article aria-labelledby="d2">
             <h3 id="d2"><span class="num">2 ·</span> Inscription</h3>
+            <p class="status">Status: kept as a record; not developed further (owner, 01/10/2026).</p>
             <p>The college speaks in its own voice: inscriptional capitals from the wordmark, the tagline's italic as the guiding voice, and the calm light and deep shade of Sri Lankan tropical modernism.</p>
             <ul class="swatches" aria-label="Main colours of Inscription">
               <li><span class="chip" style="background:#722A82"></span><code>#722A82</code><br>Brand</li>
@@ -150,6 +164,7 @@
         <li class="direction">
           <article aria-labelledby="d3">
             <h3 id="d3"><span class="num">3 ·</span> Plain Words</h3>
+            <p class="status">Status: kept as a record; not developed further (owner, 01/10/2026).</p>
             <p>A clear note from the transport office: one column, large type, words first, and a live sentence that reads your request back to you before you send it.</p>
             <ul class="swatches" aria-label="Main colours of Plain Words">
               <li><span class="chip" style="background:#722A82"></span><code>#722A82</code><br>Brand, links</li>
@@ -173,6 +188,7 @@
         <li class="direction">
           <article aria-labelledby="d4">
             <h3 id="d4"><span class="num">4 ·</span> Departures</h3>
+            <p class="status">Status: kept as a record; not developed further (owner, 01/10/2026).</p>
             <p>Time is the backbone: every list reads like a departure board, one line per trip with the status as a remark, and the coordinator approves the day on a dark board.</p>
             <ul class="swatches" aria-label="Main colours of Departures">
               <li><span class="chip" style="background:#140C17"></span><code>#140C17</code><br>Board</li>
@@ -196,6 +212,7 @@
         <li class="direction">
           <article aria-labelledby="d5">
             <h3 id="d5"><span class="num">5 ·</span> Ticket</h3>
+            <p class="status">Status: chosen as the base design (owner, 01/10/2026).</p>
             <p>Every trip is a ticket with every fact in a fixed place: the form fills it, a coordinator's confirmation issues it, and the driver punches each stop as the day goes.</p>
             <ul class="swatches" aria-label="Main colours of Ticket">
               <li><span class="chip" style="background:#722A82"></span><code>#722A82</code><br>Brand, header strip</li>
@@ -220,7 +237,7 @@
 
   <!-- === Section: Footer === -->
   <footer>
-    <p class="meta">PolymathTransit design-system options · docs/design/system-options/ · Each direction's pages appear here once it is built.</p>
+    <p class="meta">PolymathTransit design-system options · docs/design/system-options/ · All five directions built 01/10/2026 · Direction 5, Ticket, chosen as the base design on 01/10/2026.</p>
   </footer>
 </body>
 </html>

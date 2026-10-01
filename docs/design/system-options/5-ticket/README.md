@@ -5,7 +5,7 @@
 | Document | Design rationale for design direction 5, "Ticket" |
 | Owner | ux-designer |
 | Date | 01/10/2026 |
-| Status | Option for the owner's choice; not yet chosen |
+| Status | Chosen as the base design (owner, 01/10/2026); see the review's "Owner's adjudication" in [../../../reviews/2026-10-01-design-system-options.md](../../../reviews/2026-10-01-design-system-options.md) |
 | Brief | [../brief.md](../brief.md) sections 1 to 5, 6.5 and 7 |
 | Evidence | [../research.md](../research.md) |
 | Pages | [index.html](index.html) (foundations), [request.html](request.html), [dashboard.html](dashboard.html), [driver.html](driver.html) |
