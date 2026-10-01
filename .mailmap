@@ -1,0 +1,4 @@
+# Maps every author identity in this repository's history to one canonical
+# identity. Display only: history is never rewritten.
+# Checked with `git shortlog -sne --all` on 2026-10-01: one identity found.
+srimalhs <srimalhs@gmail.com> srimalhs <srimalhs@gmail.com>
