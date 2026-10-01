@@ -168,8 +168,11 @@
     <section class="day" aria-labelledby="day-title">
       <div class="day__head">
         <h2 class="section-title" id="day-title">Day timeline</h2>
-        <button class="btn btn--secondary btn--small js-only" type="button" id="toggle-view" aria-controls="timeline-view list-view" aria-pressed="false">
-          <svg class="icon icon--20" aria-hidden="true"><use href="#i-menu"/></svg><span>Show as list</span>
+        <!-- FR-29 list view. A toggle with one fixed label: its state is
+             aria-pressed alone, shown by a tick, a tint and a bar (review
+             5.3). Hidden without JS, where the list shows under the timeline. -->
+        <button class="btn btn--secondary btn--small btn--toggle js-only" type="button" id="toggle-view" aria-controls="timeline-view list-view" aria-pressed="false">
+          <svg class="icon icon--20 btn__icon-off" aria-hidden="true"><use href="#i-menu"/></svg><svg class="icon icon--20 btn__icon-on" aria-hidden="true"><use href="#i-check"/></svg><span>Show as list</span>
         </button>
       </div>
 

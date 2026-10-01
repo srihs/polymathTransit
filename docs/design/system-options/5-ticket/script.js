@@ -1751,17 +1751,18 @@
   }
 
   /**
-   * Switches between the timeline and the list view (FR-29).
+   * Switches between the timeline and the list view (FR-29). The "Show as
+   * list" toggle keeps its label; only aria-pressed changes, so a screen
+   * reader hears one consistent state: "Show as list, pressed" while the list
+   * shows, "not pressed" while the timeline shows (review 5.3).
    * @param {boolean} [toList] Force a view; toggles when left out.
    * @returns {void}
    */
   function setListView(toList) {
     const day = $('.day');
-    const btn = $('#toggle-view');
     const list = typeof toList === 'boolean' ? toList : !day.classList.contains('is-list');
     day.classList.toggle('is-list', list);
-    btn.setAttribute('aria-pressed', list ? 'true' : 'false');
-    btn.querySelector('span').textContent = list ? 'Show as timeline' : 'Show as list';
+    $('#toggle-view').setAttribute('aria-pressed', list ? 'true' : 'false');
   }
 
   /**
