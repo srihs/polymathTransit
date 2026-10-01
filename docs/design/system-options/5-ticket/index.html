@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js is-desktop-scale">
+<!--
+  PolymathTransit – Design direction 5 "Ticket" – index.html (foundations)
+  ===========================================================================
+  Purpose:      The design-system foundations of the Ticket direction:
+                concept and principles, logo use, colour with contrast,
+                type in English and Sinhala, spacing and grids, icons, every
+                component in every state, the signature element (the ticket)
+                and motion.
+  Direction:    5 Ticket. Every trip is a ticket; each fact has a fixed place.
+  Requirements: NFR-03, NFR-04, NFR-12, FR-02, FR-07, FR-19, FR-29, FR-65,
+                US-01, US-03, US-05, D-09 (shown as samples).
+  Depends on:   tokens.css, components.css, pages.css, script.js,
+                ../assets/logo.png, ../assets/crest.png,
+                ../assets/crest-keyline.png, Google Fonts (IBM Plex Sans
+                Condensed, Stick No Bills, Yaldevi).
+  Sections:     1 About · 2 Logo · 3 Colour · 4 Type · 5 Spacing and grid ·
+                6 Icons · 7 Components · 8 Signature element · 9 Motion.
+-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ticket – foundations – PolymathTransit design options</title>
+  <link rel="icon" href="../assets/crest.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@400;600&amp;family=Stick+No+Bills:wght@600&amp;family=Yaldevi:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="components.css">
+  <link rel="stylesheet" href="pages.css">
+  <script src="script.js" defer></script>
+</head>
+<body class="page-desktop" data-page="foundations">
+
+<svg xmlns="http://www.w3.org/2000/svg" class="vh" aria-hidden="true" focusable="false">
+  <!-- Ticket direction icon set: own drawings, 24 px grid, 1.75 px outline, round ends, simple closed shapes like rubber-stamp marks. -->
+  <symbol id="i-van" viewBox="0 0 24 24"><path d="M2.75 16.25V7.25h11.5l4.25 4.25h2.75v4.75h-1.5"/><path d="M14.25 7.25v4.25h4.25"/><path d="M7.5 16.25h8"/><circle cx="5.5" cy="16.5" r="1.9"/><circle cx="17.5" cy="16.5" r="1.9"/></symbol>
+  <symbol id="i-passengers" viewBox="0 0 24 24"><circle cx="9" cy="7.75" r="3.25"/><path d="M3 19.75a6 6 0 0 1 12 0z"/><circle cx="16.75" cy="8.75" r="2.5"/><path d="M15.6 13.4A4.75 4.75 0 0 1 21 18.1v1.65h-3.6"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.25"/><path d="M12 7.5V12l3 2"/></symbol>
+  <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3.75" y="5.25" width="16.5" height="15" rx="1.5"/><path d="M3.75 9.75h16.5M8 3.5v3.5M16 3.5v3.5"/></symbol>
+  <symbol id="i-pickup" viewBox="0 0 24 24"><path d="M5 4.5h14"/><path d="M12 20V8.75"/><path d="M7.5 13.25 12 8.75l4.5 4.5"/></symbol>
+  <symbol id="i-dropoff" viewBox="0 0 24 24"><path d="M5 19.5h14"/><path d="M12 4v11.25"/><path d="M7.5 10.75 12 15.25l4.5-4.5"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-6.5-6.1-6.5-11a6.5 6.5 0 0 1 13 0c0 4.9-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.25"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><path d="M6.6 3.75h2.9l1.6 4.1-2.05 1.4a10.5 10.5 0 0 0 5.7 5.7l1.4-2.05 4.1 1.6v2.9a1.75 1.75 0 0 1-1.9 1.75A15.5 15.5 0 0 1 4.85 5.65 1.75 1.75 0 0 1 6.6 3.75z"/></symbol>
+  <symbol id="i-navigate" viewBox="0 0 24 24"><path d="M20.25 3.75 3.75 10.6l7.1 2.55 2.55 7.1z"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5 9.5 17 19 7.5"/></symbol>
+  <symbol id="i-cross" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></symbol>
+  <symbol id="i-warning" viewBox="0 0 24 24"><path d="M12 3.75 21.25 19.5H2.75z"/><path d="M12 9.5v4.5M12 16.75v.25"/></symbol>
+  <symbol id="i-repeat" viewBox="0 0 24 24"><path d="M19.6 10A7.75 7.75 0 0 0 5.4 7.6"/><path d="M5 3.75V8h4.25"/><path d="M4.4 14a7.75 7.75 0 0 0 14.2 2.4"/><path d="M19 20.25V16h-4.25"/></symbol>
+  <symbol id="i-shared" viewBox="0 0 24 24"><path d="M3.75 5.75 9.5 12M3.75 18.25 9.5 12h10.75"/><path d="M16.75 8.5 20.25 12l-3.5 3.5"/></symbol>
+  <symbol id="i-gap" viewBox="0 0 24 24"><path d="M4 5.5v13M20 5.5v13"/><rect x="8" y="8.75" width="8" height="6.5" rx="1"/></symbol>
+  <symbol id="i-outhours" viewBox="0 0 24 24"><circle cx="10" cy="12" r="6.75"/><path d="M10 8.5V12h2.75"/><path d="M20.25 3.75v16.5"/></symbol>
+  <symbol id="i-early" viewBox="0 0 24 24"><circle cx="14" cy="12" r="6.75"/><path d="M14 8.5V12h-2.75"/><path d="M3.75 3.75v16.5"/></symbol>
+  <symbol id="i-newreq" viewBox="0 0 24 24"><circle cx="9.5" cy="8" r="3.25"/><path d="M3.5 19.75a6 6 0 0 1 12 0z"/><path d="M18.5 8.5v6M15.5 11.5h6"/></symbol>
+  <symbol id="i-late" viewBox="0 0 24 24"><circle cx="10" cy="12" r="6.75"/><path d="M10 8.5V12l2.25 1.5"/><path d="M20.25 6.5v7M20.25 17v.25"/></symbol>
+  <symbol id="i-wheelchair" viewBox="0 0 24 24"><circle cx="10.5" cy="4.5" r="1.75"/><path d="M10.5 8v6h5l2.75 5.25 1.75-.75"/><path d="M10.5 10.75h4.25"/><path d="M8 10.9a5 5 0 1 0 6.75 7.1"/></symbol>
+  <symbol id="i-equipment" viewBox="0 0 24 24"><rect x="3.75" y="8.25" width="16.5" height="11.5" rx="1"/><path d="M9 8.25V5.25h6v3M3.75 13.25h16.5M10.5 13.25v2h3v-2"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.25"/><path d="M12 11v5.5M12 7.75v.25"/></symbol>
+  <symbol id="i-undo" viewBox="0 0 24 24"><path d="M8.5 5.5 4.5 9.5l4 4"/><path d="M4.5 9.5H14a5.25 5.25 0 0 1 0 10.5h-3"/></symbol>
+  <symbol id="i-offline" viewBox="0 0 24 24"><path d="M3.5 3.5l17 17"/><path d="M4.5 9.2a11.5 11.5 0 0 1 4.3-2.3M12.9 6.1a11.5 11.5 0 0 1 6.6 3.1"/><path d="M7.6 12.6a6.75 6.75 0 0 1 3-1.6M15.2 12.1l1.2 1"/><path d="M12 18.25v.25"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+  <symbol id="i-chevron" viewBox="0 0 24 24"><path d="M9.5 6 15.5 12l-6 6"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+  <symbol id="i-punch" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.25" stroke-dasharray="2.2 2.6"/><circle cx="12" cy="12" r="4.25" fill="currentColor"/></symbol>
+  <symbol id="i-notconfirmed" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.25" stroke-dasharray="2.2 2.6"/><path d="M10.25 10a1.9 1.9 0 1 1 2.6 1.75c-.55.25-.85.7-.85 1.3v.45M12 16.25v.25"/></symbol>
+  <symbol id="i-submitted" viewBox="0 0 24 24"><path d="M3.75 13.5h4.5l1.5 2.5h4.5l1.5-2.5h4.5v6.75H3.75z"/><path d="M12 3.75v8M8.75 8.75 12 12l3.25-3.25"/></symbol>
+  <symbol id="i-hourglass" viewBox="0 0 24 24"><path d="M6.75 3.75h10.5M6.75 20.25h10.5"/><path d="M8 3.75c0 4.75 8 4.5 8 8.25s-8 3.5-8 8.25M16 3.75c0 4.75-8 4.5-8 8.25s8 3.5 8 8.25"/></symbol>
+  <symbol id="i-cancelled" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.25"/><path d="M6.2 6.2l11.6 11.6"/></symbol>
+  <symbol id="i-noshow" viewBox="0 0 24 24"><circle cx="9" cy="7.75" r="3.25"/><path d="M3 19.75a6 6 0 0 1 12 0z"/><path d="M16.5 9.5l4.5 4.5M21 9.5l-4.5 4.5"/></symbol>
+</svg>
+
+<a class="skip-link" href="#main">Skip to main content</a>
+
+<header class="app-header">
+  <div class="app-header__inner">
+    <a class="brand" href="index.html">
+      <img class="brand__crest" src="../assets/crest.png" alt="Polymath College crest" width="29" height="32">
+      <span class="brand__name">PolymathTransit</span>
+    </a>
+    <p class="app-header__user">Design direction 5 of 5: Ticket</p>
+  </div>
+</header>
+
+<main id="main" class="fd" tabindex="-1">
+  <h1 class="title">Ticket: design-system foundations</h1>
+  <nav class="fd-toc" aria-label="On this page">
+    <ol>
+      <li><a href="#about">About</a></li>
+      <li><a href="#logo">Logo</a></li>
+      <li><a href="#colour">Colour</a></li>
+      <li><a href="#type">Type</a></li>
+      <li><a href="#spacing">Spacing and grid</a></li>
+      <li><a href="#icons">Icons</a></li>
+      <li><a href="#components">Components</a></li>
+      <li><a href="#signature">The ticket</a></li>
+      <li><a href="#motion">Motion</a></li>
+    </ol>
+  </nav>
+
+  <!-- === Section 1: About this direction === -->
+  <section class="fd-section" id="about" aria-labelledby="about-h">
+    <h2 id="about-h"><span class="num">1</span> About this direction</h2>
+    <div class="fd-grid fd-grid--2">
+      <div class="fd-measure">
+        <p><strong>Ticket.</strong> Every trip is a ticket: a compact card where each fact always sits in the same place – date, pick up, going to, passengers, trip for – with the return below a perforation. The form fills a ticket, the confirmation issues it, the coordinator's day is a rack of tickets along each van's line, and the driver punches each stop's stub as the day goes.</p>
+        <p>It takes its principles from the card tickets Sri Lanka Railways still issues (every fact in a fixed place, named by a serial number) and from Tyler Thompson's "Boarding Pass / Fail" (order by what the traveller needs; give the time its own place). The numbers are printed in Stick No Bills, a stencil face from Mooniak in Colombo made for a Galle poster gallery.</p>
+        <p>The rule behind the look: <strong>the system prints in the stencil; people write and read in Plex Sans Condensed.</strong></p>
+      </div>
+      <div>
+        <h3>Principles</h3>
+        <ol>
+          <li><strong>Every fact has a fixed place.</strong> The same slot order on the form, the confirmation, the dashboard and the driver's stub.</li>
+          <li><strong>The reference is the ticket's name.</strong> Always visible, and the part people say aloud (0142) is the largest.</li>
+          <li><strong>Outbound and return are two parts of one ticket</strong>, divided by a perforation. Perforations divide nothing else.</li>
+          <li><strong>Done is a punch, not a page.</strong> A stop is finished with a round hole and a time, not a new screen.</li>
+        </ol>
+        <h3>The pages</h3>
+        <ul class="fd-pages">
+          <li><a href="request.html">Request form (phone)</a></li>
+          <li><a href="dashboard.html">Coordinator dashboard</a></li>
+          <li><a href="driver.html">Driver's route (phone)</a></li>
+          <li><a href="README.md">Rationale (README)</a></li>
+          <li><a href="../index.html">All five directions</a></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- === Section 2: Logo === -->
+  <section class="fd-section" id="logo" aria-labelledby="logo-h">
+    <h2 id="logo-h"><span class="num">2</span> Logo</h2>
+    <p class="fd-measure">The full logo carries its own white sticker, so it sits on the desk ground as it is. It appears at 240 px wide or more. The product name PolymathTransit is set in Plex Sans Condensed 600 beside the crest; the college's name only ever appears through the logo artwork.</p>
+    <div class="fd-logo-full"><img src="../assets/logo.png" alt="Polymath College logo: the crest, the words Polymath College and the tagline Vivere Disce, Learn to Live" width="320" height="114"></div>
+
+    <h3>Crest on light, dark and purple grounds</h3>
+    <div class="fd-crest-grounds">
+      <div class="fd-ground fd-ground--light"><img src="../assets/crest.png" alt="Crest on white" width="59" height="64"><img class="fd-crest-small" src="../assets/crest.png" alt="Crest at its smallest size, 24 pixels tall" width="22" height="24"><span>crest.png on white and light grounds</span></div>
+      <div class="fd-ground fd-ground--dark"><img src="../assets/crest-keyline.png" alt="Keyline crest on black" width="59" height="64"><img class="fd-crest-small" src="../assets/crest-keyline.png" alt="Keyline crest at 24 pixels tall" width="22" height="24"><span>crest-keyline.png on black</span></div>
+      <div class="fd-ground fd-ground--brand"><img src="../assets/crest-keyline.png" alt="Keyline crest on the crest purple" width="59" height="64"><img class="fd-crest-small" src="../assets/crest-keyline.png" alt="Keyline crest at 24 pixels tall on purple" width="22" height="24"><span>crest-keyline.png on purple (the issued strip)</span></div>
+    </div>
+
+    <h3>Clear space and smallest sizes</h3>
+    <div class="fd-grid fd-grid--2">
+      <div>
+        <div class="fd-clear"><img src="../assets/crest.png" alt="Crest with its clear space marked by a dashed box" width="59" height="64"></div>
+        <p class="small">Clear space: a quarter of the crest's height on every side (16 px around a 64 px crest), shown by the dashed box.</p>
+      </div>
+      <ul>
+        <li>Crest: 24 px tall at the smallest (phone headers use 32 px).</li>
+        <li>Full logo: 240 px wide at the smallest, so the tagline stays readable.</li>
+        <li>Favicon: crest.png.</li>
+      </ul>
+    </div>
+    <h3>Two things never to do</h3>
+    <ul class="fd-measure">
+      <li><strong>Do not stamp the crest.</strong> It is never drawn inside a status stamp, recoloured to a status colour, rotated like a rubber stamp or punched; the crest is the college's mark, not a ticket mark.</li>
+      <li><strong>Do not print the college's name in the stencil.</strong> "Polymath College" is never typeset in Stick No Bills or Plex as if it were the logo; only references, times and counts are printed in the stencil.</li>
+    </ul>
+  </section>
+
+  <!-- === Section 3: Colour === -->
+  <section class="fd-section" id="colour" aria-labelledby="colour-h">
+    <h2 id="colour-h"><span class="num">3</span> Colour</h2>
+    <p class="fd-measure">The crest purple leads and is kept for three jobs: the issued ticket's strip, primary actions and links. Tickets lie on a desk ground and are separated from it by their edge alone, with no shadows. Every other colour has a job (a status), and every status also has a word and an icon. Ratios are WCAG 2.2 contrast ratios, calculated for each pair.</p>
+    <ul class="swatches">
+      <li class="swatch"><span class="swatch__chip" style="background:#722A82"></span><span><code>--c-brand</code> <code>#722A82</code><br>Issued strip, primary buttons, links, focus<span class="swatch__ratio">8.86:1 on white AAA · 7.89:1 on desk AAA · white on it 8.86:1 AAA</span></span></li>
+      <li class="swatch"><span class="swatch__chip" style="background:#581D65"></span><span><code>--c-brand-strong</code> <code>#581D65</code><br>Hover, pressed, visited<span class="swatch__ratio">11.81:1 on white AAA · white on it 11.81:1</span></span></li>
+      <li class="swatch"><span class="swatch__chip" style="background:#F7E6FB"></span><span><code>--c-brand-tint</code> <code>#F7E6FB</code><br>Selected option ground<span class="swatch__ratio">Brand on it 7.46:1 AAA · black on it 17.67:1 AAA</span></span></li>
+      <li class="swatch"><span class="swatch__chip" style="background:#FCF4FD"></span><span><code>--c-brand-faint</code> <code>#FCF4FD</code><br>Hover ground of options and rows<span class="swatch__ratio">Brand on it 8.23:1 AAA</span></span></li>
+      <li class="swatch"><span class="swatch__chip" style="background:#EDCEF4"></span><span><code>--c-on-brand-quiet</code> <code>#EDCEF4</code><br>Slot labels on the purple strip<span class="swatch__ratio">6.22:1 on brand AA</span></span></li>
+      <li class="swatch"><span class="swatch__chip" style="background:#F3F1F4"></span><span><code>--c-desk</code> <code>#F3F1F4</code><br>Page ground: the desk<span class="swatch__ratio">Grey text on it 5.13:1 AA · black 18.70:1 AAA</span></span></li>
+      <li class="swatch"><span class="swatch__chip" style="background:#FFFFFF"></span><span><code>--c-ticket</code> <code>#FFFFFF</code><br>Tickets, the form sheet, panels<span class="swatch__ratio">Ground for all text pairs below</span></span></li>
+      <li class="swatch"><span class="swatch__chip" style="background:#7D8086"></span><span><code>--c-ticket-edge</code> <code>#7D8086</code><br>Ticket edges, perforations, input borders<span class="swatch__ratio">3.96:1 on white · 3.53:1 on desk (UI, 3:1 needed)</span></span></li>
+      <li class="swatch"><span class="swatch__chip" style="background:#63666B"></span><span><code>--c-slot-label</code> <code>#63666B</code><br>Slot labels, hints (the logo's grey)<span class="swatch__ratio">5.76:1 on white AA · 5.13:1 on desk AA</span></span></li>
+      <li class="swatch"><span class="swatch__chip" style="background:#000000"></span><span><code>--c-value</code> <code>#000000</code><br>Slot values and text<span class="swatch__ratio">21:1 on white AAA · 18.70:1 on desk AAA</span></span></li>
+      <li class="swatch"><span class="swatch__chip" style="background:#3D4044"></span><span><code>--c-text-strong-2</code> <code>#3D4044</code><br>Secondary text that must stay dark; punched holes<span class="swatch__ratio">10.42:1 on white AAA · 9.28:1 on desk</span></span></li>
+      <li class="swatch"><span class="swatch__chip" style="background:#DCDEE1"></span><span><code>--c-rule</code> <code>#DCDEE1</code><br>Hairlines between slots and rows: grouping only<span class="swatch__ratio">1.35:1, decoration only, never a control's edge</span></span></li>
+      <li class="swatch"><span class="swatch__chip" style="background:#EEF0F3"></span><span><code>--c-disabled-ground</code> <code>#EEF0F3</code><br>Closed date, disabled controls (with a dashed edge)<span class="swatch__ratio">Grey text on it 5.05:1 AA</span></span></li>
+      <li class="swatch"><span class="swatch__chip" style="background:#02684A"></span><span><code>--c-ok</code> <code>#02684A</code> / tint <code>#E3F8EE</code><br>Confirmed, Completed, success<span class="swatch__ratio">6.81:1 on white AA · 6.14:1 on tint AA</span></span></li>
+      <li class="swatch"><span class="swatch__chip" style="background:#9A5A00"></span><span><code>--c-attention</code> <code>#9A5A00</code> / tint <code>#FEEFE1</code><br>Needs attention, warnings<span class="swatch__ratio">5.47:1 on white AA · 4.86:1 on tint AA</span></span></li>
+      <li class="swatch"><span class="swatch__chip" style="background:#A82133"></span><span><code>--c-danger</code> <code>#A82133</code> / tint <code>#FFEDEC</code><br>Declined, No-show, errors<span class="swatch__ratio">7.17:1 on white AAA · 6.34:1 on tint AA</span></span></li>
+      <li class="swatch"><span class="swatch__chip" style="background:#1E4B8D"></span><span><code>--c-info</code> <code>#1E4B8D</code> / tint <code>#EAF3FF</code><br>Proposed, information<span class="swatch__ratio">8.58:1 on white AAA · 7.67:1 on tint AAA</span></span></li>
+      <li class="swatch"><span class="swatch__chip" style="background:#FFFFFF;outline:3px solid #722A82;outline-offset:2px"></span><span><code>--c-focus</code> 3 px <code>#722A82</code>, 2 px offset<br>On the purple strip: 3 px white<span class="swatch__ratio">8.86:1 on white · 7.89:1 on desk · white on brand 8.86:1</span></span></li>
+    </ul>
+
+    <h3>Purple scale (research.md 1.4), ratio on white</h3>
+    <ul class="scale-row" style="grid-template-columns:repeat(11,minmax(0,1fr))">
+      <li style="background:#FCF4FD">50<br><code>#FCF4FD</code><br>1.08 · used</li>
+      <li style="background:#F7E6FB">100<br><code>#F7E6FB</code><br>1.19 · used</li>
+      <li style="background:#EDCEF4">200<br><code>#EDCEF4</code><br>1.43 · used</li>
+      <li style="background:#DCADE7">300<br><code>#DCADE7</code><br>1.88</li>
+      <li style="background:#C586D4">400<br><code>#C586D4</code><br>2.72</li>
+      <li style="background:#AA61BB">500<br><code>#AA61BB</code><br>4.09</li>
+      <li style="background:#9043A1;color:#fff">600<br><code>#9043A1</code><br>5.99</li>
+      <li style="background:#722A82;color:#fff">700<br><code>#722A82</code><br>8.86 · brand</li>
+      <li style="background:#581D65;color:#fff">800<br><code>#581D65</code><br>11.81 · used</li>
+      <li style="background:#3F1448;color:#fff">900<br><code>#3F1448</code><br>14.95</li>
+      <li style="background:#280A2F;color:#fff">950<br><code>#280A2F</code><br>17.88</li>
+    </ul>
+    <h3>Neutral scale (research.md 1.5) and the desk, ratio on white</h3>
+    <ul class="scale-row" style="grid-template-columns:repeat(9,minmax(0,1fr))">
+      <li style="background:#F5F7F9">50<br><code>#F5F7F9</code><br>1.07</li>
+      <li style="background:#F3F1F4">desk<br><code>#F3F1F4</code><br>1.12 · used</li>
+      <li style="background:#EEF0F3">100<br><code>#EEF0F3</code><br>1.15 · used</li>
+      <li style="background:#DCDEE1">200<br><code>#DCDEE1</code><br>1.35 · rules</li>
+      <li style="background:#8F9298">400<br><code>#8F9298</code><br>3.12</li>
+      <li style="background:#7D8086">450<br><code>#7D8086</code><br>3.96 · edges</li>
+      <li style="background:#63666B;color:#fff">500<br><code>#63666B</code><br>5.76 · labels</li>
+      <li style="background:#3D4044;color:#fff">700<br><code>#3D4044</code><br>10.42 · used</li>
+      <li style="background:#181B1F;color:#fff">900<br><code>#181B1F</code><br>17.28</li>
+    </ul>
+  </section>
+
+  <!-- === Section 4: Type === -->
+  <section class="fd-section" id="type" aria-labelledby="type-h">
+    <h2 id="type-h"><span class="num">4</span> Type</h2>
+    <p class="fd-measure">IBM Plex Sans Condensed (400, 600) for Latin text: narrow and engineered, so long labels fit fixed slots. Yaldevi (400, 600) for Sinhala: about 30% narrower than Noto at the same legibility, which matters on a 360 px phone. Stick No Bills 600 for references, issued times and counts in both scripts – never for words, and never below 20 px, where the stencil's breaks start to eat the figures. Times use tabular figures.</p>
+    <div class="fd-panel">
+      <div class="type-specimen"><div class="type-specimen__meta"><strong>Ticket number</strong><br>Stick No Bills 600 · 34 px phone / 28 px desktop · line height 1.0 · references, big times, counts</div><div><span class="ref"><span class="ref__prefix">PT-2026-</span>0142</span></div></div>
+      <div class="type-specimen"><div class="type-specimen__meta"><strong>Title</strong><br>Plex Condensed 600 · 26 / 30 px · 1.15 · h1</div><div><span class="title" style="margin:0">Request a van</span></div></div>
+      <div class="type-specimen"><div class="type-specimen__meta"><strong>Section</strong><br>Plex Condensed 600 · 21 / 20 px · 1.25 · h2 (added between Title and Slot value)</div><div><span class="section-title" style="margin:0">Your trip</span></div></div>
+      <div class="type-specimen"><div class="type-specimen__meta"><strong>Slot value</strong><br>Plex Condensed 600 · 19 / 16 px · 1.3 (Sinhala 1.6) · values in slots</div><div><span class="slot__value">Sports Centre</span></div></div>
+      <div class="type-specimen"><div class="type-specimen__meta"><strong>Body</strong><br>Plex Condensed 400 · 17 / 15 px · 1.5 (Sinhala 1.7) · text and inputs</div><div><p style="margin:0">We'll send you a text when a coordinator confirms your trip.</p></div></div>
+      <div class="type-specimen"><div class="type-specimen__meta"><strong>Small</strong><br>Plex Condensed 400 · 15 / 14 px · 1.4 · hints, notes</div><div><span class="hint" style="margin:0">For example, 077 123 4567</span></div></div>
+      <div class="type-specimen"><div class="type-specimen__meta"><strong>Slot label</strong><br>Plex Condensed 600 · 13 / 12 px · capitals by CSS · 0.08 em · 1.2 · Sinhala: Yaldevi 600, 14 px, no capitals</div><div><span class="slot__label" style="margin:0">Pick up</span></div></div>
+    </div>
+
+    <h3>The same sample in English and Sinhala</h3>
+    <p class="fd-measure">Sinhala size factor 0.9: Yaldevi draws Sinhala large, so every Sinhala size is 90% of the English one (Title 26 px becomes 23.4 px) and lines open up to 1.6 to 1.7. Slot labels in Sinhala are 14 px and never set in capitals.</p>
+    <div class="fd-grid fd-grid--2">
+      <div class="si-sample" lang="en">
+        <p class="title">Request a van</p>
+        <p class="label">Your name</p>
+        <p class="hint">For example, 077 123 4567</p>
+        <p class="error-msg"><svg class="icon icon--20" aria-hidden="true"><use href="#i-warning"/></svg><span>Please enter your name</span></p>
+        <p class="slot__label">Pick up</p>
+        <p class="slot__value">8:45 am</p>
+      </div>
+      <div class="si-sample" lang="si">
+        <p class="title">වෑන් රථයක් ඉල්ලන්න</p>
+        <p class="label">ඔබේ නම</p>
+        <p class="hint">උදාහරණය: 077 123 4567</p>
+        <p class="error-msg"><svg class="icon icon--20" aria-hidden="true"><use href="#i-warning"/></svg><span>කරුණාකර ඔබේ නම ඇතුළත් කරන්න</span></p>
+        <p class="slot__label">පිටත් වීම</p>
+        <p class="slot__value">පෙ.ව. 8:45</p>
+      </div>
+    </div>
+    <p class="small muted" lang="en">This Sinhala text is a draft for review by native speakers (D-09). Conjunct check: ප්‍රවාහන should show ප්‍ර as one joined letter.</p>
+  </section>
+
+  <!-- === Section 5: Spacing and grid === -->
+  <section class="fd-section" id="spacing" aria-labelledby="spacing-h">
+    <h2 id="spacing-h"><span class="num">5</span> Spacing and grid</h2>
+    <p class="fd-measure">A 4 px base. Space groups facts; it is never used to impress. Inside a ticket, slots sit edge to edge with hairlines between them, like the printed boxes on a card ticket.</p>
+    <ul class="space-bars">
+      <li><code>--space-1 · 4 px</code><span class="space-bars__bar" style="width:4px"></span></li>
+      <li><code>--space-2 · 8 px</code><span class="space-bars__bar" style="width:8px"></span></li>
+      <li><code>--space-3 · 12 px</code><span class="space-bars__bar" style="width:12px"></span></li>
+      <li><code>--space-4 · 16 px</code><span class="space-bars__bar" style="width:16px"></span></li>
+      <li><code>--space-5 · 24 px</code><span class="space-bars__bar" style="width:24px"></span></li>
+      <li><code>--space-6 · 32 px</code><span class="space-bars__bar" style="width:32px"></span></li>
+      <li><code>--space-7 · 48 px</code><span class="space-bars__bar" style="width:48px"></span></li>
+    </ul>
+    <h3>Phone: one column, 12 px margins, slots in 2 columns</h3>
+    <div class="grid-demo grid-demo--phone" aria-hidden="true"><span>Slot</span><span>Slot</span><span>Slot</span><span>Slot</span><span style="grid-column:1/-1">Wide slot</span></div>
+    <p class="small">Pages are at most 480 px wide, centred. Touch targets are 48 px tall (44 px minimum) with 8 px or more between them.</p>
+    <h3>Desktop: 12 columns, 24 px gutters, 1360 px maximum; tickets in 6 columns</h3>
+    <div class="grid-demo grid-demo--desktop" aria-hidden="true"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span><span>12</span></div>
+    <p class="small">The ticket is a size container: under 420 px it lays its slots in 2 columns, from 420 px in 3, from 760 px in 6. Corners: 4 px on tickets and controls, 2 px on stamps. No shadows; notches are 8 px radius.</p>
+  </section>
+
+  <!-- === Section 6: Icons === -->
+  <section class="fd-section" id="icons" aria-labelledby="icons-h">
+    <h2 id="icons-h"><span class="num">6</span> Icons</h2>
+    <p class="fd-measure">Drawn for this direction like rubber-stamp marks: outline, 24 px grid with a 2 px live-area margin, 1.75 px stroke, round ends and joins, simple closed shapes, no fills except the punched hole. Early trip and Out of hours are a pair: a clock with its line before or after it. An icon always sits beside its word.</p>
+    <ul class="icon-grid">
+      <li><svg class="icon"><use href="#i-van"/></svg>Van</li>
+      <li><svg class="icon"><use href="#i-passengers"/></svg>Passengers</li>
+      <li><svg class="icon"><use href="#i-clock"/></svg>Clock</li>
+      <li><svg class="icon"><use href="#i-calendar"/></svg>Calendar</li>
+      <li><svg class="icon"><use href="#i-pickup"/></svg>Pick up</li>
+      <li><svg class="icon"><use href="#i-dropoff"/></svg>Drop off</li>
+      <li><svg class="icon"><use href="#i-pin"/></svg>Map pin</li>
+      <li><svg class="icon"><use href="#i-phone"/></svg>Phone</li>
+      <li><svg class="icon"><use href="#i-navigate"/></svg>Navigate</li>
+      <li><svg class="icon"><use href="#i-check"/></svg>Check</li>
+      <li><svg class="icon"><use href="#i-cross"/></svg>Cross</li>
+      <li><svg class="icon"><use href="#i-warning"/></svg>Warning</li>
+      <li><svg class="icon"><use href="#i-repeat"/></svg>Repeat (fixed trip)</li>
+      <li><svg class="icon"><use href="#i-shared"/></svg>Shared</li>
+      <li><svg class="icon"><use href="#i-gap"/></svg>Gap job</li>
+      <li><svg class="icon"><use href="#i-outhours"/></svg>Out of hours</li>
+      <li><svg class="icon"><use href="#i-early"/></svg>Early trip</li>
+      <li><svg class="icon"><use href="#i-newreq"/></svg>New requester</li>
+      <li><svg class="icon"><use href="#i-late"/></svg>Late</li>
+      <li><svg class="icon"><use href="#i-wheelchair"/></svg>Wheelchair</li>
+      <li><svg class="icon"><use href="#i-equipment"/></svg>Large equipment</li>
+      <li><svg class="icon"><use href="#i-info"/></svg>Information</li>
+      <li><svg class="icon"><use href="#i-undo"/></svg>Undo</li>
+      <li><svg class="icon"><use href="#i-offline"/></svg>Offline</li>
+      <li><svg class="icon"><use href="#i-plus"/></svg>Plus</li>
+      <li><svg class="icon"><use href="#i-minus"/></svg>Minus</li>
+      <li><svg class="icon"><use href="#i-chevron"/></svg>Chevron</li>
+      <li><svg class="icon"><use href="#i-menu"/></svg>Menu (list)</li>
+      <li><svg class="icon"><use href="#i-punch"/></svg>Punch (done)</li>
+      <li><svg class="icon"><use href="#i-notconfirmed"/></svg>Not confirmed</li>
+      <li><svg class="icon"><use href="#i-submitted"/></svg>Submitted</li>
+      <li><svg class="icon"><use href="#i-hourglass"/></svg>Proposed</li>
+      <li><svg class="icon"><use href="#i-cancelled"/></svg>Cancelled</li>
+      <li><svg class="icon"><use href="#i-noshow"/></svg>No-show</li>
+    </ul>
+  </section>
+
+  <!-- === Section 7: Components === -->
+  <section class="fd-section" id="components" aria-labelledby="components-h">
+    <h2 id="components-h"><span class="num">7</span> Components</h2>
+
+    <h3>Buttons</h3>
+    <p class="small muted">Hover, focus and pressed are shown with demo classes; the real states use :hover, :focus-visible and :active.</p>
+    <div class="state-grid">
+      <div class="state"><span class="state__name">Primary · default</span><button class="btn btn--primary" type="button">Send request</button></div>
+      <div class="state"><span class="state__name">Primary · hover</span><button class="btn btn--primary is-hover" type="button">Send request</button></div>
+      <div class="state"><span class="state__name">Primary · focus</span><button class="btn btn--primary is-focus-demo" type="button">Send request</button></div>
+      <div class="state"><span class="state__name">Primary · pressed</span><button class="btn btn--primary is-pressed" type="button">Send request</button></div>
+      <div class="state"><span class="state__name">Primary · disabled</span><button class="btn btn--primary" type="button" disabled>Send request</button></div>
+      <div class="state"><span class="state__name">Primary · busy</span><button class="btn btn--primary" type="button" aria-busy="true" aria-disabled="true"><span class="btn__busy-mark" aria-hidden="true"></span>Sending…</button></div>
+      <div class="state"><span class="state__name">Secondary · default</span><button class="btn btn--secondary" type="button">Navigate</button></div>
+      <div class="state"><span class="state__name">Secondary · hover</span><button class="btn btn--secondary is-hover" type="button">Navigate</button></div>
+      <div class="state"><span class="state__name">Secondary · focus</span><button class="btn btn--secondary is-focus-demo" type="button">Navigate</button></div>
+      <div class="state"><span class="state__name">Secondary · pressed</span><button class="btn btn--secondary is-pressed" type="button">Navigate</button></div>
+      <div class="state"><span class="state__name">Secondary · disabled</span><button class="btn btn--secondary" type="button" disabled>Navigate</button></div>
+      <div class="state"><span class="state__name">Secondary · busy</span><button class="btn btn--secondary" type="button" aria-busy="true" aria-disabled="true"><span class="btn__busy-mark" aria-hidden="true"></span>Sending…</button></div>
+      <div class="state"><span class="state__name">Quiet · default</span><button class="btn btn--quiet" type="button">Undo</button></div>
+      <div class="state"><span class="state__name">Quiet · hover</span><button class="btn btn--quiet is-hover" type="button">Undo</button></div>
+      <div class="state"><span class="state__name">Quiet · focus</span><button class="btn btn--quiet is-focus-demo" type="button">Undo</button></div>
+      <div class="state"><span class="state__name">Quiet · pressed</span><button class="btn btn--quiet is-pressed" type="button">Undo</button></div>
+      <div class="state"><span class="state__name">Quiet · disabled</span><button class="btn btn--quiet" type="button" disabled>Undo</button></div>
+      <div class="state"><span class="state__name">Quiet · busy</span><button class="btn btn--quiet" type="button" aria-busy="true" aria-disabled="true"><span class="btn__busy-mark" aria-hidden="true"></span>Sending…</button></div>
+      <div class="state"><span class="state__name">Destructive · default</span><button class="btn btn--danger" type="button">Decline</button></div>
+      <div class="state"><span class="state__name">Destructive · hover</span><button class="btn btn--danger is-hover" type="button">Decline</button></div>
+      <div class="state"><span class="state__name">Destructive · focus</span><button class="btn btn--danger is-focus-demo" type="button">Decline</button></div>
+      <div class="state"><span class="state__name">Destructive · pressed</span><button class="btn btn--danger is-pressed" type="button">Decline</button></div>
+      <div class="state"><span class="state__name">Destructive · disabled</span><button class="btn btn--danger" type="button" disabled>Decline</button></div>
+      <div class="state"><span class="state__name">Destructive · busy</span><button class="btn btn--danger" type="button" aria-busy="true" aria-disabled="true"><span class="btn__busy-mark" aria-hidden="true"></span>Sending…</button></div>
+    </div>
+
+    <h3>Text field</h3>
+    <div class="state-grid fd-phone-states">
+      <div class="state"><span class="state__name">Default</span><div class="field"><label class="label" for="d-name-1">Your name</label><input class="input" id="d-name-1" type="text" autocomplete="off"></div></div>
+      <div class="state"><span class="state__name">Focus</span><div class="field"><label class="label" for="d-name-2">Your name</label><input class="input is-focus-demo" id="d-name-2" type="text" autocomplete="off"></div></div>
+      <div class="state"><span class="state__name">Filled</span><div class="field"><label class="label" for="d-name-3">Your name</label><input class="input" id="d-name-3" type="text" value="Kasun Jayasinghe" autocomplete="off"></div></div>
+      <div class="state"><span class="state__name">With hint</span><div class="field"><label class="label" for="d-phone">Your phone number</label><p class="hint" id="d-phone-hint">For example, 077 123 4567</p><input class="input" id="d-phone" type="tel" aria-describedby="d-phone-hint" autocomplete="off"></div></div>
+      <div class="state"><span class="state__name">Error</span><div class="field has-error" id="demo-name-field"><label class="label" for="demo-name">Your name</label><p class="error-msg" id="demo-name-error"><svg class="icon icon--20" aria-hidden="true"><use href="#i-warning"/></svg><span>Please enter your name</span></p><input class="input" id="demo-name" type="text" aria-invalid="true" aria-describedby="demo-name-error" autocomplete="off"></div></div>
+      <div class="state"><span class="state__name">Disabled</span><div class="field"><label class="label" for="d-name-6">Your name</label><input class="input" id="d-name-6" type="text" value="Kasun Jayasinghe" disabled></div></div>
+    </div>
+
+    <h3>Radio cards: trip purpose</h3>
+    <div class="state-grid">
+      <fieldset class="fieldset state"><legend class="state__name">Default</legend><div class="choices"><label class="choice"><input class="choice__input" type="radio" name="d-p1"><span class="choice__dot" aria-hidden="true"></span><span class="choice__text">Class trip</span></label><label class="choice"><input class="choice__input" type="radio" name="d-p1"><span class="choice__dot" aria-hidden="true"></span><span class="choice__text">Sport</span></label></div></fieldset>
+      <fieldset class="fieldset state"><legend class="state__name">Hover</legend><div class="choices"><label class="choice is-hover"><input class="choice__input" type="radio" name="d-p2"><span class="choice__dot" aria-hidden="true"></span><span class="choice__text">Staff errand</span></label></div></fieldset>
+      <fieldset class="fieldset state"><legend class="state__name">Focus</legend><div class="choices"><label class="choice is-focus-demo"><input class="choice__input" type="radio" name="d-p3"><span class="choice__dot" aria-hidden="true"></span><span class="choice__text">Meeting or event</span></label></div></fieldset>
+      <fieldset class="fieldset state"><legend class="state__name">Selected</legend><div class="choices"><label class="choice"><input class="choice__input" type="radio" name="d-p4" checked><span class="choice__dot" aria-hidden="true"></span><span class="choice__text">Sport</span></label></div></fieldset>
+      <fieldset class="fieldset state has-error" id="demo-purpose" aria-describedby="demo-purpose-error"><legend class="state__name">Error</legend><p class="error-msg" id="demo-purpose-error"><svg class="icon icon--20" aria-hidden="true"><use href="#i-warning"/></svg><span>Choose what the trip is for</span></p><div class="choices"><label class="choice"><input class="choice__input" type="radio" name="d-p5" id="demo-purpose-first" aria-invalid="true"><span class="choice__dot" aria-hidden="true"></span><span class="choice__text">Class trip</span></label><label class="choice"><input class="choice__input" type="radio" name="d-p5" aria-invalid="true"><span class="choice__dot" aria-hidden="true"></span><span class="choice__text">Other</span></label></div></fieldset>
+    </div>
+
+    <h3>Date choice and time choice</h3>
+    <div class="state-grid">
+      <fieldset class="fieldset state"><legend class="state__name">Date · default</legend><div class="choices"><label class="choice choice--date"><input class="choice__input" type="radio" name="d-d1"><span class="choice__dot" aria-hidden="true"></span><span class="choice__text">Wednesday<span class="choice__sub">14/10/2026</span></span></label></div></fieldset>
+      <fieldset class="fieldset state"><legend class="state__name">Date · selected</legend><div class="choices"><label class="choice choice--date"><input class="choice__input" type="radio" name="d-d2" checked><span class="choice__dot" aria-hidden="true"></span><span class="choice__text">Tomorrow<span class="choice__sub">Tuesday 13/10/2026</span></span></label></div></fieldset>
+      <fieldset class="fieldset state"><legend class="state__name">Date · closed</legend><div class="choices"><label class="choice choice--date"><input class="choice__input" type="radio" name="d-d3" disabled><span class="choice__dot" aria-hidden="true"></span><span class="choice__text">Today<span class="choice__sub">Monday 12/10/2026</span><span class="choice__closed"><svg class="icon icon--16" aria-hidden="true"><use href="#i-cross"/></svg>Closed</span></span></label></div></fieldset>
+      <fieldset class="fieldset state has-error"><legend class="state__name">Date · error</legend><p class="error-msg" id="d-d4-err"><svg class="icon icon--20" aria-hidden="true"><use href="#i-warning"/></svg><span>Choose the date of the trip</span></p><div class="choices"><label class="choice choice--date"><input class="choice__input" type="radio" name="d-d4" aria-invalid="true" aria-describedby="d-d4-err"><span class="choice__dot" aria-hidden="true"></span><span class="choice__text">Thursday<span class="choice__sub">15/10/2026</span></span></label></div></fieldset>
+      <div class="state"><span class="state__name">Time · default</span><label class="label" for="d-t1">Pickup time</label><div class="select-wrap"><select class="select" id="d-t1"><option>Choose a time</option><option>8:40 am</option><option>8:45 am</option></select><svg class="icon" aria-hidden="true"><use href="#i-chevron"/></svg></div></div>
+      <div class="state"><span class="state__name">Time · selected</span><label class="label" for="d-t2">Pickup time</label><div class="select-wrap"><select class="select" id="d-t2"><option>8:40 am</option><option selected>8:45 am</option></select><svg class="icon" aria-hidden="true"><use href="#i-chevron"/></svg></div></div>
+      <div class="state has-error"><span class="state__name">Time · error</span><label class="label" for="d-t3">Pickup time</label><p class="error-msg" id="d-t3-err"><svg class="icon icon--20" aria-hidden="true"><use href="#i-warning"/></svg><span>Enter a pickup time</span></p><div class="select-wrap"><select class="select" id="d-t3" aria-invalid="true" aria-describedby="d-t3-err"><option>Choose a time</option><option>8:45 am</option></select><svg class="icon" aria-hidden="true"><use href="#i-chevron"/></svg></div></div>
+    </div>
+
+    <h3>Passenger stepper</h3>
+    <div class="state-grid">
+      <div class="state"><span class="state__name">Default (empty)</span><label class="label" for="d-s1">Passengers</label><div class="stepper"><button class="stepper__btn" type="button" disabled><svg class="icon" aria-hidden="true"><use href="#i-minus"/></svg><span class="vh">One fewer passenger</span></button><input class="input stepper__input" id="d-s1" type="text" inputmode="numeric" autocomplete="off"><button class="stepper__btn" type="button"><svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg><span class="vh">One more passenger</span></button></div></div>
+      <div class="state"><span class="state__name">At minimum (1)</span><label class="label" for="d-s2">Passengers</label><div class="stepper"><button class="stepper__btn" type="button" disabled><svg class="icon" aria-hidden="true"><use href="#i-minus"/></svg><span class="vh">One fewer passenger</span></button><input class="input stepper__input" id="d-s2" type="text" value="1" inputmode="numeric" autocomplete="off"><button class="stepper__btn" type="button"><svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg><span class="vh">One more passenger</span></button></div></div>
+      <div class="state"><span class="state__name">Above 12</span><label class="label" for="d-s3">Passengers</label><div class="stepper"><button class="stepper__btn" type="button"><svg class="icon" aria-hidden="true"><use href="#i-minus"/></svg><span class="vh">One fewer passenger</span></button><input class="input stepper__input" id="d-s3" type="text" value="20" inputmode="numeric" autocomplete="off"><button class="stepper__btn" type="button"><svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg><span class="vh">One more passenger</span></button></div><div class="alert alert--info alert--compact" style="margin-top:12px"><svg class="icon icon--20" aria-hidden="true"><use href="#i-van"/></svg><p class="alert__body">This group needs more than one van – we'll arrange this.</p></div></div>
+      <div class="state has-error"><span class="state__name">Error</span><label class="label" for="d-s4">Passengers</label><p class="error-msg" id="d-s4-err"><svg class="icon icon--20" aria-hidden="true"><use href="#i-warning"/></svg><span>Please enter a number between 1 and 99</span></p><div class="stepper"><button class="stepper__btn" type="button" disabled><svg class="icon" aria-hidden="true"><use href="#i-minus"/></svg><span class="vh">One fewer passenger</span></button><input class="input stepper__input" id="d-s4" type="text" value="0" aria-invalid="true" aria-describedby="d-s4-err" inputmode="numeric" autocomplete="off"><button class="stepper__btn" type="button"><svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg><span class="vh">One more passenger</span></button></div></div>
+    </div>
+
+    <h3>Checkboxes</h3>
+    <div class="state-grid">
+      <div class="state"><span class="state__name">Unchecked</span><label class="check"><input class="check__input" type="checkbox"><span class="check__box" aria-hidden="true"><svg class="icon icon--20"><use href="#i-check"/></svg></span><span class="check__text">Large equipment</span></label></div>
+      <div class="state"><span class="state__name">Checked</span><label class="check"><input class="check__input" type="checkbox" checked><span class="check__box" aria-hidden="true"><svg class="icon icon--20"><use href="#i-check"/></svg></span><span class="check__text">Wheelchair access needed</span></label></div>
+      <div class="state"><span class="state__name">Focus</span><label class="check is-focus-demo"><input class="check__input" type="checkbox"><span class="check__box" aria-hidden="true"><svg class="icon icon--20"><use href="#i-check"/></svg></span><span class="check__text">Send my updates on WhatsApp instead of SMS</span></label></div>
+      <div class="state"><span class="state__name">Disabled</span><label class="check"><input class="check__input" type="checkbox" disabled><span class="check__box" aria-hidden="true"><svg class="icon icon--20"><use href="#i-check"/></svg></span><span class="check__text">Van must stay with us</span></label></div>
+    </div>
+
+    <h3>Status stamps and flags</h3>
+    <p class="fd-measure small">A stamp: the word in capitals, its colour, a 2 px rectangle and an icon, never rotated. Cancelled has a dashed rectangle; Needs attention, Completed and No-show are tinted. Flags are smaller outline stamps in ink. The second row of each is the same markup in greyscale: every one still reads by its word and icon.</p>
+    <div class="fd-panel">
+      <ul class="stamp-list" aria-label="Statuses">
+        <li><span class="stamp stamp--submitted"><svg class="icon" aria-hidden="true"><use href="#i-submitted"/></svg>Submitted</span> <span class="small">PT-2026-0155</span></li>
+        <li><span class="stamp stamp--proposed"><svg class="icon" aria-hidden="true"><use href="#i-hourglass"/></svg>Proposed</span></li>
+        <li><span class="stamp stamp--attention"><svg class="icon" aria-hidden="true"><use href="#i-warning"/></svg>Needs attention</span></li>
+        <li><span class="stamp stamp--confirmed"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Confirmed</span></li>
+        <li><span class="stamp stamp--declined"><svg class="icon" aria-hidden="true"><use href="#i-cross"/></svg>Declined</span></li>
+        <li><span class="stamp stamp--cancelled"><svg class="icon" aria-hidden="true"><use href="#i-cancelled"/></svg>Cancelled</span></li>
+        <li><span class="stamp stamp--completed"><svg class="icon" aria-hidden="true"><use href="#i-punch"/></svg>Completed</span> <span class="small">PT-2026-0121</span></li>
+        <li><span class="stamp stamp--noshow"><svg class="icon" aria-hidden="true"><use href="#i-noshow"/></svg>No-show</span> <span class="small">PT-2026-0124</span></li>
+      </ul>
+      <ul class="stamp-list greyscale" aria-hidden="true" style="margin-top:12px">
+        <li><span class="stamp stamp--submitted"><svg class="icon"><use href="#i-submitted"/></svg>Submitted</span></li>
+        <li><span class="stamp stamp--proposed"><svg class="icon"><use href="#i-hourglass"/></svg>Proposed</span></li>
+        <li><span class="stamp stamp--attention"><svg class="icon"><use href="#i-warning"/></svg>Needs attention</span></li>
+        <li><span class="stamp stamp--confirmed"><svg class="icon"><use href="#i-check"/></svg>Confirmed</span></li>
+        <li><span class="stamp stamp--declined"><svg class="icon"><use href="#i-cross"/></svg>Declined</span></li>
+        <li><span class="stamp stamp--cancelled"><svg class="icon"><use href="#i-cancelled"/></svg>Cancelled</span></li>
+        <li><span class="stamp stamp--completed"><svg class="icon"><use href="#i-punch"/></svg>Completed</span></li>
+        <li><span class="stamp stamp--noshow"><svg class="icon"><use href="#i-noshow"/></svg>No-show</span></li>
+      </ul>
+      <ul class="stamp-list" aria-label="Flags" style="margin-top:24px">
+        <li><span class="flag"><svg class="icon" aria-hidden="true"><use href="#i-late"/></svg>Late (exception)</span></li>
+        <li><span class="flag"><svg class="icon" aria-hidden="true"><use href="#i-shared"/></svg>Shared</span></li>
+        <li><span class="flag"><svg class="icon" aria-hidden="true"><use href="#i-gap"/></svg>Gap job</span></li>
+        <li><span class="flag"><svg class="icon" aria-hidden="true"><use href="#i-outhours"/></svg>Out of hours</span></li>
+        <li><span class="flag"><svg class="icon" aria-hidden="true"><use href="#i-newreq"/></svg>New requester</span></li>
+        <li><span class="flag"><svg class="icon" aria-hidden="true"><use href="#i-repeat"/></svg>Fixed trip</span></li>
+        <li><span class="flag"><svg class="icon" aria-hidden="true"><use href="#i-early"/></svg>Early trip</span></li>
+        <li><span class="flag"><svg class="icon" aria-hidden="true"><use href="#i-notconfirmed"/></svg>Completion not confirmed</span> <span class="small">PT-2026-0126</span></li>
+      </ul>
+      <ul class="stamp-list greyscale" aria-hidden="true" style="margin-top:12px">
+        <li><span class="flag"><svg class="icon"><use href="#i-late"/></svg>Late (exception)</span></li>
+        <li><span class="flag"><svg class="icon"><use href="#i-shared"/></svg>Shared</span></li>
+        <li><span class="flag"><svg class="icon"><use href="#i-gap"/></svg>Gap job</span></li>
+        <li><span class="flag"><svg class="icon"><use href="#i-outhours"/></svg>Out of hours</span></li>
+        <li><span class="flag"><svg class="icon"><use href="#i-newreq"/></svg>New requester</span></li>
+        <li><span class="flag"><svg class="icon"><use href="#i-repeat"/></svg>Fixed trip</span></li>
+        <li><span class="flag"><svg class="icon"><use href="#i-early"/></svg>Early trip</span></li>
+        <li><span class="flag"><svg class="icon"><use href="#i-notconfirmed"/></svg>Completion not confirmed</span></li>
+      </ul>
+    </div>
+
+    <h3>Alerts</h3>
+    <div class="fd-grid fd-grid--2">
+      <div class="alert alert--info"><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg><div class="alert__body"><p class="alert__title">Information (cutoff)</p><p>Requests for tomorrow close at 5:00 pm today.</p></div></div>
+      <div class="alert alert--success"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><div class="alert__body"><p class="alert__title">Request received</p><p>Your reference is PT-2026-0142.</p></div></div>
+      <div class="alert alert--warning"><svg class="icon" aria-hidden="true"><use href="#i-outhours"/></svg><div class="alert__body"><p class="alert__title">Out of hours</p><p>Trips after 6:00 pm are outside our normal hours. A coordinator will check your request.</p></div></div>
+      <div class="alert alert--error" aria-labelledby="demo-summary-title"><svg class="icon" aria-hidden="true"><use href="#i-warning"/></svg><div class="alert__body"><p class="alert__title" id="demo-summary-title">There is a problem</p><ul class="error-summary__list"><li><a href="#demo-name">Please enter your name</a></li><li><a href="#demo-purpose-first">Choose what the trip is for</a></li></ul></div></div>
+    </div>
+
+    <h3>Data table</h3>
+    <div class="table-wrap">
+      <table class="table table--trips">
+        <caption>Today's trips, Tuesday 13/10/2026<span class="table__caption-note">10 bookings in time order</span></caption>
+        <thead>
+          <tr>
+            <th scope="col" aria-sort="ascending"><button class="sort-btn" type="button">Time<svg class="icon icon--16" aria-hidden="true"><use href="#i-chevron"/></svg><span class="vh">, sorted earliest first</span></button></th>
+            <th scope="col">Reference</th><th scope="col">Van</th><th scope="col">From and to</th><th scope="col" class="is-num">Passengers</th><th scope="col">Status</th><th scope="col">Flags</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>7:30 am</td><th scope="row">PT-2026-0131</th><td>Van 1</td><td>Branch A (main branch) to Branch C</td><td class="is-num">2</td><td><span class="stamp stamp--confirmed"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Confirmed</span></td><td><span class="flag"><svg class="icon" aria-hidden="true"><use href="#i-early"/></svg>Early trip</span></td></tr>
+          <tr><td>8:25 am</td><th scope="row">PT-2026-0140</th><td>Van 2</td><td>Branch A (main branch) to Branch C</td><td class="is-num">3</td><td><span class="stamp stamp--proposed"><svg class="icon" aria-hidden="true"><use href="#i-hourglass"/></svg>Proposed</span></td><td><span class="flag"><svg class="icon" aria-hidden="true"><use href="#i-shared"/></svg>Shared</span></td></tr>
+          <tr><td>8:40 am</td><th scope="row">PT-2026-0142</th><td>Van 2</td><td>Branch B to Sports Centre</td><td class="is-num">4</td><td><span class="stamp stamp--proposed"><svg class="icon" aria-hidden="true"><use href="#i-hourglass"/></svg>Proposed</span></td><td><span class="flag"><svg class="icon" aria-hidden="true"><use href="#i-shared"/></svg>Shared</span></td></tr>
+          <tr><td>9:05 am</td><th scope="row">PT-2026-0119</th><td>Van 1</td><td>Branch A (main branch) to Aquatic Centre</td><td class="is-num">11</td><td><span class="stamp stamp--proposed"><svg class="icon" aria-hidden="true"><use href="#i-hourglass"/></svg>Proposed</span></td><td><span class="flag"><svg class="icon" aria-hidden="true"><use href="#i-repeat"/></svg>Fixed trip</span></td></tr>
+          <tr><td>10:00 am</td><th scope="row">PT-2026-0145</th><td>Van 1</td><td>Branch B to Stationery supplier to Branch B</td><td class="is-num">1</td><td><span class="stamp stamp--proposed"><svg class="icon" aria-hidden="true"><use href="#i-hourglass"/></svg>Proposed</span></td><td><span class="flag"><svg class="icon" aria-hidden="true"><use href="#i-gap"/></svg>Gap job</span></td></tr>
+          <tr><td>11:20 am</td><th scope="row">PT-2026-0147</th><td>Van 2 (route found)</td><td>Branch C to pin "Opposite the temple, 2nd lane"</td><td class="is-num">3</td><td><span class="stamp stamp--attention"><svg class="icon" aria-hidden="true"><use href="#i-warning"/></svg>Needs attention</span></td><td><span class="flag"><svg class="icon" aria-hidden="true"><use href="#i-newreq"/></svg>New requester</span></td></tr>
+          <tr><td>1:00 pm</td><th scope="row">PT-2026-0149</th><td>Not placed</td><td>Branch A (main branch) to Sports Centre</td><td class="is-num">20</td><td><span class="stamp stamp--attention"><svg class="icon" aria-hidden="true"><use href="#i-warning"/></svg>Needs attention</span></td><td>Group larger than any van</td></tr>
+          <tr><td>1:30 pm</td><th scope="row">PT-2026-0150</th><td>Van 1</td><td>Branch A (main branch) to Branch B</td><td class="is-num">6</td><td><span class="stamp stamp--proposed"><svg class="icon" aria-hidden="true"><use href="#i-hourglass"/></svg>Proposed</span></td><td></td></tr>
+          <tr><td>2:15 pm</td><th scope="row">PT-2026-0153</th><td>Van 2</td><td>Branch C to Branch A (main branch)</td><td class="is-num">2</td><td><span class="stamp stamp--proposed"><svg class="icon" aria-hidden="true"><use href="#i-hourglass"/></svg>Proposed</span></td><td><span class="flag"><svg class="icon" aria-hidden="true"><use href="#i-late"/></svg>Late (exception)</span></td></tr>
+          <tr><td>5:45 pm</td><th scope="row">PT-2026-0151</th><td>Van 2</td><td>Branch B to Branch A (main branch)</td><td class="is-num">7</td><td><span class="stamp stamp--proposed"><svg class="icon" aria-hidden="true"><use href="#i-hourglass"/></svg>Proposed</span></td><td><span class="flag"><svg class="icon" aria-hidden="true"><use href="#i-outhours"/></svg>Out of hours</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Navigation</h3>
+    <h4>Coordinator navigation</h4>
+    <div class="fd-panel" style="padding:0">
+      <nav class="app-nav" aria-label="Coordinator (sample)" style="padding:0 16px">
+        <ul class="app-nav__list">
+          <li><a class="app-nav__link" href="dashboard.html" aria-current="page">Dashboard</a></li>
+          <li><a class="app-nav__link" href="#">Calendar</a></li>
+          <li><a class="app-nav__link" href="#">Requests</a></li>
+          <li><a class="app-nav__link" href="#">Fixed trips</a></li>
+          <li><a class="app-nav__link" href="#">Vans and drivers</a></li>
+          <li><a class="app-nav__link" href="#">Places</a></li>
+          <li><a class="app-nav__link" href="#">Reports</a></li>
+          <li><a class="app-nav__link" href="#">Settings</a></li>
+        </ul>
+      </nav>
+    </div>
+    <p class="small">The current page is marked three ways: purple, semibold and a 4 px bar under it (and <code>aria-current="page"</code>).</p>
+    <h4>Phone header with the language switch</h4>
+    <div class="fd-phone" style="border:1px solid var(--c-ticket-edge)">
+      <div class="site-header">
+        <div class="site-header__inner">
+          <span class="brand"><img class="brand__crest" src="../assets/crest.png" alt="Polymath College crest" width="29" height="32"><span class="brand__name">PolymathTransit</span></span>
+          <div class="lang-switch lang-switch--demo" role="group" aria-label="Language (sample)">
+            <button class="lang-switch__btn" type="button" lang="en" aria-pressed="true"><svg class="icon icon--16" aria-hidden="true"><use href="#i-check"/></svg>English</button>
+            <button class="lang-switch__btn" type="button" lang="si" aria-pressed="false"><svg class="icon icon--16" aria-hidden="true"><use href="#i-check"/></svg>සිංහල</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="small">The current language has a tick, a tint, a purple edge and a bar, and <code>aria-pressed="true"</code>. Each option is written in its own language.</p>
+  </section>
+
+  <!-- === Section 8: Signature element – the ticket === -->
+  <section class="fd-section" id="signature" aria-labelledby="signature-h">
+    <h2 id="signature-h"><span class="num">8</span> The signature element: the ticket</h2>
+    <p class="fd-measure">The ticket does one job: it makes a trip the same object for everyone who handles it. Staff check their request on it before sending; the confirmation issues it with its reference; the coordinator sees each booking as a small ticket on its van's line and opens it as a full ticket with the explanation on the stub; the driver punches a stub at each stop. Because the date, pick up, going to, passengers and trip-for slots are always in the same order, a coordinator reading a ticket aloud on the phone and a requester holding theirs are looking at the same place for the same fact. The purple strip means one thing only: this ticket is issued (confirmed).</p>
+    <div class="fd-grid fd-grid--3">
+      <div>
+        <h3>Being filled (not issued)</h3>
+        <article class="ticket" aria-labelledby="sig-1">
+          <div class="ticket__strip"><h4 class="ticket__title" id="sig-1">Check your request</h4></div>
+          <dl class="slots slots--flex">
+            <div class="slot"><dt class="slot__label">Date</dt><dd class="slot__value">Tuesday 13/10/2026</dd></div>
+            <div class="slot"><dt class="slot__label">Pick up</dt><dd class="slot__value"><span class="slot__line">8:45 am</span><span class="slot__sub">(± 10 min)</span><span class="slot__sub">Branch B</span></dd></div>
+            <div class="slot is-empty"><dt class="slot__label">Going to</dt><dd class="slot__value">–</dd></div>
+            <div class="slot is-empty"><dt class="slot__label">Passengers</dt><dd class="slot__value">–</dd></div>
+            <div class="slot slot--wide"><dt class="slot__label">Trip for</dt><dd class="slot__value">Sport</dd></div>
+          </dl>
+          <div class="perf" aria-hidden="true"><span class="perf__notch perf__notch--start"></span><span class="perf__notch perf__notch--end"></span></div>
+          <dl class="slots"><div class="slot slot--wide is-empty"><dt class="slot__label">Return</dt><dd class="slot__value">–</dd></div></dl>
+        </article>
+      </div>
+      <div>
+        <h3>Issued</h3>
+        <article class="ticket is-issued" id="demo-issue" aria-labelledby="sig-2">
+          <div class="ticket__strip"><p class="ticket__ref-line"><span class="ticket__strip-label">Your reference is</span><span class="ref" id="sig-2"><span class="ref__prefix">PT-2026-</span>0142</span></p></div>
+          <div class="ticket__stamp-row"><span class="stamp stamp--large stamp--confirmed"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Request received</span></div>
+          <dl class="slots slots--flex">
+            <div class="slot"><dt class="slot__label">Date</dt><dd class="slot__value">Tuesday 13/10/2026</dd></div>
+            <div class="slot"><dt class="slot__label">Pick up</dt><dd class="slot__value"><span class="slot__line">8:45 am</span><span class="slot__sub">(± 10 min)</span><span class="slot__sub">Branch B</span></dd></div>
+            <div class="slot"><dt class="slot__label">Going to</dt><dd class="slot__value">Sports Centre</dd></div>
+            <div class="slot"><dt class="slot__label">Passengers</dt><dd class="slot__value">4</dd></div>
+            <div class="slot slot--wide"><dt class="slot__label">Trip for</dt><dd class="slot__value">Sport</dd></div>
+          </dl>
+          <div class="perf" aria-hidden="true"><span class="perf__notch perf__notch--start"></span><span class="perf__notch perf__notch--end"></span></div>
+          <dl class="slots"><div class="slot slot--wide"><dt class="slot__label">Return</dt><dd class="slot__value"><span class="slot__line">10:45 am</span><span class="slot__sub">Sports Centre</span></dd></div></dl>
+        </article>
+      </div>
+      <div>
+        <h3>A driver's stub, punched</h3>
+        <ol class="stub-list">
+          <li class="stub is-done" id="demo-stub" data-time="10:00">
+            <div class="stub__body">
+              <div class="stub__time" aria-hidden="true"><span class="stub__clock">10:00</span><span class="stub__meridiem">am</span></div>
+              <div class="stub__main">
+                <div class="stub__head"><span class="label-caps">Stop 5</span><span class="flag"><svg class="icon" aria-hidden="true"><use href="#i-gap"/></svg>Gap job</span></div>
+                <h4 class="stub__place"><span class="vh">Stop 5, 10:00 am: </span>Branch B</h4>
+                <p class="stub__action"><span class="stub__action-item"><svg class="icon" aria-hidden="true"><use href="#i-pickup"/></svg>Pick up</span><span class="stub__action-item stub__pax"><svg class="icon" aria-hidden="true"><use href="#i-passengers"/></svg><span class="label-caps">Passengers</span><span class="stub__pax-n">1</span></span></p>
+                <div class="stub__fold"><div class="stub__fold-inner"><div class="stub__facts"><p><span class="ref-small">PT-2026-0145</span></p></div><div class="stub__actions"><button class="btn btn--primary btn--block btn--large" type="button" tabindex="-1">Done</button></div></div></div>
+                <p class="stub__result"><svg class="icon icon--20" aria-hidden="true"><use href="#i-punch"/></svg><span>Done at 9:41 am</span></p>
+              </div>
+            </div>
+            <span class="punch" aria-hidden="true"></span>
+          </li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- === Section 9: Motion === -->
+  <section class="fd-section" id="motion" aria-labelledby="motion-h">
+    <h2 id="motion-h"><span class="num">9</span> Motion</h2>
+    <p class="fd-measure">Motion only explains a change. Nothing loops, nothing moves on scroll. With "reduce motion" set on the device, every change is instant.</p>
+    <div class="table-wrap">
+      <table class="table motion-table">
+        <caption>What moves</caption>
+        <thead><tr><th scope="col">What</th><th scope="col">How</th><th scope="col">Time</th><th scope="col">Reduced motion</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">A ticket is issued</th><td>The purple strip fills from the left (scaleX), then the reference reads in white</td><td>180 ms, ease-out</td><td>The strip is simply purple</td></tr>
+          <tr><th scope="row">A stop is done</th><td>The hole is punched (scales in), then the stub folds closed</td><td>120 ms, then 180 ms</td><td>Hole and fold appear at once</td></tr>
+          <tr><th scope="row">Hover and press</th><td>Background colour changes</td><td>120 ms</td><td>Instant</td></tr>
+          <tr><th scope="row">A disclosure opens</th><td>The chevron turns a quarter</td><td>120 ms</td><td>Instant</td></tr>
+          <tr><th scope="row">Busy button</th><td>A small ring turns twice, then stops</td><td>700 ms × 2</td><td>No ring movement; the word "Sending…" stays</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="btn-row" style="margin-top:16px">
+      <button class="btn btn--secondary btn--small" type="button" data-demo="is-issued" aria-controls="demo-issue" aria-pressed="true">Issue the ticket (toggle)</button>
+      <button class="btn btn--secondary btn--small" type="button" data-demo="is-done" aria-controls="demo-stub" aria-pressed="true">Punch the stub (toggle)</button>
+    </div>
+  </section>
+</main>
+
+<footer class="app-footer">
+  <p class="small muted"><a href="../index.html">All five directions</a> · <a href="README.md">Rationale</a></p>
+</footer>
+</body>
+</html>

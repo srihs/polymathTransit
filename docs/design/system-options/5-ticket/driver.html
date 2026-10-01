@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<!--
+  PolymathTransit – Design direction 5 "Ticket" – driver.html
+  ===========================================================================
+  Purpose:      The driver's route link at phone width (360 px first). Van 1,
+                Tuesday 13/10/2026, driver Sunil Rathnayake; now is 9:40 am.
+                Each stop is a stub: the time has its own torn-off column.
+                Done punches a hole in the stub, writes the time and folds the
+                stub away; the punched holes at the top show progress.
+  Direction:    5 Ticket.
+  Requirements: FR-61, FR-65, FR-67, NFR-03, NFR-04, NFR-12, NFR-18, US-52,
+                US-60, D-09, Q-17 (Navigate shows a note only).
+  Depends on:   tokens.css, components.css, pages.css, script.js,
+                ../assets/crest.png, Google Fonts (IBM Plex Sans Condensed,
+                Stick No Bills, Yaldevi).
+  Sections:     1 Icon sprite · 2 Header and language switch · 3 Offline
+                banner · 4 Route ticket and progress · 5 Stops done (closed) ·
+                6 Next stop and the stops to come · 7 End of day ·
+                8 Prototype controls.
+  Without JS:   the whole route is readable; Call links work; Done, No-show
+                and Navigate need the script.
+-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Today's route – Van 1 – PolymathTransit</title>
+  <link rel="icon" href="../assets/crest.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@400;600&amp;family=Stick+No+Bills:wght@600&amp;family=Yaldevi:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="components.css">
+  <link rel="stylesheet" href="pages.css">
+  <script src="script.js" defer></script>
+</head>
+<body class="page-phone" data-page="driver">
+
+<!-- === 1. Icon sprite === -->
+<svg xmlns="http://www.w3.org/2000/svg" class="vh" aria-hidden="true" focusable="false">
+  <!-- Ticket direction icon set: own drawings, 24 px grid, 1.75 px outline, round ends, simple closed shapes like rubber-stamp marks. -->
+  <symbol id="i-van" viewBox="0 0 24 24"><path d="M2.75 16.25V7.25h11.5l4.25 4.25h2.75v4.75h-1.5"/><path d="M14.25 7.25v4.25h4.25"/><path d="M7.5 16.25h8"/><circle cx="5.5" cy="16.5" r="1.9"/><circle cx="17.5" cy="16.5" r="1.9"/></symbol>
+  <symbol id="i-passengers" viewBox="0 0 24 24"><circle cx="9" cy="7.75" r="3.25"/><path d="M3 19.75a6 6 0 0 1 12 0z"/><circle cx="16.75" cy="8.75" r="2.5"/><path d="M15.6 13.4A4.75 4.75 0 0 1 21 18.1v1.65h-3.6"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.25"/><path d="M12 7.5V12l3 2"/></symbol>
+  <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3.75" y="5.25" width="16.5" height="15" rx="1.5"/><path d="M3.75 9.75h16.5M8 3.5v3.5M16 3.5v3.5"/></symbol>
+  <symbol id="i-pickup" viewBox="0 0 24 24"><path d="M5 4.5h14"/><path d="M12 20V8.75"/><path d="M7.5 13.25 12 8.75l4.5 4.5"/></symbol>
+  <symbol id="i-dropoff" viewBox="0 0 24 24"><path d="M5 19.5h14"/><path d="M12 4v11.25"/><path d="M7.5 10.75 12 15.25l4.5-4.5"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-6.5-6.1-6.5-11a6.5 6.5 0 0 1 13 0c0 4.9-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.25"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><path d="M6.6 3.75h2.9l1.6 4.1-2.05 1.4a10.5 10.5 0 0 0 5.7 5.7l1.4-2.05 4.1 1.6v2.9a1.75 1.75 0 0 1-1.9 1.75A15.5 15.5 0 0 1 4.85 5.65 1.75 1.75 0 0 1 6.6 3.75z"/></symbol>
+  <symbol id="i-navigate" viewBox="0 0 24 24"><path d="M20.25 3.75 3.75 10.6l7.1 2.55 2.55 7.1z"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5 9.5 17 19 7.5"/></symbol>
+  <symbol id="i-cross" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></symbol>
+  <symbol id="i-warning" viewBox="0 0 24 24"><path d="M12 3.75 21.25 19.5H2.75z"/><path d="M12 9.5v4.5M12 16.75v.25"/></symbol>
+  <symbol id="i-repeat" viewBox="0 0 24 24"><path d="M19.6 10A7.75 7.75 0 0 0 5.4 7.6"/><path d="M5 3.75V8h4.25"/><path d="M4.4 14a7.75 7.75 0 0 0 14.2 2.4"/><path d="M19 20.25V16h-4.25"/></symbol>
+  <symbol id="i-shared" viewBox="0 0 24 24"><path d="M3.75 5.75 9.5 12M3.75 18.25 9.5 12h10.75"/><path d="M16.75 8.5 20.25 12l-3.5 3.5"/></symbol>
+  <symbol id="i-gap" viewBox="0 0 24 24"><path d="M4 5.5v13M20 5.5v13"/><rect x="8" y="8.75" width="8" height="6.5" rx="1"/></symbol>
+  <symbol id="i-outhours" viewBox="0 0 24 24"><circle cx="10" cy="12" r="6.75"/><path d="M10 8.5V12h2.75"/><path d="M20.25 3.75v16.5"/></symbol>
+  <symbol id="i-early" viewBox="0 0 24 24"><circle cx="14" cy="12" r="6.75"/><path d="M14 8.5V12h-2.75"/><path d="M3.75 3.75v16.5"/></symbol>
+  <symbol id="i-newreq" viewBox="0 0 24 24"><circle cx="9.5" cy="8" r="3.25"/><path d="M3.5 19.75a6 6 0 0 1 12 0z"/><path d="M18.5 8.5v6M15.5 11.5h6"/></symbol>
+  <symbol id="i-late" viewBox="0 0 24 24"><circle cx="10" cy="12" r="6.75"/><path d="M10 8.5V12l2.25 1.5"/><path d="M20.25 6.5v7M20.25 17v.25"/></symbol>
+  <symbol id="i-wheelchair" viewBox="0 0 24 24"><circle cx="10.5" cy="4.5" r="1.75"/><path d="M10.5 8v6h5l2.75 5.25 1.75-.75"/><path d="M10.5 10.75h4.25"/><path d="M8 10.9a5 5 0 1 0 6.75 7.1"/></symbol>
+  <symbol id="i-equipment" viewBox="0 0 24 24"><rect x="3.75" y="8.25" width="16.5" height="11.5" rx="1"/><path d="M9 8.25V5.25h6v3M3.75 13.25h16.5M10.5 13.25v2h3v-2"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.25"/><path d="M12 11v5.5M12 7.75v.25"/></symbol>
+  <symbol id="i-undo" viewBox="0 0 24 24"><path d="M8.5 5.5 4.5 9.5l4 4"/><path d="M4.5 9.5H14a5.25 5.25 0 0 1 0 10.5h-3"/></symbol>
+  <symbol id="i-offline" viewBox="0 0 24 24"><path d="M3.5 3.5l17 17"/><path d="M4.5 9.2a11.5 11.5 0 0 1 4.3-2.3M12.9 6.1a11.5 11.5 0 0 1 6.6 3.1"/><path d="M7.6 12.6a6.75 6.75 0 0 1 3-1.6M15.2 12.1l1.2 1"/><path d="M12 18.25v.25"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+  <symbol id="i-chevron" viewBox="0 0 24 24"><path d="M9.5 6 15.5 12l-6 6"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+  <symbol id="i-punch" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.25" stroke-dasharray="2.2 2.6"/><circle cx="12" cy="12" r="4.25" fill="currentColor"/></symbol>
+  <symbol id="i-notconfirmed" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.25" stroke-dasharray="2.2 2.6"/><path d="M10.25 10a1.9 1.9 0 1 1 2.6 1.75c-.55.25-.85.7-.85 1.3v.45M12 16.25v.25"/></symbol>
+  <symbol id="i-submitted" viewBox="0 0 24 24"><path d="M3.75 13.5h4.5l1.5 2.5h4.5l1.5-2.5h4.5v6.75H3.75z"/><path d="M12 3.75v8M8.75 8.75 12 12l3.25-3.25"/></symbol>
+  <symbol id="i-hourglass" viewBox="0 0 24 24"><path d="M6.75 3.75h10.5M6.75 20.25h10.5"/><path d="M8 3.75c0 4.75 8 4.5 8 8.25s-8 3.5-8 8.25M16 3.75c0 4.75-8 4.5-8 8.25s8 3.5 8 8.25"/></symbol>
+  <symbol id="i-cancelled" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.25"/><path d="M6.2 6.2l11.6 11.6"/></symbol>
+  <symbol id="i-noshow" viewBox="0 0 24 24"><circle cx="9" cy="7.75" r="3.25"/><path d="M3 19.75a6 6 0 0 1 12 0z"/><path d="M16.5 9.5l4.5 4.5M21 9.5l-4.5 4.5"/></symbol>
+</svg>
+
+<a class="skip-link" href="#main">Skip to main content</a>
+
+<!-- === 2. Header and language switch === -->
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="brand" href="driver.html">
+      <img class="brand__crest" src="../assets/crest.png" alt="Polymath College crest" width="29" height="32">
+      <span class="brand__name">PolymathTransit</span>
+    </a>
+    <!-- Without JS these are links; in production the server renders the chosen language (FR-65). -->
+    <div class="lang-switch" role="group" aria-labelledby="lang-label">
+      <span class="vh" id="lang-label" data-i18n="lang.label">Language</span>
+      <a class="lang-switch__btn" href="driver.html?lang=en" hreflang="en" lang="en" data-lang="en" aria-current="true"><svg class="icon icon--16" aria-hidden="true"><use href="#i-check"/></svg>English</a>
+      <a class="lang-switch__btn" href="driver.html?lang=si" hreflang="si" lang="si" data-lang="si"><svg class="icon icon--16" aria-hidden="true"><use href="#i-check"/></svg>සිංහල</a>
+    </div>
+  </div>
+</header>
+<p class="draft-note" lang="en">This Sinhala text is a draft for review by native speakers (D-09).</p>
+<p class="draft-note lang-saved" role="status" data-lang-status></p>
+
+<main id="main" class="phone-main" tabindex="-1">
+
+  <!-- === 3. Offline banner (NFR-18): the route stays visible === -->
+  <div class="offline-slot" role="status">
+    <div class="alert alert--warning" id="offline" hidden>
+      <svg class="icon" aria-hidden="true"><use href="#i-offline"/></svg>
+      <p class="alert__body" data-i18n="driver.offline">You are offline. This is the route as last loaded at 9:38 am.</p>
+    </div>
+  </div>
+
+  <!-- === 4. Route ticket and progress (FR-61) === -->
+  <h1 class="title" data-i18n="driver.title">Today's route</h1>
+  <article class="ticket ticket--route is-issued" aria-labelledby="route-van">
+    <div class="ticket__strip">
+      <p class="route__van" id="route-van"><span class="ticket__strip-label" data-i18n="driver.van">Van</span><span class="ref data" lang="en">Van 1</span></p>
+    </div>
+    <dl class="slots">
+      <div class="slot"><dt class="slot__label" data-i18n="label.date">Date</dt><dd class="slot__value"><span data-i18n="day.tuesday">Tuesday</span> 13/10/2026</dd></div>
+      <div class="slot"><dt class="slot__label" data-i18n="driver.driver">Driver</dt><dd class="slot__value"><span class="data" lang="en">Sunil Rathnayake</span></dd></div>
+    </dl>
+    <div class="route__progress">
+      <ol class="holes" aria-hidden="true" id="holes">
+        <li class="holes__hole is-punched"></li><li class="holes__hole is-punched"></li><li class="holes__hole is-punched"></li><li class="holes__hole is-punched"></li><li class="holes__hole is-next"></li><li class="holes__hole"></li><li class="holes__hole"></li><li class="holes__hole"></li><li class="holes__hole"></li><li class="holes__hole"></li><li class="holes__hole"></li><li class="holes__hole"></li><li class="holes__hole"></li><li class="holes__hole"></li>
+      </ol>
+      <p class="route__updated small" data-i18n="driver.updated" data-i18n-time="07:06">Route updated at 7:06 am</p>
+    </div>
+  </article>
+
+  <!-- === 5. Stops done (collapsed by default) === -->
+  <details class="disclosure done-stops" id="done-stops">
+    <summary class="disclosure__summary"><svg class="icon" aria-hidden="true"><use href="#i-chevron"/></svg><span id="progress-text" data-i18n="driver.progress" data-i18n-done="4" data-i18n-total="14">4 of 14 stops done</span></summary>
+    <div class="disclosure__body">
+      <ol class="stub-list stub-list--done">
+        <li class="stub stub--compact is-done" id="stop-1" data-stop="1" data-time="07:30">
+          <div class="stub__strip"><p class="stub__strip-title" data-i18n="driver.next">Next stop</p><span class="stub__in" data-in></span></div>
+          <div class="stub__body">
+            <div class="stub__time" aria-hidden="true"><span class="stub__meridiem stub__meridiem--pre" data-mer-pre></span><span class="stub__clock">7:30</span><span class="stub__meridiem stub__meridiem--post" data-mer-post>am</span></div>
+            <div class="stub__main">
+              <div class="stub__head"><span class="label-caps"><span data-i18n="driver.stop">Stop</span> 1</span></div>
+              <h3 class="stub__place"><span class="vh"><span data-i18n="driver.stop">Stop</span> 1, <span data-time-text>7:30 am</span>: </span><span class="data" lang="en">Branch A (main branch)</span></h3>
+              <p class="stub__action"><span class="stub__action-item"><svg class="icon" aria-hidden="true"><use href="#i-pickup"/></svg><span data-i18n="driver.pickup">Pick up</span></span><span class="stub__action-item stub__pax"><svg class="icon" aria-hidden="true"><use href="#i-passengers"/></svg><span class="label-caps" data-i18n="label.passengers">Passengers</span><span class="stub__pax-n">2</span></span></p>
+              <p class="stub__result"><svg class="icon icon--20" aria-hidden="true"><use href="#i-punch"/></svg><span data-i18n="driver.doneat" data-i18n-time="07:31">Done at 7:31 am</span></p>
+            </div>
+          </div>
+          <span class="punch" aria-hidden="true"></span>
+        </li>
+        <li class="stub stub--compact is-done" id="stop-2" data-stop="2" data-time="07:55">
+          <div class="stub__strip"><p class="stub__strip-title" data-i18n="driver.next">Next stop</p><span class="stub__in" data-in></span></div>
+          <div class="stub__body">
+            <div class="stub__time" aria-hidden="true"><span class="stub__meridiem stub__meridiem--pre" data-mer-pre></span><span class="stub__clock">7:55</span><span class="stub__meridiem stub__meridiem--post" data-mer-post>am</span></div>
+            <div class="stub__main">
+              <div class="stub__head"><span class="label-caps"><span data-i18n="driver.stop">Stop</span> 2</span></div>
+              <h3 class="stub__place"><span class="vh"><span data-i18n="driver.stop">Stop</span> 2, <span data-time-text>7:55 am</span>: </span><span class="data" lang="en">Branch C</span></h3>
+              <p class="stub__action"><span class="stub__action-item"><svg class="icon" aria-hidden="true"><use href="#i-dropoff"/></svg><span data-i18n="driver.dropoff">Drop off</span></span><span class="stub__action-item stub__pax"><svg class="icon" aria-hidden="true"><use href="#i-passengers"/></svg><span class="label-caps" data-i18n="label.passengers">Passengers</span><span class="stub__pax-n">2</span></span></p>
+              <p class="stub__result"><svg class="icon icon--20" aria-hidden="true"><use href="#i-punch"/></svg><span data-i18n="driver.doneat" data-i18n-time="07:56">Done at 7:56 am</span></p>
+            </div>
+          </div>
+          <span class="punch" aria-hidden="true"></span>
+        </li>
+        <li class="stub stub--compact is-done" id="stop-3" data-stop="3" data-time="09:05">
+          <div class="stub__strip"><p class="stub__strip-title" data-i18n="driver.next">Next stop</p><span class="stub__in" data-in></span></div>
+          <div class="stub__body">
+            <div class="stub__time" aria-hidden="true"><span class="stub__meridiem stub__meridiem--pre" data-mer-pre></span><span class="stub__clock">9:05</span><span class="stub__meridiem stub__meridiem--post" data-mer-post>am</span></div>
+            <div class="stub__main">
+              <div class="stub__head"><span class="label-caps"><span data-i18n="driver.stop">Stop</span> 3</span></div>
+              <h3 class="stub__place"><span class="vh"><span data-i18n="driver.stop">Stop</span> 3, <span data-time-text>9:05 am</span>: </span><span class="data" lang="en">Branch A (main branch)</span></h3>
+              <p class="stub__action"><span class="stub__action-item"><svg class="icon" aria-hidden="true"><use href="#i-pickup"/></svg><span data-i18n="driver.pickup">Pick up</span></span><span class="stub__action-item stub__pax"><svg class="icon" aria-hidden="true"><use href="#i-passengers"/></svg><span class="label-caps" data-i18n="label.passengers">Passengers</span><span class="stub__pax-n">11</span></span></p>
+              <p class="stub__result"><svg class="icon icon--20" aria-hidden="true"><use href="#i-punch"/></svg><span data-i18n="driver.doneat" data-i18n-time="09:06">Done at 9:06 am</span></p>
+            </div>
+          </div>
+          <span class="punch" aria-hidden="true"></span>
+        </li>
+        <li class="stub stub--compact is-done" id="stop-4" data-stop="4" data-time="09:30">
+          <div class="stub__strip"><p class="stub__strip-title" data-i18n="driver.next">Next stop</p><span class="stub__in" data-in></span></div>
+          <div class="stub__body">
+            <div class="stub__time" aria-hidden="true"><span class="stub__meridiem stub__meridiem--pre" data-mer-pre></span><span class="stub__clock">9:30</span><span class="stub__meridiem stub__meridiem--post" data-mer-post>am</span></div>
+            <div class="stub__main">
+              <div class="stub__head"><span class="label-caps"><span data-i18n="driver.stop">Stop</span> 4</span></div>
+              <h3 class="stub__place"><span class="vh"><span data-i18n="driver.stop">Stop</span> 4, <span data-time-text>9:30 am</span>: </span><span class="data" lang="en">Aquatic Centre</span></h3>
+              <p class="stub__action"><span class="stub__action-item"><svg class="icon" aria-hidden="true"><use href="#i-dropoff"/></svg><span data-i18n="driver.dropoff">Drop off</span></span><span class="stub__action-item stub__pax"><svg class="icon" aria-hidden="true"><use href="#i-passengers"/></svg><span class="label-caps" data-i18n="label.passengers">Passengers</span><span class="stub__pax-n">11</span></span></p>
+              <p class="stub__result"><svg class="icon icon--20" aria-hidden="true"><use href="#i-punch"/></svg><span data-i18n="driver.doneat" data-i18n-time="09:29">Done at 9:29 am</span></p>
+            </div>
+          </div>
+          <span class="punch" aria-hidden="true"></span>
+        </li>
+      </ol>
+    </div>
+  </details>
+
+  <!-- === 6. Next stop and the stops to come (US-60) === -->
+  <p class="vh" id="route-live" role="status" aria-live="polite"></p>
+  <ol class="stub-list" id="stops-ahead" aria-label="Stops">
+    <li class="stub stub--next" id="stop-5" data-stop="5" data-time="10:00">
+      <div class="stub__strip"><p class="stub__strip-title" data-i18n="driver.next">Next stop</p><span class="stub__in" data-in></span></div>
+      <div class="stub__body">
+        <div class="stub__time" aria-hidden="true"><span class="stub__meridiem stub__meridiem--pre" data-mer-pre></span><span class="stub__clock">10:00</span><span class="stub__meridiem stub__meridiem--post" data-mer-post>am</span></div>
+        <div class="stub__main">
+          <div class="stub__head"><span class="label-caps"><span data-i18n="driver.stop">Stop</span> 5</span><span class="flag"><svg class="icon" aria-hidden="true"><use href="#i-gap"/></svg><span data-i18n="driver.gap">Gap job</span></span></div>
+          <h3 class="stub__place"><span class="vh"><span data-i18n="driver.stop">Stop</span> 5, <span data-time-text>10:00 am</span>: </span><span class="data" lang="en">Branch B</span></h3>
+          <p class="stub__action"><span class="stub__action-item"><svg class="icon" aria-hidden="true"><use href="#i-pickup"/></svg><span data-i18n="driver.pickup">Pick up</span></span><span class="stub__action-item stub__pax"><svg class="icon" aria-hidden="true"><use href="#i-passengers"/></svg><span class="label-caps" data-i18n="label.passengers">Passengers</span><span class="stub__pax-n">1</span></span></p>
+          <div class="stub__fold"><div class="stub__fold-inner">
+            <div class="stub__facts"><p><span class="ref-small data" lang="en">PT-2026-0145</span></p></div>
+            <div class="stub__contact"><p class="stub__contact-who"><span class="label-caps" data-i18n="driver.contact">Contact</span><span class="data" lang="en">Shamila Rodrigo</span><span class="stub__phone">077 000 0145</span></p><a class="btn btn--secondary stub__call" href="tel:+94770000145"><svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg><span data-i18n="driver.call">Call</span><span class="vh"> <span class="data" lang="en">Shamila Rodrigo</span></span></a></div>
+            <div class="stub__actions">
+              <div><button class="btn btn--secondary btn--block" type="button" data-nav aria-describedby="nav-note-5"><svg class="icon" aria-hidden="true"><use href="#i-navigate"/></svg><span data-i18n="driver.navigate">Navigate</span></button><p class="stub__note-out" id="nav-note-5" role="status"></p></div>
+              <button class="btn btn--primary btn--block btn--large" type="button" data-done><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="driver.done">Done</span><span class="vh">, <span data-i18n="driver.stop">Stop</span> 5</span></button>
+              <button class="btn btn--noshow btn--block" type="button" data-noshow><svg class="icon" aria-hidden="true"><use href="#i-noshow"/></svg><span data-i18n="driver.noshow">No-show</span><span class="vh">, <span data-i18n="driver.stop">Stop</span> 5</span></button>
+            </div>
+          </div></div>
+          <div class="stub__result" data-result><span data-result-text></span><button class="btn btn--quiet" type="button" data-undo><svg class="icon icon--20" aria-hidden="true"><use href="#i-undo"/></svg><span data-i18n="driver.undo">Undo</span></button></div>
+        </div>
+      </div>
+      <span class="punch" aria-hidden="true"></span>
+    </li>
+    <li class="stub" id="stop-6" data-stop="6" data-time="10:20">
+      <div class="stub__strip"><p class="stub__strip-title" data-i18n="driver.next">Next stop</p><span class="stub__in" data-in></span></div>
+      <div class="stub__body">
+        <div class="stub__time" aria-hidden="true"><span class="stub__meridiem stub__meridiem--pre" data-mer-pre></span><span class="stub__clock">10:20</span><span class="stub__meridiem stub__meridiem--post" data-mer-post>am</span></div>
+        <div class="stub__main">
+          <div class="stub__head"><span class="label-caps"><span data-i18n="driver.stop">Stop</span> 6</span></div>
+          <h3 class="stub__place"><span class="vh"><span data-i18n="driver.stop">Stop</span> 6, <span data-time-text>10:20 am</span>: </span><span class="data" lang="en">Stationery supplier</span></h3>
+          <p class="stub__action"><span class="stub__action-item"><svg class="icon" aria-hidden="true"><use href="#i-dropoff"/></svg><span data-i18n="driver.dropoff">Drop off</span></span><span class="stub__action-item stub__pax"><svg class="icon" aria-hidden="true"><use href="#i-passengers"/></svg><span class="label-caps" data-i18n="label.passengers">Passengers</span><span class="stub__pax-n">1</span></span></p>
+          <div class="stub__fold"><div class="stub__fold-inner">
+            <div class="stub__facts"><p><span class="ref-small data" lang="en">PT-2026-0145</span></p><p><span class="data" lang="en">Wait about 15 minutes.</span></p></div>
+            <div class="stub__actions">
+              <div><button class="btn btn--secondary btn--block" type="button" data-nav aria-describedby="nav-note-6"><svg class="icon" aria-hidden="true"><use href="#i-navigate"/></svg><span data-i18n="driver.navigate">Navigate</span></button><p class="stub__note-out" id="nav-note-6" role="status"></p></div>
+              <button class="btn btn--primary btn--block btn--large" type="button" data-done><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="driver.done">Done</span><span class="vh">, <span data-i18n="driver.stop">Stop</span> 6</span></button>
+              <button class="btn btn--noshow btn--block" type="button" data-noshow><svg class="icon" aria-hidden="true"><use href="#i-noshow"/></svg><span data-i18n="driver.noshow">No-show</span><span class="vh">, <span data-i18n="driver.stop">Stop</span> 6</span></button>
+            </div>
+          </div></div>
+          <div class="stub__result" data-result><span data-result-text></span><button class="btn btn--quiet" type="button" data-undo><svg class="icon icon--20" aria-hidden="true"><use href="#i-undo"/></svg><span data-i18n="driver.undo">Undo</span></button></div>
+        </div>
+      </div>
+      <span class="punch" aria-hidden="true"></span>
+    </li>
+    <li class="stub" id="stop-7" data-stop="7" data-time="10:35">
+      <div class="stub__strip"><p class="stub__strip-title" data-i18n="driver.next">Next stop</p><span class="stub__in" data-in></span></div>
+      <div class="stub__body">
+        <div class="stub__time" aria-hidden="true"><span class="stub__meridiem stub__meridiem--pre" data-mer-pre></span><span class="stub__clock">10:35</span><span class="stub__meridiem stub__meridiem--post" data-mer-post>am</span></div>
+        <div class="stub__main">
+          <div class="stub__head"><span class="label-caps"><span data-i18n="driver.stop">Stop</span> 7</span></div>
+          <h3 class="stub__place"><span class="vh"><span data-i18n="driver.stop">Stop</span> 7, <span data-time-text>10:35 am</span>: </span><span class="data" lang="en">Stationery supplier</span></h3>
+          <p class="stub__action"><span class="stub__action-item"><svg class="icon" aria-hidden="true"><use href="#i-pickup"/></svg><span data-i18n="driver.pickup">Pick up</span></span><span class="stub__action-item stub__pax"><svg class="icon" aria-hidden="true"><use href="#i-passengers"/></svg><span class="label-caps" data-i18n="label.passengers">Passengers</span><span class="stub__pax-n">1</span></span></p>
+          <div class="stub__fold"><div class="stub__fold-inner">
+            <div class="stub__facts"><p><span class="ref-small data" lang="en">PT-2026-0145</span></p><p><span class="data" lang="en">She returns with boxes.</span></p></div>
+            <div class="stub__contact"><p class="stub__contact-who"><span class="label-caps" data-i18n="driver.contact">Contact</span><span class="data" lang="en">Shamila Rodrigo</span><span class="stub__phone">077 000 0145</span></p><a class="btn btn--secondary stub__call" href="tel:+94770000145"><svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg><span data-i18n="driver.call">Call</span><span class="vh"> <span class="data" lang="en">Shamila Rodrigo</span></span></a></div>
+            <div class="stub__actions">
+              <div><button class="btn btn--secondary btn--block" type="button" data-nav aria-describedby="nav-note-7"><svg class="icon" aria-hidden="true"><use href="#i-navigate"/></svg><span data-i18n="driver.navigate">Navigate</span></button><p class="stub__note-out" id="nav-note-7" role="status"></p></div>
+              <button class="btn btn--primary btn--block btn--large" type="button" data-done><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="driver.done">Done</span><span class="vh">, <span data-i18n="driver.stop">Stop</span> 7</span></button>
+              <button class="btn btn--noshow btn--block" type="button" data-noshow><svg class="icon" aria-hidden="true"><use href="#i-noshow"/></svg><span data-i18n="driver.noshow">No-show</span><span class="vh">, <span data-i18n="driver.stop">Stop</span> 7</span></button>
+            </div>
+          </div></div>
+          <div class="stub__result" data-result><span data-result-text></span><button class="btn btn--quiet" type="button" data-undo><svg class="icon icon--20" aria-hidden="true"><use href="#i-undo"/></svg><span data-i18n="driver.undo">Undo</span></button></div>
+        </div>
+      </div>
+      <span class="punch" aria-hidden="true"></span>
+    </li>
+    <li class="stub" id="stop-8" data-stop="8" data-time="10:50">
+      <div class="stub__strip"><p class="stub__strip-title" data-i18n="driver.next">Next stop</p><span class="stub__in" data-in></span></div>
+      <div class="stub__body">
+        <div class="stub__time" aria-hidden="true"><span class="stub__meridiem stub__meridiem--pre" data-mer-pre></span><span class="stub__clock">10:50</span><span class="stub__meridiem stub__meridiem--post" data-mer-post>am</span></div>
+        <div class="stub__main">
+          <div class="stub__head"><span class="label-caps"><span data-i18n="driver.stop">Stop</span> 8</span></div>
+          <h3 class="stub__place"><span class="vh"><span data-i18n="driver.stop">Stop</span> 8, <span data-time-text>10:50 am</span>: </span><span class="data" lang="en">Branch B</span></h3>
+          <p class="stub__action"><span class="stub__action-item"><svg class="icon" aria-hidden="true"><use href="#i-dropoff"/></svg><span data-i18n="driver.dropoff">Drop off</span></span><span class="stub__action-item stub__pax"><svg class="icon" aria-hidden="true"><use href="#i-passengers"/></svg><span class="label-caps" data-i18n="label.passengers">Passengers</span><span class="stub__pax-n">1</span></span></p>
+          <div class="stub__fold"><div class="stub__fold-inner">
+            <div class="stub__facts"><p><span class="ref-small data" lang="en">PT-2026-0145</span></p><p><span class="data" lang="en">Then go to the Aquatic Centre (arrive by 11:10 am).</span></p></div>
+            <div class="stub__actions">
+              <div><button class="btn btn--secondary btn--block" type="button" data-nav aria-describedby="nav-note-8"><svg class="icon" aria-hidden="true"><use href="#i-navigate"/></svg><span data-i18n="driver.navigate">Navigate</span></button><p class="stub__note-out" id="nav-note-8" role="status"></p></div>
+              <button class="btn btn--primary btn--block btn--large" type="button" data-done><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="driver.done">Done</span><span class="vh">, <span data-i18n="driver.stop">Stop</span> 8</span></button>
+              <button class="btn btn--noshow btn--block" type="button" data-noshow><svg class="icon" aria-hidden="true"><use href="#i-noshow"/></svg><span data-i18n="driver.noshow">No-show</span><span class="vh">, <span data-i18n="driver.stop">Stop</span> 8</span></button>
+            </div>
+          </div></div>
+          <div class="stub__result" data-result><span data-result-text></span><button class="btn btn--quiet" type="button" data-undo><svg class="icon icon--20" aria-hidden="true"><use href="#i-undo"/></svg><span data-i18n="driver.undo">Undo</span></button></div>
+        </div>
+      </div>
+      <span class="punch" aria-hidden="true"></span>
+    </li>
+    <li class="stub" id="stop-9" data-stop="9" data-time="11:30">
+      <div class="stub__strip"><p class="stub__strip-title" data-i18n="driver.next">Next stop</p><span class="stub__in" data-in></span></div>
+      <div class="stub__body">
+        <div class="stub__time" aria-hidden="true"><span class="stub__meridiem stub__meridiem--pre" data-mer-pre></span><span class="stub__clock">11:30</span><span class="stub__meridiem stub__meridiem--post" data-mer-post>am</span></div>
+        <div class="stub__main">
+          <div class="stub__head"><span class="label-caps"><span data-i18n="driver.stop">Stop</span> 9</span></div>
+          <h3 class="stub__place"><span class="vh"><span data-i18n="driver.stop">Stop</span> 9, <span data-time-text>11:30 am</span>: </span><span class="data" lang="en">Aquatic Centre</span></h3>
+          <p class="stub__action"><span class="stub__action-item"><svg class="icon" aria-hidden="true"><use href="#i-pickup"/></svg><span data-i18n="driver.pickup">Pick up</span></span><span class="stub__action-item stub__pax"><svg class="icon" aria-hidden="true"><use href="#i-passengers"/></svg><span class="label-caps" data-i18n="label.passengers">Passengers</span><span class="stub__pax-n">11</span></span></p>
+          <div class="stub__fold"><div class="stub__fold-inner">
+            <div class="stub__facts"><p><span class="ref-small data" lang="en">PT-2026-0119</span></p></div>
+            <div class="stub__contact"><p class="stub__contact-who"><span class="label-caps" data-i18n="driver.contact">Contact</span><span class="data" lang="en">Ruwan Silva</span><span class="stub__phone">077 000 0119</span></p><a class="btn btn--secondary stub__call" href="tel:+94770000119"><svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg><span data-i18n="driver.call">Call</span><span class="vh"> <span class="data" lang="en">Ruwan Silva</span></span></a></div>
+            <div class="stub__actions">
+              <div><button class="btn btn--secondary btn--block" type="button" data-nav aria-describedby="nav-note-9"><svg class="icon" aria-hidden="true"><use href="#i-navigate"/></svg><span data-i18n="driver.navigate">Navigate</span></button><p class="stub__note-out" id="nav-note-9" role="status"></p></div>
+              <button class="btn btn--primary btn--block btn--large" type="button" data-done><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="driver.done">Done</span><span class="vh">, <span data-i18n="driver.stop">Stop</span> 9</span></button>
+              <button class="btn btn--noshow btn--block" type="button" data-noshow><svg class="icon" aria-hidden="true"><use href="#i-noshow"/></svg><span data-i18n="driver.noshow">No-show</span><span class="vh">, <span data-i18n="driver.stop">Stop</span> 9</span></button>
+            </div>
+          </div></div>
+          <div class="stub__result" data-result><span data-result-text></span><button class="btn btn--quiet" type="button" data-undo><svg class="icon icon--20" aria-hidden="true"><use href="#i-undo"/></svg><span data-i18n="driver.undo">Undo</span></button></div>
+        </div>
+      </div>
+      <span class="punch" aria-hidden="true"></span>
+    </li>
+    <li class="stub" id="stop-10" data-stop="10" data-time="11:55">
+      <div class="stub__strip"><p class="stub__strip-title" data-i18n="driver.next">Next stop</p><span class="stub__in" data-in></span></div>
+      <div class="stub__body">
+        <div class="stub__time" aria-hidden="true"><span class="stub__meridiem stub__meridiem--pre" data-mer-pre></span><span class="stub__clock">11:55</span><span class="stub__meridiem stub__meridiem--post" data-mer-post>am</span></div>
+        <div class="stub__main">
+          <div class="stub__head"><span class="label-caps"><span data-i18n="driver.stop">Stop</span> 10</span></div>
+          <h3 class="stub__place"><span class="vh"><span data-i18n="driver.stop">Stop</span> 10, <span data-time-text>11:55 am</span>: </span><span class="data" lang="en">Branch A (main branch)</span></h3>
+          <p class="stub__action"><span class="stub__action-item"><svg class="icon" aria-hidden="true"><use href="#i-dropoff"/></svg><span data-i18n="driver.dropoff">Drop off</span></span><span class="stub__action-item stub__pax"><svg class="icon" aria-hidden="true"><use href="#i-passengers"/></svg><span class="label-caps" data-i18n="label.passengers">Passengers</span><span class="stub__pax-n">11</span></span></p>
+          <div class="stub__fold"><div class="stub__fold-inner">
+            <div class="stub__facts"><p><span class="ref-small data" lang="en">PT-2026-0119</span></p></div>
+            <div class="stub__actions">
+              <div><button class="btn btn--secondary btn--block" type="button" data-nav aria-describedby="nav-note-10"><svg class="icon" aria-hidden="true"><use href="#i-navigate"/></svg><span data-i18n="driver.navigate">Navigate</span></button><p class="stub__note-out" id="nav-note-10" role="status"></p></div>
+              <button class="btn btn--primary btn--block btn--large" type="button" data-done><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="driver.done">Done</span><span class="vh">, <span data-i18n="driver.stop">Stop</span> 10</span></button>
+              <button class="btn btn--noshow btn--block" type="button" data-noshow><svg class="icon" aria-hidden="true"><use href="#i-noshow"/></svg><span data-i18n="driver.noshow">No-show</span><span class="vh">, <span data-i18n="driver.stop">Stop</span> 10</span></button>
+            </div>
+          </div></div>
+          <div class="stub__result" data-result><span data-result-text></span><button class="btn btn--quiet" type="button" data-undo><svg class="icon icon--20" aria-hidden="true"><use href="#i-undo"/></svg><span data-i18n="driver.undo">Undo</span></button></div>
+        </div>
+      </div>
+      <span class="punch" aria-hidden="true"></span>
+    </li>
+    <li class="stub" id="stop-11" data-stop="11" data-time="13:30">
+      <div class="stub__strip"><p class="stub__strip-title" data-i18n="driver.next">Next stop</p><span class="stub__in" data-in></span></div>
+      <div class="stub__body">
+        <div class="stub__time" aria-hidden="true"><span class="stub__meridiem stub__meridiem--pre" data-mer-pre></span><span class="stub__clock">1:30</span><span class="stub__meridiem stub__meridiem--post" data-mer-post>pm</span></div>
+        <div class="stub__main">
+          <div class="stub__head"><span class="label-caps"><span data-i18n="driver.stop">Stop</span> 11</span></div>
+          <h3 class="stub__place"><span class="vh"><span data-i18n="driver.stop">Stop</span> 11, <span data-time-text>1:30 pm</span>: </span><span class="data" lang="en">Branch A (main branch)</span></h3>
+          <p class="stub__action"><span class="stub__action-item"><svg class="icon" aria-hidden="true"><use href="#i-pickup"/></svg><span data-i18n="driver.pickup">Pick up</span></span><span class="stub__action-item stub__pax"><svg class="icon" aria-hidden="true"><use href="#i-passengers"/></svg><span class="label-caps" data-i18n="label.passengers">Passengers</span><span class="stub__pax-n">6</span></span></p>
+          <div class="stub__fold"><div class="stub__fold-inner">
+            <div class="stub__facts"><p><span class="ref-small data" lang="en">PT-2026-0150</span></p></div>
+            <div class="stub__contact"><p class="stub__contact-who"><span class="label-caps" data-i18n="driver.contact">Contact</span><span class="data" lang="en">Priyanka Wijesekara</span><span class="stub__phone">077 000 0150</span></p><a class="btn btn--secondary stub__call" href="tel:+94770000150"><svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg><span data-i18n="driver.call">Call</span><span class="vh"> <span class="data" lang="en">Priyanka Wijesekara</span></span></a></div>
+            <div class="stub__actions">
+              <div><button class="btn btn--secondary btn--block" type="button" data-nav aria-describedby="nav-note-11"><svg class="icon" aria-hidden="true"><use href="#i-navigate"/></svg><span data-i18n="driver.navigate">Navigate</span></button><p class="stub__note-out" id="nav-note-11" role="status"></p></div>
+              <button class="btn btn--primary btn--block btn--large" type="button" data-done><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="driver.done">Done</span><span class="vh">, <span data-i18n="driver.stop">Stop</span> 11</span></button>
+              <button class="btn btn--noshow btn--block" type="button" data-noshow><svg class="icon" aria-hidden="true"><use href="#i-noshow"/></svg><span data-i18n="driver.noshow">No-show</span><span class="vh">, <span data-i18n="driver.stop">Stop</span> 11</span></button>
+            </div>
+          </div></div>
+          <div class="stub__result" data-result><span data-result-text></span><button class="btn btn--quiet" type="button" data-undo><svg class="icon icon--20" aria-hidden="true"><use href="#i-undo"/></svg><span data-i18n="driver.undo">Undo</span></button></div>
+        </div>
+      </div>
+      <span class="punch" aria-hidden="true"></span>
+    </li>
+    <li class="stub" id="stop-12" data-stop="12" data-time="13:45">
+      <div class="stub__strip"><p class="stub__strip-title" data-i18n="driver.next">Next stop</p><span class="stub__in" data-in></span></div>
+      <div class="stub__body">
+        <div class="stub__time" aria-hidden="true"><span class="stub__meridiem stub__meridiem--pre" data-mer-pre></span><span class="stub__clock">1:45</span><span class="stub__meridiem stub__meridiem--post" data-mer-post>pm</span></div>
+        <div class="stub__main">
+          <div class="stub__head"><span class="label-caps"><span data-i18n="driver.stop">Stop</span> 12</span></div>
+          <h3 class="stub__place"><span class="vh"><span data-i18n="driver.stop">Stop</span> 12, <span data-time-text>1:45 pm</span>: </span><span class="data" lang="en">Branch B</span></h3>
+          <p class="stub__action"><span class="stub__action-item"><svg class="icon" aria-hidden="true"><use href="#i-dropoff"/></svg><span data-i18n="driver.dropoff">Drop off</span></span><span class="stub__action-item stub__pax"><svg class="icon" aria-hidden="true"><use href="#i-passengers"/></svg><span class="label-caps" data-i18n="label.passengers">Passengers</span><span class="stub__pax-n">6</span></span></p>
+          <div class="stub__fold"><div class="stub__fold-inner">
+            <div class="stub__facts"><p><span class="ref-small data" lang="en">PT-2026-0150</span></p></div>
+            <div class="stub__actions">
+              <div><button class="btn btn--secondary btn--block" type="button" data-nav aria-describedby="nav-note-12"><svg class="icon" aria-hidden="true"><use href="#i-navigate"/></svg><span data-i18n="driver.navigate">Navigate</span></button><p class="stub__note-out" id="nav-note-12" role="status"></p></div>
+              <button class="btn btn--primary btn--block btn--large" type="button" data-done><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="driver.done">Done</span><span class="vh">, <span data-i18n="driver.stop">Stop</span> 12</span></button>
+              <button class="btn btn--noshow btn--block" type="button" data-noshow><svg class="icon" aria-hidden="true"><use href="#i-noshow"/></svg><span data-i18n="driver.noshow">No-show</span><span class="vh">, <span data-i18n="driver.stop">Stop</span> 12</span></button>
+            </div>
+          </div></div>
+          <div class="stub__result" data-result><span data-result-text></span><button class="btn btn--quiet" type="button" data-undo><svg class="icon icon--20" aria-hidden="true"><use href="#i-undo"/></svg><span data-i18n="driver.undo">Undo</span></button></div>
+        </div>
+      </div>
+      <span class="punch" aria-hidden="true"></span>
+    </li>
+    <li class="stub" id="stop-13" data-stop="13" data-time="15:30">
+      <div class="stub__strip"><p class="stub__strip-title" data-i18n="driver.next">Next stop</p><span class="stub__in" data-in></span></div>
+      <div class="stub__body">
+        <div class="stub__time" aria-hidden="true"><span class="stub__meridiem stub__meridiem--pre" data-mer-pre></span><span class="stub__clock">3:30</span><span class="stub__meridiem stub__meridiem--post" data-mer-post>pm</span></div>
+        <div class="stub__main">
+          <div class="stub__head"><span class="label-caps"><span data-i18n="driver.stop">Stop</span> 13</span></div>
+          <h3 class="stub__place"><span class="vh"><span data-i18n="driver.stop">Stop</span> 13, <span data-time-text>3:30 pm</span>: </span><span class="data" lang="en">Branch B</span></h3>
+          <p class="stub__action"><span class="stub__action-item"><svg class="icon" aria-hidden="true"><use href="#i-pickup"/></svg><span data-i18n="driver.pickup">Pick up</span></span><span class="stub__action-item stub__pax"><svg class="icon" aria-hidden="true"><use href="#i-passengers"/></svg><span class="label-caps" data-i18n="label.passengers">Passengers</span><span class="stub__pax-n">6</span></span></p>
+          <div class="stub__fold"><div class="stub__fold-inner">
+            <div class="stub__facts"><p><span class="ref-small data" lang="en">PT-2026-0150</span></p></div>
+            <div class="stub__contact"><p class="stub__contact-who"><span class="label-caps" data-i18n="driver.contact">Contact</span><span class="data" lang="en">Priyanka Wijesekara</span><span class="stub__phone">077 000 0150</span></p><a class="btn btn--secondary stub__call" href="tel:+94770000150"><svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg><span data-i18n="driver.call">Call</span><span class="vh"> <span class="data" lang="en">Priyanka Wijesekara</span></span></a></div>
+            <div class="stub__actions">
+              <div><button class="btn btn--secondary btn--block" type="button" data-nav aria-describedby="nav-note-13"><svg class="icon" aria-hidden="true"><use href="#i-navigate"/></svg><span data-i18n="driver.navigate">Navigate</span></button><p class="stub__note-out" id="nav-note-13" role="status"></p></div>
+              <button class="btn btn--primary btn--block btn--large" type="button" data-done><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="driver.done">Done</span><span class="vh">, <span data-i18n="driver.stop">Stop</span> 13</span></button>
+              <button class="btn btn--noshow btn--block" type="button" data-noshow><svg class="icon" aria-hidden="true"><use href="#i-noshow"/></svg><span data-i18n="driver.noshow">No-show</span><span class="vh">, <span data-i18n="driver.stop">Stop</span> 13</span></button>
+            </div>
+          </div></div>
+          <div class="stub__result" data-result><span data-result-text></span><button class="btn btn--quiet" type="button" data-undo><svg class="icon icon--20" aria-hidden="true"><use href="#i-undo"/></svg><span data-i18n="driver.undo">Undo</span></button></div>
+        </div>
+      </div>
+      <span class="punch" aria-hidden="true"></span>
+    </li>
+    <li class="stub" id="stop-14" data-stop="14" data-time="15:45">
+      <div class="stub__strip"><p class="stub__strip-title" data-i18n="driver.next">Next stop</p><span class="stub__in" data-in></span></div>
+      <div class="stub__body">
+        <div class="stub__time" aria-hidden="true"><span class="stub__meridiem stub__meridiem--pre" data-mer-pre></span><span class="stub__clock">3:45</span><span class="stub__meridiem stub__meridiem--post" data-mer-post>pm</span></div>
+        <div class="stub__main">
+          <div class="stub__head"><span class="label-caps"><span data-i18n="driver.stop">Stop</span> 14</span></div>
+          <h3 class="stub__place"><span class="vh"><span data-i18n="driver.stop">Stop</span> 14, <span data-time-text>3:45 pm</span>: </span><span class="data" lang="en">Branch A (main branch)</span></h3>
+          <p class="stub__action"><span class="stub__action-item"><svg class="icon" aria-hidden="true"><use href="#i-dropoff"/></svg><span data-i18n="driver.dropoff">Drop off</span></span><span class="stub__action-item stub__pax"><svg class="icon" aria-hidden="true"><use href="#i-passengers"/></svg><span class="label-caps" data-i18n="label.passengers">Passengers</span><span class="stub__pax-n">6</span></span></p>
+          <div class="stub__fold"><div class="stub__fold-inner">
+            <div class="stub__facts"><p><span class="ref-small data" lang="en">PT-2026-0150</span></p><p><span class="data" lang="en">End of day at Branch A.</span></p></div>
+            <div class="stub__actions">
+              <div><button class="btn btn--secondary btn--block" type="button" data-nav aria-describedby="nav-note-14"><svg class="icon" aria-hidden="true"><use href="#i-navigate"/></svg><span data-i18n="driver.navigate">Navigate</span></button><p class="stub__note-out" id="nav-note-14" role="status"></p></div>
+              <button class="btn btn--primary btn--block btn--large" type="button" data-done><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="driver.done">Done</span><span class="vh">, <span data-i18n="driver.stop">Stop</span> 14</span></button>
+              <button class="btn btn--noshow btn--block" type="button" data-noshow><svg class="icon" aria-hidden="true"><use href="#i-noshow"/></svg><span data-i18n="driver.noshow">No-show</span><span class="vh">, <span data-i18n="driver.stop">Stop</span> 14</span></button>
+            </div>
+          </div></div>
+          <div class="stub__result" data-result><span data-result-text></span><button class="btn btn--quiet" type="button" data-undo><svg class="icon icon--20" aria-hidden="true"><use href="#i-undo"/></svg><span data-i18n="driver.undo">Undo</span></button></div>
+        </div>
+      </div>
+      <span class="punch" aria-hidden="true"></span>
+    </li>
+  </ol>
+
+  <!-- === 7. End of day === -->
+  <p class="route-end"><svg class="icon" aria-hidden="true"><use href="#i-van"/></svg><span data-i18n="driver.end">End of day at Branch A</span></p>
+</main>
+
+<footer class="site-footer">
+  <p class="small muted" lang="en"><a href="index.html">Ticket: foundations</a> · <a href="../index.html">All five directions</a></p>
+</footer>
+
+<!-- === 8. Prototype controls (not part of the design) === -->
+<aside class="proto proto--phone" aria-labelledby="proto-title" lang="en">
+  <h2 id="proto-title">Prototype controls</h2>
+  <div class="proto__row">
+    <button type="button" data-proto="offline">Simulate offline</button>
+    <button type="button" data-proto="done-next">Mark next stop done</button>
+    <button type="button" data-proto="reset">Reset</button>
+  </div>
+</aside>
+</body>
+</html>

@@ -1,0 +1,2105 @@
+/*
+ * PolymathTransit – Design direction 5 "Ticket" – components
+ * ----------------------------------------------------------------------------
+ * What this file is for:
+ *   Every reusable component of the Ticket direction and all of its states.
+ *   Uses only the semantic tokens from tokens.css (no raw values, except
+ *   0, 1 and percentages for geometry). Page layouts live in pages.css.
+ *
+ * The one rule behind the look:
+ *   A trip is a ticket. Each fact sits in a fixed slot; the reference is the
+ *   ticket's name; outbound and return are divided by a perforation; Done is a
+ *   punch. The system PRINTS in the stencil face (references, issued times,
+ *   counts); people WRITE and READ in Plex Sans Condensed.
+ *
+ * Sections:
+ *   1.  Base and fonts
+ *   2.  Accessibility helpers (skip link, visually hidden, focus)
+ *   3.  Icons
+ *   4.  Phone header and language switch
+ *   5.  Coordinator header and navigation
+ *   6.  Headings and text
+ *   7.  Buttons
+ *   8.  Text fields, selects and text areas
+ *   9.  Fieldsets and choice options (radio cards, date choice, flexibility)
+ *   10. Checkboxes
+ *   11. Passenger stepper
+ *   12. Disclosures (details)
+ *   13. Alerts and the error summary
+ *   14. The ticket (strip, slots, perforation, coupon, stub)
+ *   15. Stamps (status) and flags
+ *   16. Seat meter
+ *   17. Data tables
+ *   18. Driver stubs, the punch and the progress holes
+ *   19. Dialog
+ *   20. Inline status with Undo
+ *   21. Prototype controls
+ *   22. Reduced motion and forced colours
+ */
+
+/* === Section: 1. Base and fonts === */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--c-desk);
+  color: var(--c-value);
+  font-family: var(--font-text);
+  font-size: calc(var(--fs-body) * var(--script-factor));
+  line-height: var(--lh-body);
+  font-weight: var(--weight-regular);
+  /* research.md 3.2: never fake bold or italic in Sinhala. */
+  font-synthesis: none;
+  font-variant-numeric: tabular-nums;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+/* Components set display; hidden must always win. */
+[hidden] {
+  display: none !important;
+}
+
+/* Data entered by people (place names, people's names, notes) stays English
+   on Sinhala pages (research.md 6.2). Undo the Sinhala size factor for it. */
+:lang(si) .data[lang="en"] {
+  font-size: calc(1em / 0.9);
+}
+
+a {
+  color: var(--c-brand);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+}
+
+a:hover {
+  color: var(--c-brand-strong);
+  text-decoration-thickness: var(--line-strong);
+}
+
+/* A phone number is one thing: never split it across lines. */
+a[href^="tel:"] {
+  white-space: nowrap;
+}
+
+a:visited {
+  color: var(--c-brand-strong);
+}
+
+p {
+  margin: 0 0 var(--space-3);
+}
+
+/* === Section: 2. Accessibility helpers === */
+.vh {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  left: var(--space-3);
+  top: calc(var(--space-7) * -2);
+  z-index: 10;
+  padding: var(--space-3) var(--space-4);
+  background: var(--c-ticket);
+  border: var(--border-stamp) solid var(--c-brand);
+  border-radius: var(--radius-stamp);
+  font-weight: var(--weight-strong);
+}
+
+.skip-link:focus {
+  top: var(--space-3);
+}
+
+/* NFR-03: one focus style everywhere – 3 px purple, 2 px offset. */
+:focus-visible {
+  outline: var(--focus-width) solid var(--c-focus);
+  outline-offset: var(--focus-offset);
+}
+
+[tabindex="-1"]:focus {
+  outline: none;
+}
+
+[tabindex="-1"]:focus-visible {
+  outline: var(--focus-width) solid var(--c-focus);
+  outline-offset: var(--focus-offset);
+}
+
+/* === Section: 3. Icons === */
+/* Outline, 24 px grid, 1.75 px stroke, round ends (brief 6.5). Always beside a word. */
+.icon {
+  width: var(--icon-md);
+  height: var(--icon-md);
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.icon--16 {
+  width: var(--icon-xs);
+  height: var(--icon-xs);
+}
+
+.icon--20 {
+  width: var(--icon-sm);
+  height: var(--icon-sm);
+}
+
+/* === Section: 4. Phone header and language switch === */
+.site-header {
+  background: var(--c-ticket);
+  border-bottom: var(--border-edge) solid var(--c-ticket-edge);
+}
+
+.site-header__inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  max-width: var(--page-max-phone);
+  margin: 0 auto;
+  padding: var(--space-2) var(--page-margin-phone);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  min-height: var(--target-min);
+  gap: var(--space-2);
+  color: var(--c-value);
+  text-decoration: none;
+}
+
+.brand__crest {
+  width: auto;
+  height: var(--crest-header);
+}
+
+.brand__name {
+  font-size: var(--fs-brand);
+  font-weight: var(--weight-strong);
+  line-height: 1;
+  letter-spacing: 0;
+}
+
+/* FR-65: each option in its own language and script; the current one is
+   marked by a tick, a fill and a bar, not colour alone. */
+.lang-switch {
+  display: flex;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.lang-switch__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-height: var(--target-min);
+  min-width: var(--target-min);
+  padding: 0 var(--space-2-5);
+  border: var(--border-edge) solid var(--c-ticket-edge);
+  border-radius: var(--radius-control);
+  background: var(--c-ticket);
+  color: var(--c-value);
+  font: inherit;
+  font-size: var(--fs-switch);
+  font-weight: var(--weight-regular);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.lang-switch__btn:hover {
+  background: var(--c-brand-faint);
+}
+
+.lang-switch__btn .icon {
+  display: none;
+}
+
+.lang-switch__btn[aria-pressed="true"],
+.lang-switch__btn[aria-current="true"] {
+  background: var(--c-brand-tint);
+  border-color: var(--c-brand);
+  box-shadow: inset 0 calc(var(--bar-current) * -1) 0 var(--c-brand);
+  color: var(--c-brand);
+  font-weight: var(--weight-strong);
+}
+
+.lang-switch__btn[aria-pressed="true"] .icon,
+.lang-switch__btn[aria-current="true"] .icon {
+  display: block;
+}
+
+.lang-switch__btn[lang="si"] {
+  font-family: var(--font-text);
+}
+
+.draft-note {
+  max-width: var(--page-max-phone);
+  margin: 0 auto;
+  padding: var(--space-2) var(--page-margin-phone) 0;
+  color: var(--c-slot-label);
+  font-size: var(--fs-note);
+  line-height: 1.4;
+}
+
+/* === Section: 5. Coordinator header and navigation === */
+.app-header {
+  background: var(--c-ticket);
+  border-bottom: var(--border-edge) solid var(--c-ticket-edge);
+}
+
+.app-header__inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-5);
+  max-width: var(--page-max-desktop);
+  margin: 0 auto;
+  padding: 0 var(--gutter-desktop);
+  min-height: var(--header-desktop);
+}
+
+.app-header__user {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin-left: auto;
+  font-size: calc(var(--fs-small) * var(--script-factor));
+  color: var(--c-text-strong-2);
+}
+
+.app-nav__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.app-nav__link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: var(--header-desktop);
+  padding: 0 var(--space-2);
+  color: var(--c-value);
+  text-decoration: none;
+  font-size: calc(var(--fs-body) * var(--script-factor));
+}
+
+.app-nav__link:hover {
+  color: var(--c-brand);
+  text-decoration: underline;
+}
+
+/* Current page: weight, colour AND a 4 px bar (never colour alone). */
+.app-nav__link[aria-current="page"] {
+  color: var(--c-brand);
+  font-weight: var(--weight-strong);
+}
+
+.app-nav__link[aria-current="page"]::after {
+  content: "";
+  position: absolute;
+  left: var(--space-2);
+  right: var(--space-2);
+  bottom: 0;
+  height: var(--bar-nav);
+  background: var(--c-brand);
+}
+
+/* === Section: 6. Headings and text === */
+.title {
+  margin: 0 0 var(--space-2);
+  font-size: calc(var(--fs-title) * var(--script-factor));
+  line-height: var(--lh-title);
+  font-weight: var(--weight-strong);
+}
+
+:lang(si) .title {
+  line-height: 1.45;
+}
+
+.section-title {
+  margin: 0 0 var(--space-3);
+  font-size: calc(var(--fs-section) * var(--script-factor));
+  line-height: 1.25;
+  font-weight: var(--weight-strong);
+}
+
+:lang(si) .section-title {
+  line-height: 1.5;
+}
+
+.lead {
+  margin: 0 0 var(--space-4);
+  color: var(--c-text-strong-2);
+}
+
+.small {
+  font-size: calc(var(--fs-small) * var(--script-factor));
+}
+
+.muted {
+  color: var(--c-slot-label);
+}
+
+/* The stencil face prints what the system issued: references, times, counts. */
+.num {
+  font-family: var(--font-number);
+  font-weight: var(--weight-strong);
+  font-variant-numeric: normal;
+  letter-spacing: 0.01em;
+}
+
+/* Below 20 px a stencil loses its joins, so small references use Plex 600. */
+.ref-small {
+  font-weight: var(--weight-strong);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.label-caps {
+  font-size: calc(var(--fs-label) * var(--script-factor));
+  line-height: var(--lh-label);
+  font-weight: var(--weight-strong);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-label);
+  color: var(--c-slot-label);
+}
+
+:lang(si) .label-caps {
+  font-size: var(--fs-label-si);
+}
+
+/* === Section: 7. Buttons === */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: var(--target-phone);
+  padding: var(--space-2) var(--space-5);
+  border: var(--border-input) solid transparent;
+  border-radius: var(--radius-control);
+  font: inherit;
+  font-size: calc(var(--fs-body) * var(--script-factor));
+  font-weight: var(--weight-strong);
+  line-height: 1.3;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color var(--dur-quick) var(--ease-out),
+    color var(--dur-quick) var(--ease-out);
+}
+
+:lang(si) .btn {
+  line-height: 1.5;
+}
+
+.btn--primary {
+  background: var(--c-brand);
+  color: var(--c-on-brand);
+}
+
+.btn--primary:hover,
+.btn--primary.is-hover {
+  background: var(--c-brand-strong);
+  color: var(--c-on-brand);
+}
+
+.btn--primary:active,
+.btn--primary.is-pressed {
+  background: var(--c-brand-strong);
+  box-shadow: inset 0 var(--bar-current) 0 var(--c-value);
+}
+
+.btn--secondary {
+  background: var(--c-ticket);
+  border-color: var(--c-brand);
+  color: var(--c-brand);
+}
+
+.btn--secondary:hover,
+.btn--secondary.is-hover {
+  background: var(--c-brand-faint);
+  color: var(--c-brand-strong);
+  border-color: var(--c-brand-strong);
+}
+
+.btn--secondary:active,
+.btn--secondary.is-pressed {
+  background: var(--c-brand-tint);
+  box-shadow: inset 0 var(--bar-current) 0 var(--c-brand);
+}
+
+.btn--quiet {
+  background: transparent;
+  color: var(--c-brand);
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+  padding-inline: var(--space-3);
+}
+
+.btn--quiet:hover,
+.btn--quiet.is-hover {
+  color: var(--c-brand-strong);
+  text-decoration-thickness: var(--line-strong);
+}
+
+.btn--quiet:active,
+.btn--quiet.is-pressed {
+  background: var(--c-brand-tint);
+}
+
+.btn--danger {
+  background: var(--c-ticket);
+  border-color: var(--c-danger);
+  color: var(--c-danger);
+}
+
+.btn--danger:hover,
+.btn--danger.is-hover {
+  background: var(--c-danger-tint);
+}
+
+.btn--danger:active,
+.btn--danger.is-pressed {
+  background: var(--c-danger-tint);
+  box-shadow: inset 0 var(--bar-current) 0 var(--c-danger);
+}
+
+/* No-show: deliberately quieter than Done (brief 5.4) – thin grey edge,
+   regular weight, the danger colour only in the word and icon. */
+.btn--noshow {
+  background: var(--c-ticket);
+  border: var(--border-edge) solid var(--c-ticket-edge);
+  color: var(--c-danger);
+  font-weight: var(--weight-regular);
+}
+
+.btn--noshow:hover {
+  background: var(--c-danger-tint);
+  border-color: var(--c-danger);
+}
+
+.btn--noshow:active {
+  background: var(--c-danger-tint);
+  box-shadow: inset 0 var(--bar-current) 0 var(--c-danger);
+}
+
+.btn--danger-solid {
+  background: var(--c-danger);
+  color: var(--c-on-brand);
+}
+
+.btn--block {
+  display: flex;
+  width: 100%;
+}
+
+.btn--large {
+  min-height: var(--target-large);
+  font-size: calc(var(--fs-value) * var(--script-factor));
+}
+
+.btn--small {
+  min-height: var(--target-desktop);
+  padding: var(--space-1) var(--space-3);
+  font-size: calc(var(--fs-small) * var(--script-factor));
+}
+
+.is-focus-demo {
+  outline: var(--focus-width) solid var(--c-focus);
+  outline-offset: var(--focus-offset);
+}
+
+/* Disabled: dashed edge as well as grey, so it reads without colour. */
+.btn:disabled,
+.btn[aria-disabled="true"]:not([aria-busy="true"]) {
+  background: var(--c-disabled-ground);
+  border: var(--border-input) dashed var(--c-ticket-edge);
+  color: var(--c-slot-label);
+  box-shadow: none;
+  cursor: not-allowed;
+  text-decoration: none;
+}
+
+/* Busy: the label changes to "Sending…" and a small bar runs once. */
+.btn[aria-busy="true"] {
+  cursor: progress;
+  opacity: 1;
+}
+
+.btn__busy-mark {
+  display: none;
+  width: var(--icon-xs);
+  height: var(--icon-xs);
+  border: var(--line-strong) solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+}
+
+.btn[aria-busy="true"] .btn__busy-mark {
+  display: inline-block;
+  animation: busy-turn 700ms linear 2;
+}
+
+@keyframes busy-turn {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  align-items: center;
+}
+
+/* === Section: 8. Text fields, selects and text areas === */
+.field {
+  margin: 0 0 var(--space-5);
+}
+
+.field:last-child {
+  margin-bottom: 0;
+}
+
+.label,
+.legend {
+  display: block;
+  margin: 0 0 var(--space-1);
+  padding: 0;
+  font-size: calc(var(--fs-body) * var(--script-factor));
+  line-height: 1.35;
+  font-weight: var(--weight-strong);
+  color: var(--c-value);
+}
+
+:lang(si) .label,
+:lang(si) .legend {
+  line-height: 1.6;
+}
+
+.label__note {
+  font-weight: var(--weight-regular);
+  color: var(--c-slot-label);
+}
+
+.hint {
+  display: block;
+  margin: 0 0 var(--space-2);
+  font-size: calc(var(--fs-small) * var(--script-factor));
+  line-height: 1.4;
+  color: var(--c-slot-label);
+}
+
+:lang(si) .hint {
+  line-height: 1.65;
+}
+
+.input,
+.select,
+.textarea {
+  display: block;
+  width: 100%;
+  min-height: var(--target-phone);
+  padding: var(--space-2) var(--space-3);
+  border: var(--border-input) solid var(--c-ticket-edge);
+  border-radius: var(--radius-control);
+  background: var(--c-ticket);
+  color: var(--c-value);
+  font: inherit;
+  font-size: calc(var(--fs-body) * var(--script-factor));
+  line-height: 1.4;
+}
+
+.input:hover,
+.select:hover,
+.textarea:hover {
+  border-color: var(--c-value);
+}
+
+.input:focus-visible,
+.select:focus-visible,
+.textarea:focus-visible,
+.input.is-focus-demo {
+  border-color: var(--c-value);
+  outline: var(--focus-width) solid var(--c-focus);
+  outline-offset: var(--focus-offset);
+}
+
+.input:disabled,
+.select:disabled,
+.textarea:disabled {
+  background: var(--c-disabled-ground);
+  border-style: dashed;
+  color: var(--c-slot-label);
+  cursor: not-allowed;
+}
+
+.input--narrow {
+  max-width: 12em;
+}
+
+.textarea {
+  min-height: var(--textarea-min);
+  resize: vertical;
+}
+
+/* Native select keeps the phone's own wheel picker (brief 5.2); the arrow is
+   our icon, drawn on top and ignored by the pointer. */
+.select-wrap {
+  position: relative;
+}
+
+.select {
+  appearance: none;
+  padding-right: var(--target-min);
+}
+
+.select-wrap > .icon {
+  position: absolute;
+  right: var(--space-3);
+  top: 50%;
+  margin-top: calc(var(--icon-md) / -2);
+  pointer-events: none;
+  transform: rotate(90deg);
+}
+
+/* Error: red border, an icon and the words (NFR-03, never colour alone). */
+.error-msg {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-2);
+  color: var(--c-danger);
+  font-size: calc(var(--fs-body) * var(--script-factor));
+  font-weight: var(--weight-strong);
+  line-height: 1.35;
+}
+
+.error-msg[hidden] {
+  display: none;
+}
+
+.error-msg .icon {
+  margin-top: 1px;
+}
+
+.has-error .input,
+.has-error .select,
+.has-error .textarea,
+.input[aria-invalid="true"],
+.select[aria-invalid="true"] {
+  border-color: var(--c-danger);
+  border-width: var(--border-error);
+}
+
+/* === Section: 9. Fieldsets and choice options === */
+.fieldset {
+  min-width: 0;
+  margin: 0 0 var(--space-5);
+  padding: 0;
+  border: 0;
+}
+
+.choices {
+  display: grid;
+  gap: var(--space-2);
+}
+
+/* Two columns while each is at least 140 px; one column on narrower
+   phones, so a long Sinhala word (බ්‍රහස්පතින්දා) never runs into the edge. */
+.choices--2 {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--choice-col-min)), 1fr));
+}
+
+.choice {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: var(--choice-min);
+  padding: var(--space-2) var(--space-3);
+  border: var(--border-edge) solid var(--c-ticket-edge);
+  border-radius: var(--radius-control);
+  background: var(--c-ticket);
+  cursor: pointer;
+  line-height: 1.3;
+}
+
+:lang(si) .choice {
+  line-height: 1.55;
+}
+
+/* The real input covers the whole option, so a tap anywhere selects it and
+   screen readers meet a native radio or checkbox. */
+.choice__input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.choice__dot {
+  position: relative;
+  flex: none;
+  width: var(--radio-size);
+  height: var(--radio-size);
+  border: var(--border-input) solid var(--c-ticket-edge);
+  border-radius: 50%;
+  background: var(--c-ticket);
+}
+
+.choice__text {
+  min-width: 0;
+}
+
+.choice__sub {
+  display: block;
+  font-size: calc(var(--fs-small) * var(--script-factor));
+  color: var(--c-slot-label);
+}
+
+.choice:hover,
+.choice.is-hover {
+  background: var(--c-brand-faint);
+  border-color: var(--c-brand);
+}
+
+.choice:has(.choice__input:focus-visible),
+.choice.is-focus-demo {
+  outline: var(--focus-width) solid var(--c-focus);
+  outline-offset: var(--focus-offset);
+}
+
+/* Selected: tinted ground, 2 px purple edge and a filled dot (shape + colour). */
+.choice:has(.choice__input:checked),
+.choice.is-selected {
+  background: var(--c-brand-tint);
+  border-color: var(--c-brand);
+  box-shadow: inset 0 0 0 1px var(--c-brand);
+  font-weight: var(--weight-strong);
+}
+
+.choice:has(.choice__input:checked) .choice__dot,
+.choice.is-selected .choice__dot {
+  border-color: var(--c-brand);
+}
+
+.choice:has(.choice__input:checked) .choice__dot::after,
+.choice.is-selected .choice__dot::after {
+  content: "";
+  position: absolute;
+  inset: var(--space-1);
+  border-radius: 50%;
+  background: var(--c-brand);
+}
+
+.choice:has(.choice__input:checked) .choice__sub,
+.choice.is-selected .choice__sub {
+  color: var(--c-value);
+  font-weight: var(--weight-regular);
+}
+
+/* Closed (FR-07): shown, not hidden; grey ground, dashed edge, the word
+   "Closed" with a cross, and no dot. */
+.choice.is-closed,
+.choice:has(.choice__input[aria-disabled="true"]),
+.choice:has(.choice__input:disabled) {
+  background: var(--c-disabled-ground);
+  border-style: dashed;
+  color: var(--c-slot-label);
+  cursor: not-allowed;
+  font-weight: var(--weight-regular);
+  box-shadow: none;
+}
+
+.choice.is-closed .choice__dot,
+.choice:has(.choice__input[aria-disabled="true"]) .choice__dot,
+.choice:has(.choice__input:disabled) .choice__dot {
+  display: none;
+}
+
+.choice__closed {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin-top: var(--space-1);
+  font-size: calc(var(--fs-label) * var(--script-factor));
+  font-weight: var(--weight-strong);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-label);
+}
+
+:lang(si) .choice__closed {
+  font-size: var(--fs-label-si);
+}
+
+.choices.has-error-group .choice,
+.fieldset.has-error .choice {
+  border-color: var(--c-danger);
+}
+
+/* Date choice: day above, date below; stacked text wraps freely in Sinhala. */
+.choice--date {
+  align-items: flex-start;
+  min-height: var(--choice-date-min);
+}
+
+.choice--date .choice__dot {
+  margin-top: var(--space-half);
+}
+
+.choice--wide {
+  grid-column: 1 / -1;
+}
+
+/* === Section: 10. Checkboxes === */
+.check {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  min-height: var(--target-phone);
+  padding: var(--space-2) 0;
+  cursor: pointer;
+  line-height: 1.4;
+}
+
+:lang(si) .check {
+  line-height: 1.6;
+}
+
+.check__input {
+  position: absolute;
+  left: 0;
+  top: var(--space-2);
+  width: var(--check-size);
+  height: var(--check-size);
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.check__box {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: var(--check-size);
+  height: var(--check-size);
+  border: var(--border-input) solid var(--c-ticket-edge);
+  border-radius: var(--radius-stamp);
+  background: var(--c-ticket);
+  color: var(--c-on-brand);
+}
+
+.check__box .icon {
+  visibility: hidden;
+  stroke-width: 2.5;
+}
+
+.check:hover .check__box,
+.check.is-hover .check__box {
+  border-color: var(--c-brand);
+}
+
+.check__input:checked + .check__box,
+.check.is-checked .check__box {
+  background: var(--c-brand);
+  border-color: var(--c-brand);
+}
+
+.check__input:checked + .check__box .icon,
+.check.is-checked .check__box .icon {
+  visibility: visible;
+}
+
+.check.is-focus-demo {
+  outline: none;
+}
+
+.check__input:focus-visible + .check__box,
+.check.is-focus-demo .check__box {
+  outline: var(--focus-width) solid var(--c-focus);
+  outline-offset: var(--focus-offset);
+}
+
+.check__input:disabled + .check__box,
+.check.is-disabled .check__box {
+  background: var(--c-disabled-ground);
+  border-style: dashed;
+}
+
+.check.is-disabled,
+.check:has(.check__input:disabled) {
+  color: var(--c-slot-label);
+  cursor: not-allowed;
+}
+
+.check__text {
+  padding-top: var(--space-half);
+}
+
+/* === Section: 11. Passenger stepper === */
+.stepper {
+  display: flex;
+  align-items: stretch;
+  gap: var(--space-2);
+}
+
+.stepper__btn {
+  display: grid;
+  place-items: center;
+  width: var(--target-phone);
+  height: var(--target-phone);
+  padding: 0;
+  border: var(--border-input) solid var(--c-brand);
+  border-radius: var(--radius-control);
+  background: var(--c-ticket);
+  color: var(--c-brand);
+  cursor: pointer;
+}
+
+.stepper__btn:hover {
+  background: var(--c-brand-faint);
+}
+
+.stepper__btn:disabled {
+  border-style: dashed;
+  border-color: var(--c-ticket-edge);
+  color: var(--c-slot-label);
+  background: var(--c-disabled-ground);
+  cursor: not-allowed;
+}
+
+.stepper__input {
+  width: 5.5em;
+  text-align: center;
+  font-size: calc(var(--fs-value) * var(--script-factor));
+  font-weight: var(--weight-strong);
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.stepper__input::-webkit-outer-spin-button,
+.stepper__input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* === Section: 12. Disclosures === */
+.disclosure {
+  margin: 0 0 var(--space-5);
+  border-top: var(--border-edge) solid var(--c-ticket-edge);
+  border-bottom: var(--border-edge) solid var(--c-ticket-edge);
+}
+
+.disclosure__summary {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--target-phone);
+  padding: var(--space-2) 0;
+  color: var(--c-brand);
+  font-weight: var(--weight-strong);
+  cursor: pointer;
+  list-style: none;
+  line-height: 1.35;
+}
+
+.disclosure__summary::-webkit-details-marker {
+  display: none;
+}
+
+.disclosure__summary .icon {
+  transition: transform var(--dur-quick) var(--ease-out);
+}
+
+.disclosure[open] > .disclosure__summary .icon {
+  transform: rotate(90deg);
+}
+
+.disclosure__summary:hover {
+  text-decoration: underline;
+}
+
+.disclosure__body {
+  padding: var(--space-2) 0 var(--space-4);
+}
+
+/* === Section: 13. Alerts and the error summary === */
+/* Alerts are large stamps: a 2 px border, a tint, an icon and the words. */
+.alert {
+  display: flex;
+  gap: var(--space-3);
+  margin: 0 0 var(--space-4);
+  padding: var(--space-3);
+  border: var(--border-stamp) solid currentColor;
+  border-radius: var(--radius-stamp);
+  line-height: 1.4;
+}
+
+:lang(si) .alert {
+  line-height: 1.65;
+}
+
+.alert__body {
+  min-width: 0;
+  color: var(--c-value);
+}
+
+.alert__title {
+  display: block;
+  margin: 0 0 var(--space-1);
+  font-size: calc(var(--fs-body) * var(--script-factor));
+  font-weight: var(--weight-strong);
+  line-height: 1.35;
+}
+
+.alert__body p:last-child {
+  margin-bottom: 0;
+}
+
+.alert--info {
+  color: var(--c-info);
+  background: var(--c-info-tint);
+}
+
+.alert--success {
+  color: var(--c-ok);
+  background: var(--c-ok-tint);
+}
+
+.alert--warning {
+  color: var(--c-attention);
+  background: var(--c-attention-tint);
+}
+
+.alert--error {
+  color: var(--c-danger);
+  background: var(--c-danger-tint);
+}
+
+.alert--error .alert__title {
+  color: var(--c-danger);
+}
+
+.error-summary__list {
+  margin: 0;
+  padding: 0 0 0 var(--space-4);
+}
+
+.error-summary__list li {
+  margin: 0 0 var(--space-1);
+}
+
+.error-summary__list a {
+  color: var(--c-danger);
+  font-weight: var(--weight-strong);
+}
+
+.alert--compact {
+  padding: var(--space-2) var(--space-3);
+  font-size: calc(var(--fs-small) * var(--script-factor));
+}
+
+/* === Section: 14. The ticket === */
+/* Every fact has a fixed place (principle 1). The ticket is a size container
+   so the same component lays its slots out in 2, 3 or 6 columns. */
+.ticket {
+  container: ticket / inline-size;
+  position: relative;
+  background: var(--c-ticket);
+  border: var(--border-edge) solid var(--c-ticket-edge);
+  border-radius: var(--radius-ticket);
+}
+
+/* The strip: the ticket's name. Unissued it is a plain band with a dashed
+   foot; issued it fills with the crest purple from the left (principle 2). */
+.ticket__strip {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-1) var(--space-3);
+  min-height: var(--strip-height-min);
+  padding: var(--space-2) var(--space-3);
+  border-bottom: var(--perf-dash) dashed var(--c-ticket-edge);
+  border-radius: var(--radius-ticket) var(--radius-ticket) 0 0;
+  color: var(--c-value);
+}
+
+.ticket__strip::before {
+  content: "";
+  position: absolute;
+  inset: -1px -1px 0;
+  z-index: -1;
+  border-radius: var(--radius-ticket) var(--radius-ticket) 0 0;
+  background: var(--c-brand);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform var(--dur-issue) var(--ease-out);
+}
+
+.ticket.is-issued > .ticket__strip {
+  border-bottom-color: var(--c-brand);
+  border-bottom-style: solid;
+  color: var(--c-on-brand);
+}
+
+.ticket.is-issued > .ticket__strip::before {
+  transform: scaleX(1);
+}
+
+.ticket.is-issued > .ticket__strip :focus-visible {
+  outline-color: var(--c-focus-on-brand);
+}
+
+.ticket__strip-label {
+  display: block;
+  font-size: calc(var(--fs-label) * var(--script-factor));
+  line-height: var(--lh-label);
+  font-weight: var(--weight-strong);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-label);
+  color: var(--c-slot-label);
+}
+
+:lang(si) .ticket__strip-label {
+  font-size: var(--fs-label-si);
+}
+
+.ticket.is-issued > .ticket__strip .ticket__strip-label {
+  color: var(--c-on-brand-quiet);
+}
+
+/* The reference: the serial (0142) is the part people say aloud, so it is
+   the largest; copying still gives "PT-2026-0142" (no spaces in the markup). */
+.ref {
+  font-family: var(--font-number);
+  font-weight: var(--weight-strong);
+  font-size: var(--fs-number);
+  line-height: var(--lh-number);
+  white-space: nowrap;
+  letter-spacing: 0.01em;
+}
+
+.ref__prefix {
+  font-size: 0.72em;
+}
+
+.ref--placeholder {
+  color: var(--c-slot-label);
+}
+
+/* Slots: a modular grid drawn with hairline rules. */
+.slots {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 0;
+}
+
+.slot {
+  min-width: 0;
+  margin: 0;
+  padding: var(--space-2) var(--space-3) var(--space-3);
+  border-top: var(--border-edge) solid var(--c-rule);
+}
+
+.slot:nth-child(2n) {
+  border-left: var(--border-edge) solid var(--c-rule);
+}
+
+.slots > .slot:nth-child(-n + 2) {
+  border-top: 0;
+}
+
+.slot--wide {
+  grid-column: 1 / -1;
+  border-left: 0 !important;
+}
+
+.slot__label {
+  display: block;
+  margin: 0 0 var(--space-1);
+  font-size: calc(var(--fs-label) * var(--script-factor));
+  line-height: var(--lh-label);
+  font-weight: var(--weight-strong);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-label);
+  color: var(--c-slot-label);
+}
+
+:lang(si) .slot__label {
+  font-size: var(--fs-label-si);
+}
+
+.slot__value {
+  display: block;
+  margin: 0;
+  font-size: calc(var(--fs-value) * var(--script-factor));
+  line-height: var(--lh-value);
+  font-weight: var(--weight-strong);
+  overflow-wrap: anywhere;
+}
+
+.slot__value .slot__line {
+  display: block;
+}
+
+.slot__sub {
+  display: block;
+  font-size: calc(var(--fs-small) * var(--script-factor));
+  font-weight: var(--weight-regular);
+  color: var(--c-text-strong-2);
+}
+
+/* An empty slot keeps its place and shows a dash. */
+.slot.is-empty .slot__value {
+  color: var(--c-slot-label);
+  font-weight: var(--weight-regular);
+}
+
+/* Three columns when the ticket is about the width of a side panel. */
+@container ticket (min-width: 420px) {
+  .slots--flex {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .slots--flex > .slot {
+    border-left: var(--border-edge) solid var(--c-rule);
+  }
+
+  .slots--flex > .slot:nth-child(3n + 1) {
+    border-left: 0;
+  }
+
+  .slots--flex > .slot:nth-child(-n + 3) {
+    border-top: 0;
+  }
+
+  .slots--flex > .slot:nth-child(3) ~ .slot {
+    border-top: var(--border-edge) solid var(--c-rule);
+  }
+}
+
+/* Six columns on a wide ticket (brief 6.5): one row of facts. */
+@container ticket (min-width: 760px) {
+  .slots--flex {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+
+  .slots--flex > .slot {
+    border-top: 0 !important;
+    border-left: var(--border-edge) solid var(--c-rule);
+  }
+
+  .slots--flex > .slot:first-child {
+    border-left: 0;
+  }
+
+  .slots--flex > .slot:nth-child(6) ~ .slot {
+    border-top: var(--border-edge) solid var(--c-rule) !important;
+  }
+
+  .slots--flex > .slot:nth-child(7) {
+    border-left: 0;
+  }
+}
+
+/* The perforation: a dashed line with semicircular notches cut into both
+   edges. It only ever divides real parts of a trip (principle 3). */
+.perf {
+  position: relative;
+  height: var(--notch-size);
+  margin: 0;
+}
+
+.perf::after {
+  content: "";
+  position: absolute;
+  left: calc(var(--notch-size) / 2 + var(--space-2));
+  right: calc(var(--notch-size) / 2 + var(--space-2));
+  top: 50%;
+  border-top: var(--perf-dash) dashed var(--c-ticket-edge);
+  transform: translateY(-50%);
+}
+
+.perf__notch {
+  position: absolute;
+  top: 0;
+  width: var(--notch-size);
+  height: var(--notch-size);
+  border: var(--border-edge) solid var(--c-ticket-edge);
+  border-radius: 50%;
+  background: var(--c-desk);
+}
+
+/* Each notch is a full circle centred on the ticket's edge; the half outside
+   the ticket is clipped away, so only the bite into the ticket shows. */
+.perf__notch--start {
+  left: calc(var(--notch-size) / -2 - var(--border-edge) / 2);
+  clip-path: inset(0 0 0 calc(50% - var(--border-edge)));
+}
+
+.perf__notch--end {
+  right: calc(var(--notch-size) / -2 - var(--border-edge) / 2);
+  clip-path: inset(0 calc(50% - var(--border-edge)) 0 0);
+}
+
+.ticket__coupon-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-3) 0;
+}
+
+.ticket__stamp-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-3) var(--space-2);
+}
+
+.ticket__stub {
+  padding: var(--space-3);
+  border-top: var(--border-edge) solid var(--c-ticket-edge);
+  background: var(--c-ticket);
+}
+
+.ticket__stub-title {
+  margin: 0 0 var(--space-2);
+}
+
+.ticket__foot {
+  padding: var(--space-2) var(--space-3) var(--space-3);
+  border-top: var(--border-edge) solid var(--c-rule);
+  color: var(--c-slot-label);
+  font-size: calc(var(--fs-small) * var(--script-factor));
+}
+
+/* === Section: 15. Stamps (status) and flags === */
+/* A stamp: the status word in capitals, its colour, a 2 px rectangle and an
+   icon. Never rotated: rotated words are harder to read. */
+.stamp {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1-5);
+  min-height: var(--stamp-min);
+  padding: var(--space-half) var(--space-2);
+  border: var(--border-stamp) solid currentColor;
+  border-radius: var(--radius-stamp);
+  background: var(--c-ticket);
+  font-size: calc(var(--fs-label) * var(--script-factor));
+  line-height: 1.2;
+  font-weight: var(--weight-strong);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+
+.stamp .icon {
+  width: var(--icon-xs);
+  height: var(--icon-xs);
+  stroke-width: 2;
+}
+
+.stamp--submitted { color: var(--c-neutral-status); }
+.stamp--proposed { color: var(--c-info); }
+.stamp--attention { color: var(--c-attention); background: var(--c-attention-tint); }
+.stamp--confirmed { color: var(--c-ok); }
+.stamp--declined { color: var(--c-danger); }
+.stamp--cancelled { color: var(--c-neutral-status); border-style: dashed; }
+.stamp--completed { color: var(--c-ok); background: var(--c-ok-tint); }
+.stamp--noshow { color: var(--c-danger); background: var(--c-danger-tint); }
+
+.stamp--large {
+  min-height: var(--stamp-large-min);
+  padding: var(--space-1) var(--space-3);
+  font-size: calc(var(--fs-body) * var(--script-factor));
+}
+
+.stamp--large .icon {
+  width: var(--icon-sm);
+  height: var(--icon-sm);
+}
+
+/* Flags: smaller outline stamps in ink. */
+.flag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-height: var(--flag-min);
+  padding: 1px var(--space-1-5);
+  border: var(--border-edge) solid var(--c-value);
+  border-radius: var(--radius-stamp);
+  background: var(--c-ticket);
+  color: var(--c-value);
+  font-size: calc(var(--fs-label) * var(--script-factor));
+  line-height: 1.2;
+  font-weight: var(--weight-strong);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+:lang(si) .flag,
+:lang(si) .stamp {
+  font-size: var(--fs-label-si);
+  line-height: 1.5;
+  white-space: normal;
+}
+
+.flag .icon {
+  width: var(--icon-xs);
+  height: var(--icon-xs);
+}
+
+.stamp-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stamp-list li {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* === Section: 16. Seat meter === */
+/* Seats on board as filled cells plus the words "7 of 8". */
+.seats {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  white-space: nowrap;
+}
+
+.seats__cells {
+  display: inline-flex;
+  gap: var(--space-half);
+}
+
+.seats__cell {
+  width: var(--seat-w);
+  height: var(--seat-h);
+  border: var(--border-edge) solid var(--c-ticket-edge);
+  border-radius: 1px;
+  background: var(--c-ticket);
+}
+
+.seats__cell.is-taken {
+  background: var(--c-text-strong-2);
+  border-color: var(--c-text-strong-2);
+}
+
+/* === Section: 17. Data tables === */
+.table-wrap {
+  overflow-x: auto;
+  background: var(--c-ticket);
+  border: var(--border-edge) solid var(--c-ticket-edge);
+  border-radius: var(--radius-ticket);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: calc(var(--fs-body) * var(--script-factor));
+}
+
+.table caption {
+  padding: var(--space-3) var(--space-3) var(--space-2);
+  text-align: left;
+  font-weight: var(--weight-strong);
+  font-size: calc(var(--fs-value) * var(--script-factor));
+}
+
+.table__caption-note {
+  display: block;
+  font-weight: var(--weight-regular);
+  font-size: calc(var(--fs-small) * var(--script-factor));
+  color: var(--c-slot-label);
+}
+
+.table th,
+.table td {
+  padding: var(--space-2) var(--space-3);
+  border-top: var(--border-edge) solid var(--c-rule);
+  text-align: left;
+  vertical-align: top;
+}
+
+.table thead th {
+  border-top: 0;
+  border-bottom: var(--perf-dash) solid var(--c-ticket-edge);
+  font-size: calc(var(--fs-label) * var(--script-factor));
+  font-weight: var(--weight-strong);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-label);
+  color: var(--c-slot-label);
+  white-space: nowrap;
+}
+
+.table td.is-num,
+.table th.is-num {
+  text-align: right;
+}
+
+.table tbody th {
+  font-weight: var(--weight-strong);
+}
+
+.table tbody tr:hover {
+  background: var(--c-brand-faint);
+}
+
+.table tbody tr.is-muted td,
+.table tbody tr.is-muted th {
+  color: var(--c-slot-label);
+}
+
+/* The sortable look: a real button in the header, with aria-sort. */
+.sort-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-height: var(--stamp-min);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--c-value);
+  font: inherit;
+  text-transform: inherit;
+  letter-spacing: inherit;
+  cursor: pointer;
+}
+
+.sort-btn .icon {
+  transform: rotate(-90deg);
+}
+
+.link-btn {
+  display: inline;
+  white-space: nowrap;
+  min-height: var(--target-desktop-min);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--c-brand);
+  font: inherit;
+  font-weight: var(--weight-strong);
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+  cursor: pointer;
+}
+
+.link-btn:hover {
+  color: var(--c-brand-strong);
+  text-decoration-thickness: var(--line-strong);
+}
+
+/* === Section: 18. Driver stubs, the punch and the progress holes === */
+/* A stub: the time sits in its own torn-off column (Boarding Pass / Fail:
+   the most-checked fact gets its own place), then the place and the action. */
+.stub {
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--stub-time-col) minmax(0, 1fr);
+  background: var(--c-ticket);
+  border: var(--border-edge) solid var(--c-ticket-edge);
+  border-radius: var(--radius-ticket);
+}
+
+.stub__time {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-half);
+  padding: var(--space-3) var(--space-2) var(--space-3) var(--space-3);
+  border-right: var(--perf-dash) dashed var(--c-ticket-edge);
+}
+
+/* Notches at both ends of the vertical perforation. */
+.stub__time::before,
+.stub__time::after {
+  content: "";
+  position: absolute;
+  right: calc(var(--notch-size) / -2 - var(--perf-dash) / 2);
+  width: var(--notch-size);
+  height: var(--notch-size);
+  border: var(--border-edge) solid var(--c-ticket-edge);
+  border-radius: 50%;
+  background: var(--c-desk);
+}
+
+.stub__time::before {
+  top: calc(var(--notch-size) / -2 - var(--border-edge) / 2);
+  clip-path: inset(calc(50% - var(--border-edge)) 0 0 0);
+}
+
+.stub__time::after {
+  bottom: calc(var(--notch-size) / -2 - var(--border-edge) / 2);
+  clip-path: inset(0 0 calc(50% - var(--border-edge)) 0);
+}
+
+.stub__clock {
+  font-family: var(--font-number);
+  font-weight: var(--weight-strong);
+  font-size: var(--fs-stub-clock);
+  line-height: 1;
+}
+
+.stub__meridiem {
+  font-size: var(--fs-meridiem);
+  font-weight: var(--weight-strong);
+  line-height: 1.2;
+}
+
+.stub__main {
+  min-width: 0;
+  padding: var(--space-3);
+}
+
+.stub__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-1);
+  padding-right: calc(var(--punch-size) + var(--space-2));
+}
+
+.stub__place {
+  display: block;
+  margin: 0;
+  font-size: calc(var(--fs-value) * var(--script-factor));
+  line-height: 1.3;
+  font-weight: var(--weight-strong);
+}
+
+.stub__action {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-3);
+  margin: var(--space-1) 0 var(--space-2);
+  font-weight: var(--weight-strong);
+}
+
+.stub__action-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.stub__facts {
+  margin: 0 0 var(--space-3);
+  font-size: calc(var(--fs-small) * var(--script-factor));
+  color: var(--c-text-strong-2);
+}
+
+.stub__facts p {
+  margin: 0 0 var(--space-1);
+}
+
+.stub__contact {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-3);
+}
+
+.stub__actions {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.stub__actions-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.stub__actions-row > .btn {
+  flex: 1 1 8em;
+}
+
+.stub__note-out {
+  margin: 0;
+  font-size: calc(var(--fs-small) * var(--script-factor));
+  color: var(--c-info);
+  font-weight: var(--weight-strong);
+}
+
+.stub__confirm {
+  padding: var(--space-3);
+  border: var(--border-stamp) solid var(--c-danger);
+  border-radius: var(--radius-stamp);
+  background: var(--c-danger-tint);
+}
+
+.stub__confirm p {
+  font-weight: var(--weight-strong);
+}
+
+/* The next stop: the biggest thing on the screen, with the issued strip. */
+.stub--next {
+  grid-template-columns: 1fr;
+  border-width: var(--border-input);
+  border-color: var(--c-brand);
+}
+
+.stub--next .stub__strip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-1) var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  background: var(--c-brand);
+  color: var(--c-on-brand);
+}
+
+.stub--next .stub__strip :focus-visible {
+  outline-color: var(--c-focus-on-brand);
+}
+
+.stub__strip {
+  display: none;
+}
+
+.stub__strip-title {
+  margin: 0;
+  font-size: calc(var(--fs-value) * var(--script-factor));
+  font-weight: var(--weight-strong);
+  line-height: 1.3;
+}
+
+.stub__in {
+  font-weight: var(--weight-strong);
+  color: var(--c-on-brand-quiet);
+}
+
+.stub--next .stub__body {
+  display: grid;
+  grid-template-columns: var(--stub-time-col-next) minmax(0, 1fr);
+}
+
+.stub__body {
+  display: contents;
+}
+
+.stub--next .stub__clock {
+  font-size: var(--fs-number);
+}
+
+.stub--next .stub__place {
+  font-size: calc(var(--fs-place-next) * var(--script-factor));
+}
+
+/* Under the strip there is no ticket edge, so no notch at the top. */
+.stub--next .stub__time::before {
+  display: none;
+}
+
+/* Only the next stop's Done is filled: later stops can be marked, but the
+   one to act on now is the only strong button on the screen. */
+.stub:not(.stub--next) .btn--primary {
+  min-height: var(--target-phone);
+  background: var(--c-ticket);
+  border-color: var(--c-brand);
+  color: var(--c-brand);
+  font-size: calc(var(--fs-body) * var(--script-factor));
+}
+
+.stub:not(.stub--next) .btn--primary:hover {
+  background: var(--c-brand-faint);
+}
+
+/* The punch: a round hole in the stub's top corner (principle 4). */
+.punch {
+  position: absolute;
+  top: var(--space-3);
+  right: var(--space-3);
+  width: var(--punch-size);
+  height: var(--punch-size);
+  border-radius: 50%;
+  background: var(--c-text-strong-2);
+  box-shadow: 0 0 0 var(--bar-current) var(--c-ticket), 0 0 0 var(--bar-nav) var(--c-ticket-edge);
+  transform: scale(0);
+  transition: transform var(--dur-punch) var(--ease-out);
+}
+
+.stub.is-done .punch,
+.stub.is-noshow .punch {
+  transform: scale(1);
+}
+
+.stub.is-noshow .punch {
+  background: var(--c-danger);
+}
+
+/* The fold: the stub's detail closes (grid rows 1fr to 0fr) after the punch. */
+.stub__fold {
+  display: grid;
+  grid-template-rows: 1fr;
+  transition: grid-template-rows var(--dur-fold) var(--ease-out) var(--dur-punch);
+}
+
+.stub__fold > .stub__fold-inner {
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Focus rings inside the fold must not be clipped while it is open. */
+.stub:not(.is-done):not(.is-noshow) .stub__fold > .stub__fold-inner {
+  overflow: visible;
+}
+
+.stub.is-done .stub__fold,
+.stub.is-noshow .stub__fold {
+  grid-template-rows: 0fr;
+}
+
+.stub__result {
+  display: none;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-3);
+  margin: 0;
+}
+
+.stub.is-done .stub__result,
+.stub.is-noshow .stub__result {
+  display: flex;
+}
+
+.stub.is-done,
+.stub.is-noshow {
+  border-color: var(--c-ticket-edge);
+}
+
+.stub--compact {
+  grid-template-columns: var(--stub-time-col) minmax(0, 1fr);
+}
+
+.stub--compact .stub__clock {
+  font-size: var(--fs-stub-clock-compact);
+}
+
+.stub--compact .stub__main {
+  padding-block: var(--space-2);
+}
+
+.stub-list {
+  display: grid;
+  gap: var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Progress: one hole per stop. Punched holes are filled; the next stop's
+   hole has a thick ring; the rest are dashed rings. */
+.holes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.holes__hole {
+  width: var(--hole-size);
+  height: var(--hole-size);
+  border: var(--border-edge) dashed var(--c-ticket-edge);
+  border-radius: 50%;
+  background: var(--c-ticket);
+}
+
+.holes__hole.is-punched {
+  border: var(--border-edge) solid var(--c-text-strong-2);
+  background: var(--c-text-strong-2);
+}
+
+.holes__hole.is-noshow {
+  border: var(--border-edge) solid var(--c-danger);
+  background: var(--c-danger);
+}
+
+.holes__hole.is-next {
+  border: var(--bar-current) solid var(--c-brand);
+}
+
+/* === Section: 19. Dialog === */
+.dialog {
+  width: min(var(--dialog-max), calc(100vw - var(--space-6)));
+  padding: 0;
+  border: var(--border-input) solid var(--c-value);
+  border-radius: var(--radius-ticket);
+  background: var(--c-ticket);
+  color: var(--c-value);
+}
+
+/* No translucency over content (brief 3.2): the backdrop is the solid desk. */
+.dialog::backdrop {
+  background: var(--c-desk);
+}
+
+.dialog__body {
+  padding: var(--space-5);
+}
+
+.dialog__title {
+  margin: 0 0 var(--space-3);
+  font-size: calc(var(--fs-section) * var(--script-factor));
+}
+
+.dialog__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-5);
+}
+
+/* === Section: 20. Inline status with Undo === */
+.inline-status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+}
+
+.inline-status[hidden] {
+  display: none;
+}
+
+/* === Section: 21. Prototype controls === */
+/* Not part of the design: plain system font and a dashed grey border so no
+   one mistakes it for the design (brief 2). */
+.proto {
+  max-width: var(--page-max-desktop);
+  margin: var(--space-7) auto var(--space-5);
+  padding: var(--space-3);
+  border: var(--line-strong) dashed var(--proto-edge);
+  background: var(--proto-ground);
+  color: var(--proto-text);
+  font-family: var(--font-proto);
+  font-size: var(--fs-note);
+  line-height: 1.4;
+}
+
+.proto--phone {
+  max-width: var(--page-max-phone);
+  margin-inline: var(--page-margin-phone);
+}
+
+@media (min-width: 504px) {
+  .proto--phone {
+    margin-inline: auto;
+  }
+}
+
+.proto h2 {
+  margin: 0 0 var(--space-2);
+  font-family: var(--font-proto);
+  font-size: var(--fs-note);
+  font-weight: 700;
+}
+
+.proto__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.proto button {
+  min-height: var(--target-min);
+  padding: 0 var(--space-3);
+  border: 1px solid var(--proto-button-edge);
+  border-radius: 0;
+  background: var(--proto-ground);
+  color: var(--proto-button-text);
+  font-family: var(--font-proto);
+  font-size: var(--fs-note);
+  cursor: pointer;
+}
+
+.proto button:hover {
+  background: var(--proto-button-hover);
+}
+
+/* === Section: 22. Reduced motion and forced colours === */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+@media (forced-colors: active) {
+  .ticket.is-issued > .ticket__strip {
+    border-bottom: 3px solid CanvasText;
+  }
+
+  .choice:has(.choice__input:checked) {
+    outline: 3px solid Highlight;
+  }
+
+  .holes__hole.is-punched,
+  .punch {
+    background: CanvasText;
+    forced-color-adjust: none;
+  }
+}

@@ -1,0 +1,1483 @@
+/*
+ * PolymathTransit – Design direction 5 "Ticket" – page layouts
+ * ----------------------------------------------------------------------------
+ * What this file is for:
+ *   How the components are arranged on each page: the phone column for the
+ *   request form and the driver's route, the coordinator dashboard (tiles,
+ *   timeline, detail panel) and the foundations page. Uses only semantic
+ *   tokens from tokens.css.
+ *
+ * Grid (brief 6.5): 4 px base. Phone: one column, 12 px margins, at most
+ *   480 px wide and centred. Desktop: 12 columns, 24 px gutters, 1360 px
+ *   maximum; the dashboard's work area is the timeline plus a 400 px panel.
+ *
+ * Sections:
+ *   1. Script on and off
+ *   2. Phone page frame
+ *   3. Request form
+ *   4. Confirmation (the issued ticket)
+ *   5. Driver's route
+ *   6. Dashboard frame and tiles
+ *   7. Dashboard timeline
+ *   8. Timeline legend and list view
+ *   9. Detail panel
+ *   10. Foundations page
+ *   11. Narrow screens
+ */
+
+/* === Section: 1. Script on and off === */
+/* Pages work without JavaScript; the script only enhances (brief 2). */
+.no-js .js-only {
+  display: none !important;
+}
+
+.js .nojs-only,
+.js .nojs-stops {
+  display: none !important;
+}
+
+.js .reveal:not(.is-open) {
+  display: none;
+}
+
+.no-js .pax-split,
+.js .pax-split:not(.is-shown) {
+  display: none;
+}
+
+/* === Section: 2. Phone page frame === */
+.phone-main {
+  max-width: var(--page-max-phone);
+  margin: 0 auto;
+  padding: var(--space-5) var(--page-margin-phone) var(--space-6);
+}
+
+.phone-main:focus {
+  outline: none;
+}
+
+.site-footer {
+  max-width: var(--page-max-phone);
+  margin: 0 auto;
+  padding: 0 var(--page-margin-phone);
+}
+
+.lang-saved:empty {
+  display: none;
+}
+
+/* === Section: 3. Request form === */
+/* The form is one white sheet on the desk; the live ticket sits below it. */
+.sheet {
+  background: var(--c-ticket);
+  border: var(--border-edge) solid var(--c-ticket-edge);
+  border-radius: var(--radius-ticket);
+}
+
+.sheet__section {
+  padding: var(--space-5) var(--space-4) var(--space-5);
+}
+
+.sheet__section + .sheet__section {
+  border-top: var(--border-edge) solid var(--c-ticket-edge);
+}
+
+.sheet__section--last {
+  padding-block: var(--space-2);
+}
+
+.section-title--inline {
+  display: inline;
+  margin: 0;
+  color: inherit;
+}
+
+.disclosure--section {
+  margin: 0;
+  border: 0;
+}
+
+.disclosure--section > .disclosure__summary {
+  color: var(--c-value);
+  min-height: var(--target-large);
+}
+
+.disclosure--section > .disclosure__summary .icon {
+  color: var(--c-brand);
+}
+
+.disclosure--inline {
+  margin: var(--space-3) 0 0;
+}
+
+.check--after-field {
+  margin-top: var(--space-2);
+}
+
+.check__text--icon {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+}
+
+.field--after-checks {
+  margin-top: var(--space-3);
+}
+
+/* "Another address", "Another date": the revealed fields hang off their
+   question by a rule, so it is clear what they belong to. */
+.reveal {
+  margin-top: var(--space-3);
+}
+
+.address-panel,
+#date-other-panel {
+  padding-left: var(--space-3);
+  border-left: var(--border-input) solid var(--c-ticket-edge);
+}
+
+.map-note:empty {
+  display: none;
+}
+
+.map-note {
+  margin: var(--space-2) 0 0;
+  color: var(--c-info);
+  font-weight: var(--weight-strong);
+}
+
+.stops {
+  margin-top: var(--space-3);
+}
+
+.stop {
+  min-width: 0;
+  margin: 0 0 var(--space-3);
+  padding: var(--space-3);
+  border: var(--border-edge) solid var(--c-ticket-edge);
+  border-radius: var(--radius-ticket);
+}
+
+.stop > .legend {
+  padding: 0 var(--space-1);
+}
+
+.stop .field {
+  margin-bottom: var(--space-3);
+}
+
+.stop__kind {
+  margin-bottom: var(--space-3);
+}
+
+.stop__remove {
+  margin-top: var(--space-1);
+}
+
+#add-stop {
+  margin-top: var(--space-1);
+}
+
+/* The return coupon: a perforation runs right across the sheet, its notches
+   biting into the sheet's edges (principle 3). */
+.coupon {
+  margin-top: var(--space-2);
+}
+
+.perf--sheet {
+  margin: var(--space-2) calc(var(--space-4) * -1) var(--space-4);
+}
+
+.pax-split {
+  margin-top: var(--space-3);
+}
+
+.check-ticket {
+  margin: var(--space-5) 0 var(--space-4);
+}
+
+.ticket__title {
+  margin: 0;
+  font-size: calc(var(--fs-value) * var(--script-factor));
+  line-height: 1.3;
+  font-weight: var(--weight-strong);
+}
+
+.send {
+  margin-top: var(--space-4);
+}
+
+.privacy {
+  margin: var(--space-3) 0 var(--space-6);
+  color: var(--c-text-strong-2);
+  line-height: 1.5;
+}
+
+:lang(si) .privacy {
+  line-height: 1.7;
+}
+
+/* === Section: 4. Confirmation (the issued ticket) === */
+.ticket--done {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: var(--space-5);
+}
+
+/* The heading comes first in reading order; the strip is drawn first. */
+.ticket--done > .ticket__strip {
+  order: -1;
+}
+
+.ticket__h1 {
+  margin: 0;
+}
+
+.ticket__trip-title {
+  margin: 0;
+  padding: var(--space-2) var(--space-3) var(--space-1);
+  font-size: calc(var(--fs-body) * var(--script-factor));
+  font-weight: var(--weight-strong);
+  line-height: 1.4;
+}
+
+.ticket__ref-line {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin: 0;
+}
+
+.ticket__h1:focus {
+  outline: none;
+}
+
+.ticket__h1:focus-visible {
+  outline: var(--focus-width) solid var(--c-focus);
+  outline-offset: var(--focus-offset);
+}
+
+.next-steps {
+  padding: 0 var(--space-1);
+}
+
+.another-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--target-phone);
+  font-weight: var(--weight-strong);
+}
+
+/* === Section: 5. Driver's route === */
+.offline-slot .alert {
+  margin-bottom: var(--space-4);
+}
+
+.ticket--route {
+  margin-bottom: var(--space-4);
+}
+
+.route__van {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-half);
+  margin: 0;
+}
+
+.route__van .ref {
+  font-family: var(--font-text);
+  font-size: calc(var(--fs-place-next) * var(--script-factor));
+}
+
+.route__progress {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border-top: var(--border-edge) solid var(--c-rule);
+}
+
+.route__updated {
+  margin: 0;
+  color: var(--c-slot-label);
+}
+
+.done-stops {
+  margin: 0 0 var(--space-4);
+}
+
+.done-stops > .disclosure__summary {
+  font-size: calc(var(--fs-value) * var(--script-factor));
+}
+
+.stub-list--done {
+  gap: var(--space-3);
+}
+
+.stub--compact .stub__result {
+  display: flex;
+  color: var(--c-text-strong-2);
+  font-weight: var(--weight-strong);
+}
+
+.stub__pax {
+  gap: var(--space-2);
+}
+
+.stub__pax .label-caps {
+  color: var(--c-text-strong-2);
+}
+
+.stub__pax-n {
+  font-size: calc(var(--fs-value) * var(--script-factor));
+}
+
+.stub__contact-who {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  min-width: 0;
+  font-weight: var(--weight-strong);
+}
+
+.stub__phone {
+  font-weight: var(--weight-regular);
+  color: var(--c-text-strong-2);
+}
+
+.stub__call {
+  padding-inline: var(--space-4);
+}
+
+.stub__result [data-result-text] {
+  font-weight: var(--weight-strong);
+}
+
+.stub.is-noshow .stub__result {
+  color: var(--c-danger);
+}
+
+.route-end {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: var(--space-5) 0 0;
+  padding: var(--space-3) 0;
+  border-top: var(--perf-dash) dashed var(--c-ticket-edge);
+  font-weight: var(--weight-strong);
+}
+
+/* === Section: 6. Dashboard frame and tiles === */
+.dash {
+  max-width: var(--page-max-desktop);
+  margin: 0 auto;
+  padding: var(--space-5) var(--gutter-desktop) var(--space-6);
+}
+
+.dash:focus {
+  outline: none;
+}
+
+.dash__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-5);
+  margin-bottom: var(--space-4);
+}
+
+.dash__head .title {
+  margin: 0;
+}
+
+.dash__updated {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0;
+  color: var(--c-text-strong-2);
+}
+
+.tiles {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) repeat(2, minmax(0, 1fr));
+  grid-template-rows: auto auto;
+  gap: var(--space-4) var(--gutter-desktop);
+  align-items: stretch;
+  margin-bottom: var(--space-5);
+}
+
+/* Today's plan comes first and is the largest (US-22 AC-1); the four
+   counts sit beside it, two by two. */
+.plan {
+  display: flex;
+  flex-direction: column;
+  grid-row: 1 / span 2;
+}
+
+.plan__title {
+  margin: 0;
+  font-size: calc(var(--fs-value) * var(--script-factor));
+  line-height: 1.3;
+}
+
+.ref--date {
+  font-size: var(--fs-number);
+}
+
+.plan .slots {
+  flex: 1;
+}
+
+.plan__foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border-top: var(--border-edge) solid var(--c-rule);
+}
+
+.plan__done:empty {
+  display: none;
+}
+
+.plan__done {
+  margin: 0 var(--space-3) var(--space-3);
+}
+
+.tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-3) var(--space-3);
+  background: var(--c-ticket);
+  border: var(--border-edge) solid var(--c-ticket-edge);
+  border-top-width: var(--bar-nav);
+  border-radius: var(--radius-ticket);
+  color: var(--c-value);
+  text-decoration: none;
+}
+
+.tile:hover {
+  background: var(--c-brand-faint);
+  color: var(--c-value);
+}
+
+.tile:visited {
+  color: var(--c-value);
+}
+
+.tile--attention {
+  border-top-color: var(--c-attention);
+}
+
+.tile--attention .tile__label {
+  color: var(--c-attention);
+}
+
+.tile--proposed {
+  border-top-color: var(--c-info);
+}
+
+.tile--proposed .tile__label {
+  color: var(--c-info);
+}
+
+.tile--ink {
+  border-top-color: var(--c-value);
+}
+
+.tile__label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-weight: var(--weight-strong);
+  line-height: 1.25;
+}
+
+.tile__count {
+  font-size: var(--fs-count);
+  line-height: 1;
+}
+
+.tile__refs {
+  color: var(--c-text-strong-2);
+  font-size: calc(var(--fs-small) * var(--script-factor));
+  line-height: 1.35;
+}
+
+.tile__go {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin-top: auto;
+  color: var(--c-brand);
+  font-weight: var(--weight-strong);
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+
+.dash__work {
+  --panel-w: 400px;           /* the detail panel: a 2-column ticket fits */
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--panel-w);
+  gap: var(--gutter-desktop);
+  align-items: start;
+}
+
+.day__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.day__head .section-title {
+  margin: 0;
+}
+
+.filters {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.label--compact {
+  font-size: calc(var(--fs-small) * var(--script-factor));
+}
+
+.select--compact {
+  min-height: var(--stamp-large-min);
+  padding-block: var(--space-1);
+  font-size: calc(var(--fs-small) * var(--script-factor));
+}
+
+.select--compact + .icon {
+  margin-top: calc(var(--icon-sm) / -2);
+}
+
+/* === Section: 7. Dashboard timeline === */
+/* Time runs left to right from 7:00 am to 6:30 pm (690 minutes); each van
+   is a line; each booking is a small ticket hanging from the line above or
+   below it, so labels never collide (Marey's principle, our own drawing). */
+.tl {
+  /* Timeline geometry, named once here (scoped tokens). */
+  --head: 148px;              /* van label column */
+  --row-h: 156px;             /* a van row: tickets above, the line, tickets below */
+  --band-y: 64px;             /* where the van's line runs in a row */
+  --axis-h: 44px;
+  --tag-w: 92px;              /* a booking ticket: fits "10:00 am" and its icons */
+  --tag-h: 46px;
+  --tag-strip: 6px;
+  --bar-h: 12px;
+  --venue-h: 14px;
+  --stem-below: 18px;
+  --tier-gap: 24px;
+  --unplaced-h: 116px;
+  position: relative;
+  padding-bottom: var(--space-6);
+  background: var(--c-ticket);
+  border: var(--border-edge) solid var(--c-ticket-edge);
+  border-radius: var(--radius-ticket);
+}
+
+.tl__axis {
+  position: relative;
+  height: var(--axis-h);
+  margin: 0 var(--space-5) 0 var(--head);
+  border-bottom: var(--border-edge) solid var(--c-ticket-edge);
+}
+
+.tl__tick {
+  position: absolute;
+  bottom: 0;
+  left: calc(var(--t) / var(--span) * 100%);
+  padding: 0 0 var(--space-1) var(--space-1);
+  border-left: var(--border-edge) solid var(--c-ticket-edge);
+  font-size: calc(var(--fs-label) * var(--script-factor));
+  line-height: 1.2;
+  color: var(--c-text-strong-2);
+  white-space: nowrap;
+}
+
+.tl__tick--edge {
+  border-left: var(--perf-dash) dashed var(--c-value);
+  color: var(--c-value);
+  font-weight: var(--weight-strong);
+}
+
+.tl__edge-note {
+  display: block;
+  font-weight: var(--weight-regular);
+}
+
+.tl__rows {
+  position: relative;
+}
+
+.tl__marks {
+  position: absolute;
+  inset: 0 var(--space-5) 0 var(--head);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.tl__now {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--t) / var(--span) * 100%);
+  width: var(--line-strong);
+  margin-left: -1px;
+  background: var(--c-now);
+}
+
+.tl__now-label {
+  position: absolute;
+  top: 100%;
+  left: -1px;
+  margin-top: var(--space-1);
+  padding: var(--space-half) var(--space-1-5);
+  background: var(--c-now);
+  color: var(--c-on-brand);
+  font-size: calc(var(--fs-label) * var(--script-factor));
+  font-weight: var(--weight-strong);
+  white-space: nowrap;
+}
+
+.tl__edge {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--t) / var(--span) * 100%);
+  border-left: var(--perf-dash) dashed var(--c-value);
+}
+
+.tl__row {
+  display: grid;
+  grid-template-columns: var(--head) minmax(0, 1fr);
+  border-bottom: var(--border-edge) solid var(--c-rule);
+}
+
+.tl__head {
+  padding: var(--space-3);
+  border-right: var(--border-edge) solid var(--c-rule);
+  font-size: calc(var(--fs-small) * var(--script-factor));
+  line-height: 1.35;
+}
+
+.tl__head strong {
+  font-size: calc(var(--fs-value) * var(--script-factor));
+}
+
+.tl__head-sub {
+  display: block;
+  color: var(--c-text-strong-2);
+  white-space: nowrap;
+}
+
+.tl__track {
+  position: relative;
+  height: var(--row-h);
+  margin-right: var(--space-5);
+}
+
+.tl__row--unplaced .tl__track {
+  height: var(--unplaced-h);
+}
+
+.tl__line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(var(--band-y) - 1px);
+  height: var(--line-strong);
+  background: var(--c-ticket-edge);
+}
+
+.tl__line--none {
+  height: 0;
+  background: none;
+  border-top: var(--perf-dash) dashed var(--c-ticket-edge);
+}
+
+/* Outside working hours: hatched (a pattern, not a colour blend). */
+.tl__after {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(660 / var(--span) * 100%);
+  right: calc(var(--space-5) * -1);
+  background: repeating-linear-gradient(135deg, var(--c-rule) 0 1px, transparent 1px 7px);
+}
+
+.tl__bar {
+  position: absolute;
+  top: calc(var(--band-y) - var(--bar-h) / 2);
+  left: calc(var(--start) / var(--span) * 100%);
+  width: calc((var(--end) - var(--start)) / var(--span) * 100%);
+  min-width: var(--space-1);
+  height: var(--bar-h);
+  border-radius: var(--radius-stamp);
+  background: var(--c-text-strong-2);
+}
+
+.tl__bar--tentative {
+  background: var(--c-attention-tint);
+  border: var(--border-stamp) dashed var(--c-attention);
+}
+
+.tl__venue {
+  position: absolute;
+  top: calc(var(--band-y) - var(--bar-h) / 2 - var(--space-2) - var(--space-half));
+  left: calc(var(--start) / var(--span) * 100%);
+  width: calc((var(--end) - var(--start)) / var(--span) * 100%);
+  height: var(--venue-h);
+  border: var(--border-stamp) dashed var(--c-text-strong-2);
+  border-bottom: 0;
+}
+
+/* A booking ticket on the line. */
+.tl__tag {
+  position: absolute;
+  left: calc(var(--start) / var(--span) * 100%);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  width: var(--tag-w);
+  min-height: var(--tag-h);
+  padding: 0 var(--space-1) var(--space-1);
+  border: var(--border-edge) solid var(--c-info);
+  border-radius: var(--radius-stamp);
+  background: var(--c-ticket);
+  color: var(--c-value);
+  font: inherit;
+  font-size: calc(var(--fs-label) * var(--script-factor) + 1px);
+  line-height: 1.2;
+  text-align: left;
+  cursor: pointer;
+}
+
+.tl__tag--above {
+  top: 0;
+}
+
+.tl__tag--below {
+  top: calc(var(--band-y) + var(--tier-gap));
+}
+
+/* The stem ties the ticket to its start on the line. */
+.tl__tag::after {
+  content: "";
+  position: absolute;
+  left: -1px;
+  width: 1px;
+  background: var(--c-text-strong-2);
+}
+
+.tl__tag--above::after {
+  top: 100%;
+  height: calc(var(--band-y) - var(--bar-h) / 2 - var(--tag-h));
+}
+
+.tl__tag--below::after {
+  bottom: 100%;
+  height: var(--stem-below);
+}
+
+/* Near the end of the day a ticket hangs to the left of its stem, so it
+   stays inside the timeline. */
+.tl__tag--flip {
+  transform: translateX(-100%);
+}
+
+.tl__tag--flip::after {
+  left: auto;
+  right: -1px;
+}
+
+.tl__tag-strip {
+  display: block;
+  height: var(--tag-strip);
+  margin: 0 calc(var(--space-1) * -1) var(--space-1);
+  border-bottom: var(--perf-dash) dashed var(--c-ticket-edge);
+}
+
+.tl__tag.is-issued .tl__tag-strip {
+  background: var(--c-brand);
+  border-bottom: 0;
+}
+
+.tl__tag-l1,
+.tl__tag-l2 {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  white-space: nowrap;
+}
+
+.tl__tag-l1 {
+  font-weight: var(--weight-strong);
+}
+
+.tl__tag-l1 .icon {
+  stroke-width: 2.25;
+}
+
+.tl__tag--proposed .tl__tag-l1 .icon {
+  color: var(--c-info);
+}
+
+.tl__tag--confirmed {
+  border-color: var(--c-ok);
+}
+
+.tl__tag--confirmed .tl__tag-l1 .icon {
+  color: var(--c-ok);
+}
+
+.tl__tag--attention {
+  border: var(--border-stamp) dashed var(--c-attention);
+  background: var(--c-attention-tint);
+}
+
+.tl__tag--attention .tl__tag-strip {
+  border-bottom: 0;
+}
+
+.tl__tag--attention .tl__tag-l1 .icon {
+  color: var(--c-attention);
+}
+
+.tl__leg {
+  color: var(--c-text-strong-2);
+}
+
+.tl__tag:hover {
+  background: var(--c-brand-faint);
+}
+
+/* Opened in the panel: a black ring and a tint (focus stays purple). */
+.tl__tag[aria-current="true"] {
+  background: var(--c-brand-tint);
+  box-shadow: 0 0 0 var(--line-strong) var(--c-value);
+}
+
+.tl__tag:focus-visible {
+  z-index: 3;
+}
+
+/* === Section: 8. Timeline legend and list view === */
+.legend {
+  margin-top: var(--space-4);
+}
+
+.legend__list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--space-2) var(--space-5);
+  margin: var(--space-2) 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: calc(var(--fs-small) * var(--script-factor));
+}
+
+.legend__list li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.legend__text {
+  min-width: 0;
+}
+
+.legend__key {
+  flex: none;
+}
+
+.tl__tag.is-sample {
+  position: relative;
+  left: auto;
+  width: 84px;
+  min-height: 0;
+  cursor: default;
+}
+
+.tl__tag.is-sample::after {
+  display: none;
+}
+
+.legend__bar {
+  position: relative;
+  width: 64px;
+  height: 24px;
+}
+
+.legend__bar .is-sample {
+  --start: 0;
+  --end: 1;
+  --span: 1;
+  --band-y: 14px;
+  width: 100%;
+}
+
+.legend__bar .tl__venue.is-sample {
+  top: 6px;
+}
+
+.legend__hatch {
+  width: 64px;
+  height: 24px;
+  border-left: var(--perf-dash) dashed var(--c-value);
+  background: repeating-linear-gradient(135deg, var(--c-ticket-edge) 0 1px, transparent 1px 7px);
+}
+
+.legend__now {
+  position: relative;
+  width: 64px;
+  height: 24px;
+}
+
+.legend__now::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 31px;
+  width: 2px;
+  background: var(--c-now);
+}
+
+.list-view {
+  margin-top: var(--space-5);
+}
+
+.list-view:focus {
+  outline: none;
+}
+
+.js .list-view {
+  display: none;
+}
+
+.js .day.is-list .list-view {
+  display: block;
+  margin-top: 0;
+}
+
+.js .day.is-list #timeline-view {
+  display: none;
+}
+
+.table--trips .stamp,
+.table--trips .flag,
+.table--trips td:first-child {
+  white-space: nowrap;
+}
+
+.table--trips tr[aria-current="true"] {
+  background: var(--c-brand-tint);
+}
+
+/* === Section: 9. Detail panel === */
+.panel {
+  position: sticky;
+  top: var(--space-4);
+  max-height: calc(100vh - var(--space-6));
+  overflow-y: auto;
+  padding: var(--space-1);
+  margin: calc(var(--space-1) * -1);
+}
+
+.panel:focus {
+  outline: none;
+}
+
+.panel__heading {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+  font-size: inherit;
+}
+
+.panel__van {
+  font-weight: var(--weight-strong);
+  font-size: calc(var(--fs-value) * var(--script-factor));
+}
+
+.explain p {
+  margin: 0 0 var(--space-1);
+  line-height: 1.45;
+}
+
+.explain ol {
+  margin: 0 0 var(--space-2);
+  padding-left: var(--space-5);
+}
+
+.run {
+  margin-top: var(--space-3);
+  font-size: calc(var(--fs-small) * var(--script-factor));
+  border: var(--border-edge) solid var(--c-rule);
+}
+
+.run caption {
+  padding: 0 0 var(--space-2);
+  font-size: calc(var(--fs-small) * var(--script-factor));
+}
+
+.run th,
+.run td {
+  padding: var(--space-1) var(--space-2);
+}
+
+.run .is-busiest td,
+.run .is-busiest th {
+  background: var(--c-brand-faint);
+  font-weight: var(--weight-strong);
+}
+
+.panel__status {
+  margin: var(--space-3) 0 0;
+}
+
+.panel__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: var(--border-edge) solid var(--c-ticket-edge);
+}
+
+.app-footer {
+  max-width: var(--page-max-desktop);
+  margin: 0 auto;
+  padding: 0 var(--gutter-desktop);
+}
+
+/* === Section: 10. Foundations page === */
+.fd {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--space-5) var(--gutter-desktop) var(--space-6);
+}
+
+.fd:focus {
+  outline: none;
+}
+
+.fd-toc {
+  margin: 0 0 var(--space-6);
+  padding: var(--space-3) var(--space-4);
+  background: var(--c-ticket);
+  border: var(--border-edge) solid var(--c-ticket-edge);
+  border-radius: var(--radius-ticket);
+}
+
+.fd-toc ol {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-5);
+  margin: 0;
+  padding-left: var(--space-5);
+}
+
+.fd-toc a {
+  display: inline-block;
+  min-height: 24px;
+}
+
+.fd-section {
+  margin: 0 0 var(--space-7);
+  scroll-margin-top: var(--space-4);
+}
+
+.fd-section > h2 {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  margin: 0 0 var(--space-4);
+  padding-bottom: var(--space-2);
+  border-bottom: var(--perf-dash) dashed var(--c-ticket-edge);
+  font-size: var(--fs-title);
+  line-height: var(--lh-title);
+}
+
+.fd-section > h2 .num {
+  color: var(--c-brand);
+}
+
+.fd-section h3 {
+  margin: var(--space-5) 0 var(--space-2);
+  font-size: var(--fs-section);
+}
+
+.fd-section h4 {
+  margin: var(--space-4) 0 var(--space-2);
+  font-size: var(--fs-value);
+}
+
+.fd-measure {
+  max-width: 72ch;
+}
+
+.fd-panel {
+  padding: var(--space-4);
+  background: var(--c-ticket);
+  border: var(--border-edge) solid var(--c-ticket-edge);
+  border-radius: var(--radius-ticket);
+}
+
+.fd-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--space-4);
+}
+
+.fd-grid--3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.fd-grid--2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.fd-pages {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin: var(--space-3) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fd-logo-full {
+  display: inline-block;
+  padding: var(--space-6);
+  background: var(--c-desk);
+  border: var(--border-edge) solid var(--c-ticket-edge);
+}
+
+.fd-crest-grounds {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+
+.fd-ground {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  border: var(--border-edge) solid var(--c-ticket-edge);
+  border-radius: var(--radius-ticket);
+}
+
+.fd-ground--light { background: var(--c-ticket); }
+.fd-ground--dark { background: var(--c-value); color: var(--c-on-brand); }
+.fd-ground--brand { background: var(--c-brand); color: var(--c-on-brand); }
+
+.fd-ground img {
+  height: 64px;
+  width: auto;
+}
+
+.fd-ground .fd-crest-small {
+  height: 24px;
+}
+
+.fd-clear {
+  display: inline-block;
+  padding: 16px;
+  outline: var(--border-edge) dashed var(--c-ticket-edge);
+  outline-offset: 0;
+  background: var(--c-ticket);
+}
+
+.fd-clear img {
+  height: 64px;
+  width: auto;
+  box-shadow: 0 0 0 1px var(--c-brand-tint);
+}
+
+.swatches {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.swatch {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr);
+  gap: var(--space-3);
+  align-items: start;
+  padding: var(--space-3);
+  background: var(--c-ticket);
+  border: var(--border-edge) solid var(--c-ticket-edge);
+  border-radius: var(--radius-ticket);
+  font-size: var(--fs-small);
+  line-height: 1.35;
+}
+
+.swatch__chip {
+  width: 56px;
+  height: 56px;
+  border: var(--border-edge) solid var(--c-ticket-edge);
+  border-radius: var(--radius-stamp);
+}
+
+.swatch code,
+.fd code {
+  font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  font-size: 0.92em;
+}
+
+.swatch__ratio {
+  display: block;
+  margin-top: var(--space-1);
+  font-weight: var(--weight-strong);
+}
+
+.scale-row {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: var(--border-edge) solid var(--c-ticket-edge);
+}
+
+.scale-row li {
+  padding: var(--space-3) var(--space-2);
+  font-size: var(--fs-small);
+  line-height: 1.35;
+}
+
+.type-specimen {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: var(--space-2) var(--space-5);
+  align-items: baseline;
+  padding: var(--space-3) 0;
+  border-top: var(--border-edge) solid var(--c-rule);
+}
+
+.type-specimen__meta {
+  font-size: var(--fs-small);
+  color: var(--c-text-strong-2);
+}
+
+.space-bars {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.space-bars li {
+  display: grid;
+  grid-template-columns: 180px minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--fs-small);
+}
+
+.space-bars__bar {
+  height: 16px;
+  background: var(--c-brand);
+}
+
+.grid-demo {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  background: var(--c-ticket);
+  border: var(--border-edge) solid var(--c-ticket-edge);
+}
+
+.grid-demo--phone {
+  width: 360px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  padding-inline: 12px;
+  gap: 12px;
+}
+
+.grid-demo--desktop {
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: var(--gutter-desktop);
+}
+
+.grid-demo span {
+  display: block;
+  min-height: 48px;
+  padding: var(--space-1);
+  background: var(--c-brand-tint);
+  border: var(--border-edge) dashed var(--c-brand);
+  font-size: var(--fs-label);
+  color: var(--c-brand);
+}
+
+.icon-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.icon-grid li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 48px;
+  padding: var(--space-2);
+  background: var(--c-ticket);
+  border: var(--border-edge) solid var(--c-rule);
+  font-size: var(--fs-small);
+}
+
+.state-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--space-4);
+  align-items: start;
+}
+
+.state {
+  display: grid;
+  gap: var(--space-2);
+  align-content: start;
+}
+
+.state__name {
+  font-size: var(--fs-label);
+  font-weight: var(--weight-strong);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-label);
+  color: var(--c-slot-label);
+}
+
+.fd-phone {
+  max-width: 360px;
+}
+
+.greyscale {
+  filter: grayscale(1);
+}
+
+.motion-table td,
+.motion-table th {
+  vertical-align: top;
+}
+
+.si-sample {
+  padding: var(--space-4);
+  background: var(--c-ticket);
+  border: var(--border-edge) solid var(--c-ticket-edge);
+  border-radius: var(--radius-ticket);
+}
+
+/* === Section: 11. Narrow screens === */
+@media (max-width: 1180px) {
+  .tiles {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .plan {
+    grid-column: 1 / -1;
+    grid-row: auto;
+  }
+}
+
+@media (max-width: 1023px) {
+  .dash__work {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .panel {
+    position: static;
+    max-height: none;
+    overflow: visible;
+  }
+
+  .tiles {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .plan {
+    grid-column: 1 / -1;
+    grid-row: auto;
+  }
+
+  .filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* The timeline keeps its scale and scrolls sideways; the list view is the
+     narrow-screen alternative (FR-29). */
+  #timeline-view .tl {
+    overflow-x: auto;
+  }
+
+  .tl__axis,
+  .tl__rows {
+    min-width: 860px;
+  }
+
+  .fd-grid--3,
+  .fd-grid--2,
+  .fd-crest-grounds {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .type-specimen {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .scale-row {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .app-nav__link {
+    min-height: 44px;
+  }
+
+  .tiles,
+  .filters {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .dash,
+  .fd {
+    padding-inline: var(--page-margin-phone);
+  }
+
+  .grid-demo--phone {
+    width: 100%;
+  }
+
+  .grid-demo--desktop {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .grid-demo--desktop span:nth-child(n + 5) {
+    display: none;
+  }
+}
